@@ -1,0 +1,175 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+	xmlns:a="urn:import:cbmarc.cigbill.client.ui">
+
+	<ui:with field="appCnts" type="cbmarc.cigbill.client.i18n.AppConstants" />
+	<ui:with field="usersCnts"
+		type="cbmarc.cigbill.client.main.users.UsersConstants" />
+
+	<g:HTMLPanel styleName="container">
+
+		<g:HTMLPanel ui:field="cellTablePanel" styleName="container">
+			<div class="btn-toolbar">
+				<g:Button ui:field="addTableButton" styleName="btn">
+					<i class="icon-plus"></i>
+					<ui:text from="{appCnts.addNewItemButton}"></ui:text>
+				</g:Button>
+				<g:Button ui:field="deleteTableButton" styleName="btn btn-danger">
+					<i class="icon-remove icon-white"></i>
+					<ui:text from="{appCnts.deleteSelectedItemsButton}"></ui:text>
+				</g:Button>
+			</div>
+			<div class="row-fluid" style="margin:5px 0;">
+				<div class="span">
+					<a:AppCellTable ui:field="cellTable"></a:AppCellTable>
+				</div>
+			</div>
+		</g:HTMLPanel>
+
+		<g:FormPanel ui:field="formPanel" styleName="well">
+
+			<g:HTMLPanel>
+				<fieldset>
+					<legend>
+						<g:Anchor href="javascript:;" ui:field="validationAnchor">
+							<span class="label label-warning pull-right">
+								<i class="icon-warning-sign icon-white"></i>
+							</span>
+						</g:Anchor>
+						<g:Label ui:field="legend"></g:Label>
+					</legend>
+
+					<g:FocusPanel ui:field="validationPanel"
+						styleName="validation-panel alert alert-error"></g:FocusPanel>
+
+					<div class="row">
+						<div class="span3">
+							<div class="control-group" ui:field="loginCG">
+								<label class="control-label">
+									<ui:text from="{usersCnts.formLogin}"></ui:text>
+									*
+								</label>
+								<div class="controls">
+									<g:TextBox ui:field="login" />
+								</div>
+							</div>
+						</div>
+						<div class="span3">
+							<div class="control-group" ui:field="passwordCG">
+								<label class="control-label">
+									<ui:text from="{usersCnts.formPassword}"></ui:text>
+									*
+								</label>
+								<div class="controls">
+									<g:PasswordTextBox ui:field="password" />
+								</div>
+							</div>
+						</div>
+
+						<div class="span3">
+							<div class="control-group" ui:field="confirmPasswordCG">
+								<label class="control-label">
+									<ui:text from="{usersCnts.formConfirmPassword}"></ui:text>
+									*
+								</label>
+								<div class="controls">
+									<g:PasswordTextBox ui:field="confirmPassword" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="span3">
+							<div class="control-group" ui:field="sexCG">
+								<label class="control-label">
+									<ui:text from="{usersCnts.formSex}"></ui:text>
+									*
+								</label>
+								<div class="controls">
+									<a:ListBoxEditor ui:field="sex">
+										<g:item value=""></g:item>
+										<g:item value="1">
+											<ui:text from="{usersCnts.formSex1}"></ui:text>
+										</g:item>
+										<g:item value="2">
+											<ui:text from="{usersCnts.formSex2}"></ui:text>
+										</g:item>
+										<g:item value="3">
+											<ui:text from="{usersCnts.formSex3}"></ui:text>
+										</g:item>
+									</a:ListBoxEditor>
+								</div>
+							</div>
+						</div>
+
+						<div class="span3">
+							<div class="control-group">
+								<label class="control-label">
+									<ui:text from="{usersCnts.formFavoriteColor}"></ui:text>
+								</label>
+								<div class="controls">
+									<a:ListBoxMultiEditor ui:field="favoriteColor"
+										visibleItemCount="3">
+										<g:item value="0">
+											<ui:text from="{usersCnts.formFavoriteColor0}"></ui:text>
+										</g:item>
+										<g:item value="1">
+											<ui:text from="{usersCnts.formFavoriteColor1}"></ui:text>
+										</g:item>
+										<g:item value="2">
+											<ui:text from="{usersCnts.formFavoriteColor2}"></ui:text>
+										</g:item>
+										<g:item value="3">
+											<ui:text from="{usersCnts.formFavoriteColor3}"></ui:text>
+										</g:item>
+									</a:ListBoxMultiEditor>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="control-group" ui:field="descriptionCG">
+						<label for="description" class="control-label">
+							<ui:text from="{usersCnts.formDescription}"></ui:text>
+						</label>
+						<div class="controls">
+							<g:TextArea ui:field="description" visibleLines="4"
+								styleName="span8" />
+						</div>
+					</div>
+
+					<div class="control-group">
+						<div class="controls">
+							<label for="active" class="checkbox">
+								<g:CheckBox ui:field="active">
+									<ui:text from="{usersCnts.formActive}"></ui:text>
+								</g:CheckBox>
+							</label>
+						</div>
+					</div>
+
+					<p class="muted">
+						<ui:text from="{appCnts.formRequiredFieldsText}"></ui:text>
+					</p>
+
+					<div class="form-actions">
+						<g:SubmitButton ui:field="submitButton" styleName="btn">
+							<i class="icon-ok"></i>
+							<ui:text from="{appCnts.formSubmit}"></ui:text>
+						</g:SubmitButton>
+						<g:Button ui:field="backButton" styleName="btn">
+							<i class="icon-chevron-left"></i>
+							<ui:text from="{appCnts.formBack}"></ui:text>
+						</g:Button>
+					</div>
+
+				</fieldset>
+			</g:HTMLPanel>
+
+		</g:FormPanel>
+
+	</g:HTMLPanel>
+
+</ui:UiBinder> 

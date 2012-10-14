@@ -1,0 +1,49 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+	<ui:style>
+		.topBox {
+			border-top-left-radius: 5px;
+			border-top-right-radius: 5px;
+			background: #eee;
+			height: 40px;
+		}
+		.lengthListBox {
+			margin: 6px;
+			width:5em;
+		}
+		.filterTextBox {
+			float: right;
+			margin: 6px;
+		}
+		.bottomBox {
+			background: #eee;
+			height:30px;
+		}
+		.simplePager {
+			float:right;
+		}
+	</ui:style>
+ 	<g:HTMLPanel>
+ 	    
+ 	    <g:HTMLPanel styleName="{style.topBox}">
+ 	        <g:ListBox ui:field="lengthListBox" styleName="{style.lengthListBox}">
+				<g:item value="10">10</g:item>
+				<g:item value="25">25</g:item>
+				<g:item value="50">50</g:item>
+				<g:item value="100">100</g:item>
+ 	        </g:ListBox>
+			<g:TextBox ui:field="filterTextBox" styleName="{style.filterTextBox}"></g:TextBox>
+		</g:HTMLPanel>
+		
+		<g:HTMLPanel>
+			<c:CellTable ui:field="cellTable"/>
+		</g:HTMLPanel>
+		
+		<g:HTMLPanel styleName="{style.bottomBox}">
+			<c:SimplePager ui:field='simplePager' styleName="{style.simplePager}"/>
+		</g:HTMLPanel>
+		
+	</g:HTMLPanel>
+</ui:UiBinder> 

@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.form {
+			margin:5em auto;
+			width: 300px;
+		}
+	</ui:style>
+
+	<g:FormPanel ui:field="formPanel" styleName="{style.form} well">
+	    
+		<g:HTMLPanel>
+		    
+		<fieldset>
+			<legend>Login</legend>
+			
+			<div class="control-group">
+				<label class="control-label">Login</label>
+				<div class="controls">
+					<g:TextBox ui:field="login" styleName="span4" value="admin"/>
+				</div>
+			</div>
+	
+			<div class="control-group">
+				<label class="control-label">Password</label>
+				<div class="controls">
+					<g:PasswordTextBox ui:field="password" styleName="span4" value="admin"/>
+				</div>
+			</div>
+			
+			<div class="error"></div>
+			
+			<div class="row">
+				<div class="span2">
+					<div class="control-group">
+						<div class="controls">
+						    <!-- Hack for center label -->
+						    <label class="checkbox">
+					    		<g:CheckBox ui:field="remember" styleName="checkbox" checked="true">Remenber Me</g:CheckBox>
+					    	</label>
+						</div>
+					</div>
+				</div>
+				
+				<div class="span2">
+					<div class="control-group pull-right">
+						<div class="controls">
+						    <g:SubmitButton ui:field="submitButton" styleName="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</g:SubmitButton>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		</fieldset>
+		
+		</g:HTMLPanel>
+		
+	</g:FormPanel>
+	
+</ui:UiBinder> 

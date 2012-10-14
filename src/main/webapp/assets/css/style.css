@@ -1,0 +1,33 @@
+/* bootstrap modifications */
+.navbar {
+	margin: 10px 0;
+}
+
+.breadcrumb {
+	margin: 10px 0;
+}
+
+.btn-toolbar {
+	margin: 0;
+}
+
+.popupContent i {
+	margin-right: 10px;
+}
+
+.validation-panel {
+	cursor:pointer;
+}
+
+.alert {
+	padding: 8px 25px;
+}
+
+ul.nav li.dropdown:hover ul.dropdown-menu {
+	display: block;
+	top: 37px;
+}
+
+a.menu:after,.dropdown-toggle:after {
+	content: none;
+}
