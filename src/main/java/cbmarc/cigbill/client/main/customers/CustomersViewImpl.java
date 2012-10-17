@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
 import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.utils.IFilter;
@@ -38,6 +40,7 @@ import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+@Singleton
 public class CustomersViewImpl extends Composite implements CustomersView,
 		Editor<Customer> {
 
@@ -104,13 +107,12 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	/**
 	 * Constructor
 	 */
-	public CustomersViewImpl(Presenter presenter) {
-		this.presenter = presenter;
+	public CustomersViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// hide by default
 		cellTablePanel.setVisible(false);
-		formPanel.setVisible(false);
+		//formPanel.setVisible(false);
 		
 		createCellTable();
 	}
@@ -230,12 +232,12 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 	@UiHandler("addTableButton")
 	protected void onClickAddTableButton(ClickEvent event) {
-		presenter.goTo(new MainPlace("customers/add"));
+		//presenter.goTo(new MainPlace("customers/add"));
 	}
 
 	@UiHandler("backButton")
 	protected void onCLickCancelButton(ClickEvent event) {
-		presenter.goTo(new MainPlace("customers"));
+		//presenter.goTo(new MainPlace("customers"));
 	}
 
 	/**
@@ -333,6 +335,12 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 			}
 		});
 
+	}
+
+	@Override
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
+		
 	}
 
 }

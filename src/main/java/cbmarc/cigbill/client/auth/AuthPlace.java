@@ -6,6 +6,8 @@ import com.google.gwt.place.shared.Prefix;
 
 public class AuthPlace extends Place {
 	
+	private static final String TOKEN = "auth";
+	
 	private String token;
 	
 	public AuthPlace(String token) {
@@ -16,7 +18,7 @@ public class AuthPlace extends Place {
 		return token;
 	}
 
-	@Prefix("auth")
+	@Prefix(value = TOKEN)
 	public static class Tokenizer implements PlaceTokenizer<AuthPlace> {
 
 		@Override

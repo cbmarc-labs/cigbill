@@ -6,6 +6,8 @@ package cbmarc.cigbill.client.main.users;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -13,52 +15,60 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
-import cbmarc.cigbill.client.mvp.AppAbstractActivity;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.User;
 
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 /**
  * @author marc
  * 
  */
-public class UsersActivity extends AppAbstractActivity implements
+@Singleton
+public class UsersActivity extends AbstractActivity implements
 		UsersView.Presenter {
 
 	private AppConstants appConstants = GWT.create(AppConstants.class);
 	private UsersConstants usersConstants = GWT.create(UsersConstants.class);
 
 	private UsersServiceAsync service = GWT.create(UsersServiceImpl.class);
+	
+	@Inject
 	private UsersView view;
+	@Inject
+	private PlaceController placeController;
 
 	private SimpleBeanEditorDriver<User, ?> driver;
-	private User user = null;
 
 	/**
 	 * start method
 	 */
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		view = new UsersViewImpl(this);
+		view.setPresenter(this);
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-
-		String token[] = ((MainPlace) place).getSplitToken();
-		if (token[1].equals("add"))
+		driver.edit(new User());
+		
+		String token = ((MainPlace) placeController.getWhere()).getToken();
+		
+		//String token[] = ((MainPlace) placeController.getWhere()).getSplitToken();
+		if (token.equals("add"))
 			doAdd();
 
-		else if (token[1].equals("edit"))
-			doEdit(token[2]);
+		else if (token.equals("edit"))
+			doEdit(token);
 
 		else
 			doLoad();
@@ -87,8 +97,7 @@ public class UsersActivity extends AppAbstractActivity implements
 	public void doAdd() {
 		view.showFormPanel(usersConstants.addLegendLabel());
 
-		user = new User();
-		driver.edit(user);
+		driver.edit(new User());
 
 	}
 
@@ -109,7 +118,7 @@ public class UsersActivity extends AppAbstractActivity implements
 
 									@Override
 									public void execute() {
-										goTo(new MainPlace("users"));
+										goTo(new UsersPlace(""));
 
 									}
 								});
@@ -119,8 +128,7 @@ public class UsersActivity extends AppAbstractActivity implements
 
 					} else {
 						view.showFormPanel(usersConstants.editLegendLabel());
-						user = result;
-						driver.edit(user);
+						driver.edit(result);
 					}
 
 				}
@@ -135,7 +143,7 @@ public class UsersActivity extends AppAbstractActivity implements
 	 */
 	@Override
 	public void doSave() {
-		user = driver.flush();
+		final User user = driver.flush();
 		final String id = user.getId();
 
 		if (validateForm(user)) {
@@ -229,15 +237,14 @@ public class UsersActivity extends AppAbstractActivity implements
 	 */
 	@Override
 	public void goTo(Place place) {
-		clientFactory.getPlaceController().goTo(place);
+		placeController.goTo(place);
 
 	}
 
 	@Override
 	public String mayStop() {
-		if (user != null)
-			if (driver.isDirty())
-				return appConstants.formDiscardChanges();
+		if (driver.isDirty())
+			return appConstants.formDiscardChanges();
 
 		return null;
 	}

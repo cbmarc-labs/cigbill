@@ -12,7 +12,7 @@ public class Product implements Model {
 	@Size(min = 2, max = 25)
 	private String name;
 	
-	@Size(max = 50)
+	@Size(max = 100)
 	private String description;
 
 	// TODO

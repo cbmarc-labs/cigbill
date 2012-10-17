@@ -6,8 +6,10 @@ import com.google.gwt.place.shared.Prefix;
 
 public class MainPlace extends Place {
 	
-	private String token;
+	private static final String TOKEN = "main";
 	
+	protected String token;
+
 	public MainPlace(String token) {
 		this.token = token;
 	}
@@ -15,13 +17,8 @@ public class MainPlace extends Place {
 	public String getToken() {
 		return token;
 	}
-	
-	// Get only the first part of the token
-	public String[] getSplitToken() {
-		return token.split("/");
-	}
 
-	@Prefix("main")
+	@Prefix(value = TOKEN)
 	public static class Tokenizer implements PlaceTokenizer<MainPlace> {
 
 		@Override

@@ -13,12 +13,12 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
-import cbmarc.cigbill.client.mvp.AppAbstractActivity;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.Product;
 
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  * @author marc
  * 
  */
-public class ProductsActivity extends AppAbstractActivity implements
+public class ProductsActivity extends AbstractActivity implements
 		ProductsView.Presenter {
 
 	private AppConstants appConstants = GWT.create(AppConstants.class);
@@ -48,12 +48,13 @@ public class ProductsActivity extends AppAbstractActivity implements
 	 */
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		view = new ProductsViewImpl(this);
+		view = new ProductsViewImpl();
+		view.setPresenter(this);
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
 
-		String token[] = ((MainPlace) place).getSplitToken();
+		/*String token[] = ((MainPlace) place).getSplitToken();
 		if (token[1].equals("add"))
 			doAdd();
 
@@ -61,7 +62,7 @@ public class ProductsActivity extends AppAbstractActivity implements
 			doEdit(token[2]);
 
 		else
-			doLoad();
+			doLoad();*/
 	}
 
 	/**
@@ -109,7 +110,7 @@ public class ProductsActivity extends AppAbstractActivity implements
 
 									@Override
 									public void execute() {
-										goTo(new MainPlace("products"));
+										//goTo(new MainPlace("products"));
 
 									}
 								});
@@ -217,7 +218,7 @@ public class ProductsActivity extends AppAbstractActivity implements
 	 */
 	@Override
 	public void goTo(Place place) {
-		clientFactory.getPlaceController().goTo(place);
+		//clientFactory.getPlaceController().goTo(place);
 
 	}
 

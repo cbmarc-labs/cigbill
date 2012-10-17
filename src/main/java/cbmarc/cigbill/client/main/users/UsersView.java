@@ -8,8 +8,12 @@ import cbmarc.cigbill.shared.User;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.ImplementedBy;
 
+@ImplementedBy(UsersViewImpl.class)
 public interface UsersView extends IsWidget, EditorView<User> {
+	
+	void setPresenter(Presenter presenter);
 		
 	void setList(List<User> data);
 	String getConfirmPassword();

@@ -1,30 +1,41 @@
 package cbmarc.cigbill.client.main;
 
-import cbmarc.cigbill.client.mvp.AppAbstractActivity;
+import javax.inject.Singleton;
 
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 
-public class MainActivity extends AppAbstractActivity implements
+@Singleton
+public class MainActivity extends AbstractActivity implements
 		PlaceChangeEvent.Handler {
 
+	@Inject
 	MainView view;
+	@Inject
+	PlaceController placeController;
+	
+	//@Inject
+	//PlaceHistoryHandler mainPlaceHistoryHandler;
 
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		view = clientFactory.getMainView();
-
 		panel.setWidget(view);
 
-		view.setBreadcrumb(((MainPlace) place).getSplitToken());
+		//view.setBreadcrumb(((MainPlace) placeController.getWhere())
+		//		.getSplitToken());
 		
-		clientFactory.getEventBus().addHandler(PlaceChangeEvent.TYPE, this);
+		//mainPlaceHistoryHandler.handleCurrentHistory();
+
+		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
 	}
 
 	@Override
 	public void onPlaceChange(PlaceChangeEvent event) {
-		view.setBreadcrumb(((MainPlace) place).getSplitToken());
+		// view.setBreadcrumb(((MainPlace) place).getSplitToken());
 
 	}
 

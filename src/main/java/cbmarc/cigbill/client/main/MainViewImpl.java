@@ -2,14 +2,10 @@ package cbmarc.cigbill.client.main;
 
 import java.util.HashMap;
 
-import cbmarc.cigbill.client.ClientFactory;
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.mvp.MainActivityMapper;
 import cbmarc.cigbill.client.ui.LiPanel;
 import cbmarc.cigbill.client.ui.UlPanel;
 
-import com.google.gwt.activity.shared.ActivityManager;
-import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
@@ -19,7 +15,10 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class MainViewImpl extends Composite implements MainView {
 
 	private static MainViewImplUiBinder uiBinder = GWT
@@ -28,9 +27,9 @@ public class MainViewImpl extends Composite implements MainView {
 	interface MainViewImplUiBinder extends UiBinder<Widget, MainViewImpl> {
 	}
 
-	private AppConstants constants;
+	private AppConstants appConstants = GWT.create(AppConstants.class);
 	private HashMap<String, String> BreadCrumbCnts = new HashMap<String, String>();
-	
+
 	private static String urlBreadcrumb = "#main:";
 	private static String urlBreadcrumbHome = urlBreadcrumb + "invoices";
 
@@ -39,42 +38,48 @@ public class MainViewImpl extends Composite implements MainView {
 	@UiField
 	SimplePanel contentPanel;
 
-	public MainViewImpl(ClientFactory clientFactory) {
+	@Inject
+	public MainViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		/*ActivityManager mainActivityManager = new ActivityManager(
+				mainActivityMapper, mainEventBus);
+		mainActivityManager.setDisplay(contentPanel);*/
 
-		ActivityMapper mainActivityMapper = new MainActivityMapper(
-				clientFactory);
-		ActivityManager mainActivityManager = new ActivityManager(
-				mainActivityMapper, clientFactory.getEventBus());
-		mainActivityManager.setDisplay(contentPanel);
+		/*
+		 * ActivityMapper mainActivityMapper = new MainActivityMapper();
+		 * ActivityManager mainActivityManager = new ActivityManager(
+		 * mainActivityMapper, eventBus);
+		 * mainActivityManager.setDisplay(contentPanel);
+		 */
 
-		constants = clientFactory.getConstants();
+		// constants = clientFactory.getConstants();
 
 		initialize();
 	}
 
 	private void initialize() {
-		BreadCrumbCnts.put("money", constants.navMoney());
-		BreadCrumbCnts.put("invoices", constants.navInvoices());
-		BreadCrumbCnts.put("payments", constants.navPayments());
-		BreadCrumbCnts.put("stock", constants.navStock());
-		BreadCrumbCnts.put("products", constants.navProducts());
-		BreadCrumbCnts.put("taxes", constants.navTaxes());
-		BreadCrumbCnts.put("people", constants.navPeople());
-		BreadCrumbCnts.put("customers", constants.navCustomers());
-		BreadCrumbCnts.put("users", constants.navUsers());
-		BreadCrumbCnts.put("settings", constants.navSettings());
-		BreadCrumbCnts.put("messages", constants.navMessages());
-		
-		BreadCrumbCnts.put("add", constants.breadcrumbAdd());
-		BreadCrumbCnts.put("edit", constants.breadcrumbEdit());
+		BreadCrumbCnts.put("money", appConstants.navMoney());
+		BreadCrumbCnts.put("invoices", appConstants.navInvoices());
+		BreadCrumbCnts.put("payments", appConstants.navPayments());
+		BreadCrumbCnts.put("stock", appConstants.navStock());
+		BreadCrumbCnts.put("products", appConstants.navProducts());
+		BreadCrumbCnts.put("taxes", appConstants.navTaxes());
+		BreadCrumbCnts.put("people", appConstants.navPeople());
+		BreadCrumbCnts.put("customers", appConstants.navCustomers());
+		BreadCrumbCnts.put("users", appConstants.navUsers());
+		BreadCrumbCnts.put("settings", appConstants.navSettings());
+		BreadCrumbCnts.put("messages", appConstants.navMessages());
+
+		BreadCrumbCnts.put("add", appConstants.breadcrumbAdd());
+		BreadCrumbCnts.put("edit", appConstants.breadcrumbEdit());
 	}
 
 	@Override
 	public void setBreadcrumb(String[] splitToken) {
 		breadcrumb.clear();
 
-		setBreadcrumbSection(constants.breadcrumbHome(), urlBreadcrumbHome,
+		setBreadcrumbSection(appConstants.breadcrumbHome(), urlBreadcrumbHome,
 				false, splitToken[0] == null ? false : true);
 
 		// #main:users[0]/add[1]
@@ -82,7 +87,7 @@ public class MainViewImpl extends Composite implements MainView {
 
 			String section = BreadCrumbCnts.get(splitToken[0]);
 			if (section == null)
-				section = constants.breadcrumbUndefined();
+				section = appConstants.breadcrumbUndefined();
 
 			setBreadcrumbSection(section, urlBreadcrumb + splitToken[0],
 					splitToken[1] == null ? true : false,
@@ -92,8 +97,8 @@ public class MainViewImpl extends Composite implements MainView {
 		if (splitToken[1] != null) {
 			String action = BreadCrumbCnts.get(splitToken[1]);
 			if (action == null)
-				action = constants.breadcrumbUndefined();
-			
+				action = appConstants.breadcrumbUndefined();
+
 			setBreadcrumbSection(action, null, true, false);
 		}
 	}
@@ -131,6 +136,11 @@ public class MainViewImpl extends Composite implements MainView {
 		}
 
 		breadcrumb.add(liPanel);
+	}
+
+	@Override
+	public SimplePanel getContentPanel() {
+		return contentPanel;
 	}
 
 }

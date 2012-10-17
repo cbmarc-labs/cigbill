@@ -10,6 +10,8 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface ProductsView extends IsWidget, EditorView<Product> {
+	
+	void setPresenter(Presenter presenter);
 		
 	void setList(List<Product> data);
 	

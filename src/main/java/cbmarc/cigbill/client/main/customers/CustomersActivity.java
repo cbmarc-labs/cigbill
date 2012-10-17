@@ -6,6 +6,8 @@ package cbmarc.cigbill.client.main.customers;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -13,36 +15,41 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppMessages;
 import cbmarc.cigbill.client.main.MainPlace;
-import cbmarc.cigbill.client.mvp.AppAbstractActivity;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.Customer;
 
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 /**
  * @author marc
  * 
  */
-public class CustomersActivity extends AppAbstractActivity implements
+@Singleton
+public class CustomersActivity extends AbstractActivity implements
 		CustomersView.Presenter {
 
 	private AppMessages messages;
 	private CustomersConstants customersConstants = GWT.create(CustomersConstants.class);
 
 	private CustomersServiceAsync service = GWT.create(CustomersServiceImpl.class);
-	private CustomersView view;
 
 	private SimpleBeanEditorDriver<Customer, ?> driver;
 	private Customer customer = null;
+	
+	@Inject
+	private CustomersView view;
+	@Inject
+	private PlaceController placeController;
 
 	/**
 	 * start method
@@ -50,12 +57,13 @@ public class CustomersActivity extends AppAbstractActivity implements
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
 		// Internationalization
-		messages = clientFactory.getMessages();
+		//messages = clientFactory.getMessages();
 
-		view = new CustomersViewImpl(this);
+		//view = new CustomersViewImpl();
+		view.setPresenter(this);
 		panel.setWidget(view);
 
-		driver = view.createEditorDriver();
+		/*driver = view.createEditorDriver();
 		driver.edit(customer);
 
 		String token[] = ((MainPlace) place).getSplitToken();
@@ -66,7 +74,7 @@ public class CustomersActivity extends AppAbstractActivity implements
 			doEdit(token[2]);
 
 		else
-			doLoad();
+			doLoad();*/
 	}
 
 	/**
@@ -114,7 +122,7 @@ public class CustomersActivity extends AppAbstractActivity implements
 
 									@Override
 									public void execute() {
-										goTo(new MainPlace("customers"));
+										//goTo(new MainPlace("customers"));
 
 									}
 								});
@@ -227,7 +235,7 @@ public class CustomersActivity extends AppAbstractActivity implements
 	 */
 	@Override
 	public void goTo(Place place) {
-		clientFactory.getPlaceController().goTo(place);
+		//clientFactory.getPlaceController().goTo(place);
 
 	}
 

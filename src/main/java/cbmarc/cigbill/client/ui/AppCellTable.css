@@ -3,7 +3,7 @@
 .cellTableFirstColumn {}
 .cellTableLastColumn {}
 .cellTableFooter {}
-.cellTableHeader {border-bottom:1px solid #eee;font-weight:bolder;text-align:left;padding:4px}
+.cellTableHeader {color:#888;border-bottom:1px solid #eee;font-weight:bolder;text-align:left;padding:4px}
 .cellTableCell {border-bottom:1px solid #eee;padding:4px}
 .cellTableCell a {color:#000;font-weight:bolder;}
 .cellTableFirstColumnFooter {}

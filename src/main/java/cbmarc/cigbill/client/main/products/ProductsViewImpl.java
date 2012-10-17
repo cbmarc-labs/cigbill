@@ -118,8 +118,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	/**
 	 * Constructor
 	 */
-	public ProductsViewImpl(Presenter presenter) {
-		this.presenter = presenter;
+	public ProductsViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// hide by default
@@ -262,12 +261,12 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 	@UiHandler("addTableButton")
 	protected void onClickAddTableButton(ClickEvent event) {
-		presenter.goTo(new MainPlace("products/add"));
+		//presenter.goTo(new MainPlace("products/add"));
 	}
 
 	@UiHandler("backButton")
 	protected void onCLickCancelButton(ClickEvent event) {
-		presenter.goTo(new MainPlace("products"));
+		//presenter.goTo(new MainPlace("products"));
 	}
 
 	/**
@@ -365,6 +364,12 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 			}
 		});
 
+	}
+
+	@Override
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
+		
 	}
 
 }

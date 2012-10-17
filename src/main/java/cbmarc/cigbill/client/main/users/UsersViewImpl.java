@@ -5,8 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.ui.ListBoxEditor;
 import cbmarc.cigbill.client.ui.ListBoxMultiEditor;
@@ -51,6 +52,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+@Singleton
 public class UsersViewImpl extends Composite implements UsersView, Editor<User> {
 
 	private static Binder uiBinder = GWT.create(Binder.class);
@@ -133,8 +135,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	/**
 	 * Constructor
 	 */
-	public UsersViewImpl(Presenter presenter) {
-		this.presenter = presenter;
+	public UsersViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		// hide by default
@@ -298,12 +299,12 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 	@UiHandler("addTableButton")
 	protected void onClickAddTableButton(ClickEvent event) {
-		presenter.goTo(new MainPlace("users/add"));
+		presenter.goTo(new UsersPlace("add"));
 	}
 
 	@UiHandler("backButton")
 	protected void onCLickCancelButton(ClickEvent event) {
-		presenter.goTo(new MainPlace("users"));
+		presenter.goTo(new UsersPlace(""));
 	}
 
 	/**
@@ -414,6 +415,12 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	@Override
 	public String getConfirmPassword() {
 		return confirmPassword.getValue();
+	}
+
+	@Override
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
+		
 	}
 
 }
