@@ -125,7 +125,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 				Anchor anchor = new Anchor(object.getId());
-				anchor.setHref("#main:invoices/edit/" + object.getId());
+				anchor.setHref("#invoices:edit/" + object.getId());
 
 				sb.appendHtmlConstant(anchor.toString());
 

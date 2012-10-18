@@ -112,7 +112,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 		// hide by default
 		cellTablePanel.setVisible(false);
-		//formPanel.setVisible(false);
+		formPanel.setVisible(false);
 		
 		createCellTable();
 	}
@@ -130,7 +130,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 				Anchor anchor = new Anchor(object.getName());
-				anchor.setHref("#main:customers/edit/" + object.getId());
+				anchor.setHref("#customers:edit/" + object.getId());
 
 				sb.appendHtmlConstant(anchor.toString());
 

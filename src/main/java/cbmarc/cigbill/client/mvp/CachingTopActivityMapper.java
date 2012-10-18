@@ -1,7 +1,7 @@
 package cbmarc.cigbill.client.mvp;
 
 import cbmarc.cigbill.client.main.MainPlace;
-import cbmarc.cigbill.client.main.nav.NavPlace;
+import cbmarc.cigbill.client.main.TopPlace;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -10,17 +10,17 @@ import com.google.gwt.activity.shared.FilteredActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 
-public class CachingNavActivityMapper implements ActivityMapper {
+public class CachingTopActivityMapper implements ActivityMapper {
 	
 	private ActivityMapper filteredActivityMapper;
 	
 	@Inject
-	public CachingNavActivityMapper(NavActivityMapper mapper) {
+	public CachingTopActivityMapper(TopActivityMapper mapper) {
 		FilteredActivityMapper.Filter filter = new FilteredActivityMapper.Filter() {
 
 			@Override
 			public Place filter(Place place) {
-				return place instanceof MainPlace ? new NavPlace() : place;
+				return place instanceof MainPlace ? new TopPlace() : place;
 			}};
 		
 		CachingActivityMapper cachingActivityMapper = new CachingActivityMapper(mapper);

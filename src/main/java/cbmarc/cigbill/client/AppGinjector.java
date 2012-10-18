@@ -1,7 +1,5 @@
 package cbmarc.cigbill.client;
 
-import cbmarc.cigbill.client.main.MainView;
-
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
@@ -16,6 +14,5 @@ public interface AppGinjector extends Ginjector {
 	public PlaceHistoryHandler getHistoryHandler();
 	
 	public AppView getAppView();
-	public MainView getMainView();
 
 }

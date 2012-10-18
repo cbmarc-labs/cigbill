@@ -13,11 +13,11 @@ public class LiPanel extends ComplexPanel implements HasText {
 	}
 	
 	public void add(Widget w) { 
-		super.add(w, getElement());
+		add(w, getElement());
 	}
 	
 	public void add(Element e) {
-		super.getElement().appendChild(e);
+		getElement().appendChild(e);
 	}
 
 	@Override

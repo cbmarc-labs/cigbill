@@ -38,15 +38,15 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class UsersActivity extends AbstractActivity implements
 		UsersView.Presenter {
 
-	private AppConstants appConstants = GWT.create(AppConstants.class);
 	private UsersConstants usersConstants = GWT.create(UsersConstants.class);
-
 	private UsersServiceAsync service = GWT.create(UsersServiceImpl.class);
-	
+
 	@Inject
 	private UsersView view;
 	@Inject
 	private PlaceController placeController;
+	@Inject
+	AppConstants appConstants;
 
 	private SimpleBeanEditorDriver<User, ?> driver;
 
@@ -60,10 +60,11 @@ public class UsersActivity extends AbstractActivity implements
 
 		driver = view.createEditorDriver();
 		driver.edit(new User());
-		
+
 		String token = ((MainPlace) placeController.getWhere()).getToken();
-		
-		//String token[] = ((MainPlace) placeController.getWhere()).getSplitToken();
+
+		// String token[] = ((MainPlace)
+		// placeController.getWhere()).getSplitToken();
 		if (token.equals("add"))
 			doAdd();
 

@@ -127,7 +127,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 				Anchor anchor = new Anchor(object.getName());
-				anchor.setHref("#main:payments/edit/" + object.getId());
+				anchor.setHref("#payments:edit/" + object.getId());
 
 				sb.appendHtmlConstant(anchor.toString());
 
@@ -212,12 +212,12 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 
 	@UiHandler("addTableButton")
 	protected void onClickAddTableButton(ClickEvent event) {
-		//presenter.goTo(new MainPlace("payments/add"));
+		presenter.goTo(new PaymentsPlace("add"));
 	}
 
 	@UiHandler("backButton")
 	protected void onCLickCancelButton(ClickEvent event) {
-		//presenter.goTo(new MainPlace("payments"));
+		presenter.goTo(new PaymentsPlace(""));
 	}
 
 	/**

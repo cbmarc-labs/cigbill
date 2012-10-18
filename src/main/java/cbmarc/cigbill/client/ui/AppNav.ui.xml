@@ -1,0 +1,102 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:with field="cnt" type="cbmarc.cigbill.client.i18n.AppConstants" />
+	
+	<g:HTMLPanel styleName="navbar">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li class="dropdown">
+					<a href="javascript:;" class="dropdown-toggle disabled"
+						data-toggle="dropdown">
+						<ui:text from="{cnt.navMoney}"></ui:text>
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#invoices:">
+								<i class="icon-book"></i>
+								<ui:text from="{cnt.navInvoices}"></ui:text>
+							</a>
+						</li>
+						<li>
+							<a href="#payments:">
+								<i class="icon-briefcase"></i>
+								<ui:text from="{cnt.navPayments}"></ui:text>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="dropdown">
+					<a href="javascript:;" class="dropdown-toggle disabled"
+						data-toggle="dropdown">
+						<ui:text from="{cnt.navStock}"></ui:text>
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#products:">
+								<i class="icon-shopping-cart"></i>
+								<ui:text from="{cnt.navProducts}"></ui:text>
+							</a>
+						</li>
+						<li>
+							<a href="#taxes:">
+								<i class="icon-barcode"></i>
+								<ui:text from="{cnt.navTaxes}"></ui:text>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="dropdown">
+					<a href="javascript:;" class="dropdown-toggle disabled"
+						data-toggle="dropdown">
+						<ui:text from="{cnt.navPeople}"></ui:text>
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#customers:">
+								<i class="icon-road"></i>
+								<ui:text from="{cnt.navCustomers}"></ui:text>
+							</a>
+						</li>
+						<li>
+							<a href="#users:">
+								<i class="icon-user"></i>
+								<ui:text from="{cnt.navUsers}"></ui:text>
+							</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="dropdown">
+					<a href="javascript:;" class="dropdown-toggle disabled"
+						data-toggle="dropdown">
+						<ui:text from="{cnt.navSettings}"></ui:text>
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a>
+								<i class="icon-align-justify"></i>
+								<ui:text from="{cnt.navMessages}"></ui:text>
+							</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+			<ul class="nav pull-right">
+				<li>
+					<a href="#auth:logout">
+						<ui:text from="{cnt.navLogout}"></ui:text>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

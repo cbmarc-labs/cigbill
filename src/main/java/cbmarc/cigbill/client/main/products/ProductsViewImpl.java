@@ -142,7 +142,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 				Anchor anchor = new Anchor(object.getName());
-				anchor.setHref("#main:products/edit/" + object.getId());
+				anchor.setHref("#products:edit/" + object.getId());
 
 				sb.appendHtmlConstant(anchor.toString());
 

@@ -8,7 +8,9 @@ import cbmarc.cigbill.shared.Invoice;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.ImplementedBy;
 
+@ImplementedBy(InvoicesViewImpl.class)
 public interface InvoicesView extends IsWidget, EditorView<Invoice> {
 	
 	void setPresenter(Presenter presenter);

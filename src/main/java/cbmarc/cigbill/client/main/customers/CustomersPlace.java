@@ -7,13 +7,13 @@ import com.google.gwt.place.shared.Prefix;
 
 public class CustomersPlace extends MainPlace {
 
-	private static final String TOKEN = "customers";
+	private static final String NAME = "customers";
 	
 	public CustomersPlace(String token) {
 		super(token);
 	}
 	
-	@Prefix(value = TOKEN)
+	@Prefix(value = NAME)
 	public static class Tokenizer implements PlaceTokenizer<CustomersPlace> {
 
 		@Override
@@ -25,6 +25,11 @@ public class CustomersPlace extends MainPlace {
 		public String getToken(CustomersPlace place) {
 			return place.getToken();
 		}
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 
 }

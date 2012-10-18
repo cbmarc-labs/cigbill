@@ -133,7 +133,7 @@ public class TaxesViewImpl extends Composite implements TaxesView,
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 				Anchor anchor = new Anchor(object.getName());
-				anchor.setHref("#main:taxes/edit/" + object.getId());
+				anchor.setHref("#taxes:edit/" + object.getId());
 
 				sb.appendHtmlConstant(anchor.toString());
 

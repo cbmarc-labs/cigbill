@@ -159,7 +159,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 				Anchor anchor = new Anchor(object.getLogin());
-				anchor.setHref("#main:users/edit/" + object.getId());
+				anchor.setHref("#users:edit/" + object.getId());
 
 				sb.appendHtmlConstant(anchor.toString());
 

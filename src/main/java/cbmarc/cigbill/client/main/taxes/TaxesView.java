@@ -3,12 +3,15 @@ package cbmarc.cigbill.client.main.taxes;
 import java.util.List;
 import java.util.Set;
 
+import cbmarc.cigbill.client.main.payments.PaymentsViewImpl;
 import cbmarc.cigbill.client.utils.EditorView;
 import cbmarc.cigbill.shared.Tax;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.ImplementedBy;
 
+@ImplementedBy(TaxesViewImpl.class)
 public interface TaxesView extends IsWidget, EditorView<Tax> {
 	
 	void setPresenter(Presenter presenter);

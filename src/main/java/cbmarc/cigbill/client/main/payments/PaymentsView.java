@@ -8,7 +8,9 @@ import cbmarc.cigbill.shared.Payment;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.ImplementedBy;
 
+@ImplementedBy(PaymentsViewImpl.class)
 public interface PaymentsView extends IsWidget, EditorView<Payment> {
 	
 	void setPresenter(Presenter presenter);

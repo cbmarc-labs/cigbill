@@ -2,15 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:a="urn:import:cbmarc.cigbill.client.ui">
-	
-	<ui:with field="cnt" type="cbmarc.cigbill.client.i18n.AppConstants" />
-	
-	<g:HTMLPanel styleName="container">
-		<div class="page-header">
-			<h1>Cigbill</h1>
-		</div>
-		
-		<g:SimplePanel ui:field="topPanel" />
-		<g:SimplePanel ui:field="contentPanel" />
+	<g:HTMLPanel>
+		<a:AppNav></a:AppNav>
+		<a:AppBreadcrumb ui:field="appBreadcrumb"></a:AppBreadcrumb>	
 	</g:HTMLPanel>
 </ui:UiBinder> 

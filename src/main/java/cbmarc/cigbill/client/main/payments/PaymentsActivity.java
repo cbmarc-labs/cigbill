@@ -25,7 +25,9 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 
 /**
  * @author marc
@@ -38,7 +40,10 @@ public class PaymentsActivity extends AbstractActivity implements
 	private PaymentsConstants paymentsConstants = GWT.create(PaymentsConstants.class);
 
 	private PaymentsServiceAsync service = GWT.create(PaymentsServiceImpl.class);
+	@Inject
 	private PaymentsView view;
+	@Inject
+	private PlaceController placeController;
 
 	private SimpleBeanEditorDriver<Payment, ?> driver;
 	private Payment entity = null;
@@ -48,21 +53,24 @@ public class PaymentsActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		view = new PaymentsViewImpl();
 		view.setPresenter(this);
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
+		
+		String token = ((MainPlace) placeController.getWhere()).getToken();
 
-		/*String token[] = ((MainPlace) place).getSplitToken();
-		if (token[1].equals("add"))
+		//String token[] = ((MainPlace) place).getSplitToken();
+		if (token.equals("add")) {
 			doAdd();
-
-		else if (token[1].equals("edit"))
-			doEdit(token[2]);
-
-		else
-			doLoad();*/
+			
+		//} else if (token.equals("edit")) {
+		//	doEdit(token);
+			
+		} else {
+			doLoad();
+			
+		}
 	}
 
 	/**

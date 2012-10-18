@@ -1,8 +1,7 @@
 package cbmarc.cigbill.client;
 
-import cbmarc.cigbill.client.mvp.CachingNavActivityMapper;
+import cbmarc.cigbill.client.mvp.CachingTopActivityMapper;
 import cbmarc.cigbill.client.mvp.ContentActivityMapper;
-import cbmarc.cigbill.client.mvp.NavActivityMapper;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
@@ -25,18 +24,18 @@ public class AppViewImpl extends Composite implements AppView {
 	}
 
 	@UiField
-	SimplePanel navPanel;
+	SimplePanel topPanel;
 	@UiField
 	SimplePanel contentPanel;
 
 	@Inject
-	public AppViewImpl(	CachingNavActivityMapper cachingNavActivityMapper,
+	public AppViewImpl(	CachingTopActivityMapper cachingTopActivityMapper,
 			ContentActivityMapper contentActivityMapper, EventBus eventBus) {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		ActivityManager cachingNavActivityManager = new ActivityManager(
-				cachingNavActivityMapper, eventBus);
-		cachingNavActivityManager.setDisplay(navPanel);
+		ActivityManager cachingTopActivityManager = new ActivityManager(
+				cachingTopActivityMapper, eventBus);
+		cachingTopActivityManager.setDisplay(topPanel);
 		
 		ActivityManager contentActivityManager = new ActivityManager(
 				contentActivityMapper, eventBus);

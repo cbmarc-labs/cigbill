@@ -63,18 +63,22 @@ public class CustomersActivity extends AbstractActivity implements
 		view.setPresenter(this);
 		panel.setWidget(view);
 
-		/*driver = view.createEditorDriver();
+		driver = view.createEditorDriver();
 		driver.edit(customer);
+		
+		String token = ((MainPlace) placeController.getWhere()).getToken();
 
-		String token[] = ((MainPlace) place).getSplitToken();
-		if (token[1].equals("add"))
+		//String token[] = ((MainPlace) place).getSplitToken();
+		if (token.equals("add")) {
 			doAdd();
-
-		else if (token[1].equals("edit"))
-			doEdit(token[2]);
-
-		else
-			doLoad();*/
+			
+		} else if (token.equals("edit")) {
+			//doEdit(token[2]);
+			
+		} else {
+			doLoad();
+			
+		}
 	}
 
 	/**

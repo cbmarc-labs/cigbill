@@ -25,7 +25,9 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 
 /**
  * @author marc
@@ -38,7 +40,10 @@ public class ProductsActivity extends AbstractActivity implements
 	private ProductsConstants productsConstants = GWT.create(ProductsConstants.class);
 
 	private ProductsServiceAsync service = GWT.create(ProductsServiceImpl.class);
+	@Inject
 	private ProductsView view;
+	@Inject
+	private PlaceController placeController;
 
 	private SimpleBeanEditorDriver<Product, ?> driver;
 	private Product product = null;
@@ -48,21 +53,24 @@ public class ProductsActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		view = new ProductsViewImpl();
 		view.setPresenter(this);
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
+		
+		String token = ((MainPlace) placeController.getWhere()).getToken();
 
-		/*String token[] = ((MainPlace) place).getSplitToken();
-		if (token[1].equals("add"))
+		//String token[] = ((MainPlace) place).getSplitToken();
+		if (token.equals("add")) {
 			doAdd();
 
-		else if (token[1].equals("edit"))
-			doEdit(token[2]);
+		//} else if (token[1].equals("edit")) {
+		//	doEdit(token[2]);
 
-		else
-			doLoad();*/
+		} else {
+			doLoad();
+			
+		}
 	}
 
 	/**

@@ -1,12 +1,8 @@
 package cbmarc.cigbill.client.main;
 
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceTokenizer;
-import com.google.gwt.place.shared.Prefix;
 
-public class MainPlace extends Place {
-	
-	private static final String TOKEN = "main";
+public abstract class MainPlace extends Place {
 	
 	protected String token;
 
@@ -17,19 +13,11 @@ public class MainPlace extends Place {
 	public String getToken() {
 		return token;
 	}
-
-	@Prefix(value = TOKEN)
-	public static class Tokenizer implements PlaceTokenizer<MainPlace> {
-
-		@Override
-		public MainPlace getPlace(String token) {
-			return new MainPlace(token);
-		}
 	
-		@Override
-		public String getToken(MainPlace place) {
-			return place.getToken();
-		}
+	public String[] getSplitToken() {
+		return token.split("/");
 	}
+	
+	public abstract String getName();
 
 }
