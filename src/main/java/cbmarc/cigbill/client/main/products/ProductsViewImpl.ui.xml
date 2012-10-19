@@ -73,15 +73,15 @@
 						</div>
 					</div>
 
-					<div class="control-group">
+					<div class="control-group" ui:field="priceCG">
 						<label class="control-label">
 							<ui:text from="{productsCnts.formPrice}"></ui:text>
 						</label>
 						<div class="controls">
-							<g:TextBox ui:field="price" styleName="span2" />
+							<g:DoubleBox ui:field="price" styleName="span2" maxLength="12" alignment="RIGHT"/>
 						</div>
 					</div>
-
+					
 					<div class="control-group">
 						<label class="control-label">
 							<ui:text from="{productsCnts.formNotes}"></ui:text>

@@ -1,9 +1,12 @@
 package cbmarc.cigbill.client.main.users;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import cbmarc.cigbill.shared.Tax;
 import cbmarc.cigbill.shared.User;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -13,6 +16,14 @@ public class UsersServiceImpl implements UsersServiceAsync {
 	private List<User> list = UsersDatabase.getInstance().getList();
 	
 	public void getAll(final AsyncCallback<List<User>> callback) {
+		Collections.sort(list, new Comparator<User>() {
+
+			@Override
+			public int compare(User o1, User o2) {
+				return o1.getLogin().compareToIgnoreCase(o2.getLogin());
+			}
+		});
+
 		callback.onSuccess(list);
 	}
 

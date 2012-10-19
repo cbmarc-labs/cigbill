@@ -5,15 +5,19 @@ import java.util.List;
 import java.util.Set;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
+import cbmarc.cigbill.client.main.products.ProductsConstants;
 import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.Invoice;
+import cbmarc.cigbill.shared.Product;
 
+import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,6 +28,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -32,12 +37,15 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class InvoicesViewImpl extends Composite implements InvoicesView,
 		Editor<Invoice> {
 
@@ -68,11 +76,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	@UiField
 	HTMLPanel cellTablePanel;
 	@UiField
-	Button addTableButton;
-	@UiField
-	Button deleteTableButton;
-	@UiField
-	Button toolbarRefreshButton;
+	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
@@ -84,13 +88,35 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	@UiField
 	FormPanel formPanel;
 	@UiField
+	HTMLPanel productsInvoicesPanel, productsPanel;
+	@UiField(provided = true)
+	AppCellTable<Product> productsInvoicesCellTable = new AppCellTable<Product>(
+			new IFilter<Product>() {
+
+				@Override
+				public boolean isValid(Product value, String filter) {
+					// TODO Auto-generated method stub
+					return true;
+				}
+			});
+	@UiField(provided = true)
+	AppCellTable<Product> productsCellTable = new AppCellTable<Product>(
+			new IFilter<Product>() {
+
+				@Override
+				public boolean isValid(Product value, String filter) {
+					// TODO Auto-generated method stub
+					return true;
+				}
+			});
+	@UiField
+	Button addProductButton, deleteProductButton, returnProductButton;
+	@UiField
 	TextArea notes;
 	@UiField
 	SubmitButton submitButton;
 	@UiField
-	Button backButton;
-	@UiField
-	Button formDeleteButton;
+	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
@@ -100,8 +126,13 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	@Inject
 	private AppConstants appConstants;
-	private InvoicesConstants localConstants = GWT
+	private InvoicesConstants invoicesConstants = GWT
 			.create(InvoicesConstants.class);
+	private ProductsConstants productsConstants = GWT
+			.create(ProductsConstants.class);
+	
+	Column<Invoice, SafeHtml> idColumn;
+	TextColumn<Product> productsNameColumn;
 
 	/**
 	 * Constructor
@@ -113,16 +144,18 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(false);
 
-		createCellTable();
+		createInvoicesCellTable();
+		createInvoicesProductsCellTable();
+		createProductsCellTable();
 	}
 
 	/**
 	 * Create celltable columns
 	 */
-	private void createCellTable() {
+	private void createInvoicesCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		Column<Invoice, SafeHtml> idColumn = new Column<Invoice, SafeHtml>(
+		idColumn = new Column<Invoice, SafeHtml>(
 				new SafeHtmlCell()) {
 
 			@Override
@@ -137,7 +170,8 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return sb.toSafeHtml();
 			}
 		};
-		cellTable.getCellTable().addColumn(idColumn, localConstants.columnId());
+		cellTable.getCellTable().addColumn(idColumn,
+				invoicesConstants.columnId());
 
 		// Make column sortable.
 		idColumn.setSortable(true);
@@ -164,13 +198,173 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	}
 
+	private void createInvoicesProductsCellTable() {
+		// /////////////////////////////////////////////////////////////////////
+		// PRODUCTS INVOICES NAME COLUMN
+		TextColumn<Product> nameColumn = new TextColumn<Product>() {
+
+			@Override
+			public String getValue(Product object) {
+				return object.getName();
+			}
+		};
+		productsInvoicesCellTable.getCellTable().addColumn(nameColumn,
+				productsConstants.columnName());
+
+		// /////////////////////////////////////////////////////////////////////
+		// PRODUCTS INVOICES DESCRIPTION COLUMN
+		TextColumn<Product> descriptionColumn = new TextColumn<Product>() {
+
+			@Override
+			public String getValue(Product object) {
+				return object.getDescription();
+			}
+		};
+		productsInvoicesCellTable.getCellTable().addColumn(descriptionColumn,
+				productsConstants.columnDescription());
+
+		// /////////////////////////////////////////////////////////////////////
+		// PRODUCTS INVOICES PRICE COLUMN
+		Column<Product, Number> priceColumn = new Column<Product, Number>(
+				new NumberCell()) {
+			@Override
+			public Number getValue(Product object) {
+				return object.getPrice();
+			}
+		};
+		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		productsInvoicesCellTable.getCellTable().addColumn(priceColumn,
+				productsConstants.columnPrice());
+		productsInvoicesCellTable.getCellTable().setColumnWidth(priceColumn,
+				1.0, Unit.EM);
+		// Make the first name column sortable.
+		priceColumn.setSortable(true);
+		productsInvoicesCellTable.getListHandler().setComparator(priceColumn,
+				new Comparator<Product>() {
+					public int compare(Product o1, Product o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
+				});
+
+		// /////////////////////////////////////////////////////////////////////
+		// PRODUCTS INVOICES CELLTABLE CLICKHANDLER
+		productsInvoicesCellTable.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				Set<Product> selectedSet = productsInvoicesCellTable
+						.getSelectionModel().getSelectedSet();
+
+				deleteProductButton.setVisible(selectedSet.size() > 0 ? true
+						: false);
+			}
+		});
+	}
+
+	private void createProductsCellTable() {
+		// /////////////////////////////////////////////////////////////////////
+		// PRODUCTS NAME COLUMN
+		productsNameColumn = new TextColumn<Product>() {
+
+			@Override
+			public String getValue(Product object) {
+				return object.getName();
+			}
+		};
+		productsCellTable.getCellTable().addColumn(productsNameColumn,
+				productsConstants.columnName());
+
+		// /////////////////////////////////////////////////////////////////////
+		// PRODUCTS DESCRIPTION COLUMN
+		TextColumn<Product> descriptionColumn = new TextColumn<Product>() {
+
+			@Override
+			public String getValue(Product object) {
+				return object.getDescription();
+			}
+		};
+		productsCellTable.getCellTable().addColumn(descriptionColumn,
+				productsConstants.columnDescription());
+
+		// /////////////////////////////////////////////////////////////////////
+		// PRODUCTS PRICE COLUMN
+		Column<Product, Number> priceColumn = new Column<Product, Number>(
+				new NumberCell()) {
+			@Override
+			public Number getValue(Product object) {
+				return object.getPrice();
+			}
+		};
+		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		productsCellTable.getCellTable().addColumn(priceColumn,
+				productsConstants.columnPrice());
+		productsCellTable.getCellTable().setColumnWidth(priceColumn, 1.0,
+				Unit.EM);
+		// Make the first name column sortable.
+		priceColumn.setSortable(true);
+		productsCellTable.getListHandler().setComparator(priceColumn,
+				new Comparator<Product>() {
+					public int compare(Product o1, Product o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
+				});
+
+		// /////////////////////////////////////////////////////////////////////
+		// PRODUCTS CELLTABLE CLICKHANDLER
+		productsCellTable.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				Set<Product> selected = productsCellTable.getSelectionModel()
+						.getSelectedSet();
+				productsCellTable.getSelectionModel().clear();
+
+				if (selected.size() > 0) {
+					List<Product> list = productsInvoicesCellTable
+							.getDataProvider().getList();
+					list.addAll(selected);
+
+					productsInvoicesPanel.setVisible(true);
+					productsPanel.setVisible(false);
+
+					// Its ugly but it works
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+						@Override
+						public void execute() {
+							productsInvoicesCellTable.getCellTable()
+									.setVisibleRangeAndClearData(
+											productsInvoicesCellTable
+													.getCellTable()
+													.getVisibleRange(), true);
+
+						}
+					});
+				}
+			}
+		});
+
+	}
+
 	/**
 	 * Set list data to cellTable
 	 * 
 	 * @param list
 	 */
-	public void setList(List<Invoice> list) {
-		cellTable.setList(list);
+	public void setList(List<Invoice> data) {
+		cellTable.setList(data);
+		
+		// sort descending
+		cellTable.getCellTable().getColumnSortList().clear();
+		cellTable.getCellTable().getColumnSortList().push(idColumn);
+		cellTable.getCellTable().getColumnSortList().push(idColumn);
+	}
+
+	@Override
+	public void setListProduct(List<Product> data) {
+		productsCellTable.setList(data);
+		cellTable.getCellTable().getColumnSortList().push(productsNameColumn);
+
 	}
 
 	/*
@@ -232,6 +426,19 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	protected void onCLickFormDeleteButton(ClickEvent event) {
 		if (Window.confirm(appConstants.areYouSure()))
 			presenter.doDelete();
+	}
+
+	@UiHandler("addProductButton")
+	protected void onClickAddProductButton(ClickEvent event) {
+		productsInvoicesPanel.setVisible(false);
+		productsPanel.setVisible(true);
+	}
+
+	@UiHandler("returnProductButton")
+	protected void onClickReturnProductButton(ClickEvent event) {
+		productsInvoicesPanel.setVisible(true);
+		productsPanel.setVisible(false);
+
 	}
 
 	@Override
@@ -299,6 +506,8 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(true);
+		productsPanel.setVisible(false);
+		deleteProductButton.setVisible(false);
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 

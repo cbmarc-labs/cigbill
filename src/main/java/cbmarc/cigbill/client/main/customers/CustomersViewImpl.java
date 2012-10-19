@@ -75,11 +75,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	@UiField
 	HTMLPanel cellTablePanel;
 	@UiField
-	Button addTableButton;
-	@UiField
-	Button deleteTableButton;
-	@UiField
-	Button toolbarRefreshButton;
+	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
@@ -97,15 +93,11 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	@UiField
 	SubmitButton submitButton;
 	@UiField
-	Button backButton;
-	@UiField
-	Button formDeleteButton;
+	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
-	DivElement nameCG;
-	@UiField
-	DivElement emailCG;
+	DivElement nameCG, emailCG;
 
 	private Presenter presenter;
 
@@ -113,6 +105,8 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	private AppConstants appConstants;
 	private CustomersConstants customersConstants = GWT
 			.create(CustomersConstants.class);
+
+	Column<Customer, SafeHtml> nameColumn;
 
 	/**
 	 * Constructor
@@ -132,8 +126,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	 */
 	private void createCellTable() {
 		// NAME COLUMN
-		Column<Customer, SafeHtml> nameColumn = new Column<Customer, SafeHtml>(
-				new SafeHtmlCell()) {
+		nameColumn = new Column<Customer, SafeHtml>(new SafeHtmlCell()) {
 
 			@Override
 			public SafeHtml getValue(Customer object) {
@@ -159,6 +152,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 					}
 				});
 
+		// EMAIL COLUMN
 		TextColumn<Customer> emailColumn = new TextColumn<Customer>() {
 
 			@Override
@@ -200,6 +194,8 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	 */
 	public void setList(List<Customer> list) {
 		cellTable.setList(list);
+		cellTable.getCellTable().getColumnSortList().clear();
+		cellTable.getCellTable().getColumnSortList().push(nameColumn);
 	}
 
 	/*

@@ -1,5 +1,7 @@
 package cbmarc.cigbill.client.main.customers;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +14,13 @@ public class CustomersServiceImpl implements CustomersServiceAsync {
 	private List<Customer> list = CustomersDatabase.getInstance().getList();
 
 	public void getAll(final AsyncCallback<List<Customer>> callback) {
+		Collections.sort(list, new Comparator<Customer>(){
+
+			@Override
+			public int compare(Customer o1, Customer o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}});
+		
 		callback.onSuccess(list);
 	}
 

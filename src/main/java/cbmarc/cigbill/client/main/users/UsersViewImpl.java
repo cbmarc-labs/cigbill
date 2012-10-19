@@ -123,6 +123,8 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	@Inject
 	private AppConstants appConstants;
 	private UsersConstants usersConstants = GWT.create(UsersConstants.class);
+	
+	Column<User, SafeHtml> loginColumn;
 
 	/**
 	 * Constructor
@@ -143,7 +145,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// LOGIN COLUMN
-		Column<User, SafeHtml> loginColumn = new Column<User, SafeHtml>(
+		loginColumn = new Column<User, SafeHtml>(
 				new SafeHtmlCell()) {
 
 			@Override
@@ -248,6 +250,8 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	 */
 	public void setList(List<User> list) {
 		cellTable.setList(list);
+		cellTable.getCellTable().getColumnSortList().clear();
+		cellTable.getCellTable().getColumnSortList().push(loginColumn);
 	}
 
 	/*

@@ -20,6 +20,9 @@ import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -31,6 +34,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
@@ -41,6 +45,7 @@ import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class ProductsViewImpl extends Composite implements ProductsView,
 		Editor<Product> {
@@ -68,18 +73,14 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 				}
 			});
 
-	@Ignore
+	@Editor.Ignore
 	@UiField
 	Label legend;
 
 	@UiField
 	HTMLPanel cellTablePanel;
 	@UiField
-	Button addTableButton;
-	@UiField
-	Button deleteTableButton;
-	@UiField
-	Button toolbarRefreshButton;
+	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
@@ -91,32 +92,28 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	@UiField
 	FormPanel formPanel;
 	@UiField
-	TextBox name;
+	TextBox name, description;
 	@UiField
-	TextBox description;
-	@Ignore
-	@UiField
-	TextBox price;
+	DoubleBox price;
 	@UiField
 	TextArea notes;
 	@UiField
 	SubmitButton submitButton;
 	@UiField
-	Button backButton;
-	@UiField
-	Button formDeleteButton;
+	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
-	DivElement nameCG;
-	@UiField
-	DivElement descriptionCG;
+	DivElement nameCG, descriptionCG, priceCG;
 
 	private Presenter presenter;
 
-	private AppConstants appConstants = GWT.create(AppConstants.class);
+	@Inject
+	private AppConstants appConstants;
 	private ProductsConstants productsConstants = GWT
 			.create(ProductsConstants.class);
+
+	Column<Product, SafeHtml> nameColumn;
 
 	/**
 	 * Constructor
@@ -137,8 +134,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		Column<Product, SafeHtml> nameColumn = new Column<Product, SafeHtml>(
-				new SafeHtmlCell()) {
+		nameColumn = new Column<Product, SafeHtml>(new SafeHtmlCell()) {
 
 			@Override
 			public SafeHtml getValue(Product object) {
@@ -153,7 +149,8 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 			}
 		};
 		cellTable.getCellTable().addColumn(nameColumn,
-				productsConstants.columnName());
+				productsConstants.columnName());;
+		cellTable.getCellTable().setColumnWidth(nameColumn, 16.0, Unit.EM);
 
 		// Make the first name column sortable.
 		nameColumn.setSortable(true);
@@ -179,7 +176,8 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		// /////////////////////////////////////////////////////////////////////
 		// PRICE COLUMN
 		Column<Product, Number> priceColumn = new Column<Product, Number>(
-				new NumberCell()) {
+				//new NumberCell(NumberFormat.getFormat("+#,##0.00;-#,##0.00"))) {
+				new NumberCell(NumberFormat.getFormat("#,##0.00"))) {
 			@Override
 			public Number getValue(Product object) {
 				return object.getPrice();
@@ -188,13 +186,13 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		cellTable.getCellTable().addColumn(priceColumn,
 				productsConstants.columnPrice());
-		cellTable.getCellTable().setColumnWidth(priceColumn, 1.0, Unit.EM);
+		cellTable.getCellTable().setColumnWidth(priceColumn, 6.0, Unit.EM);
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
 		cellTable.getListHandler().setComparator(priceColumn,
 				new Comparator<Product>() {
 					public int compare(Product o1, Product o2) {
-						return o1.getName().compareTo(o2.getName());
+						return o1.getPrice().compareTo(o2.getPrice());
 					}
 				});
 
@@ -221,15 +219,20 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	 */
 	public void setList(List<Product> list) {
 		cellTable.setList(list);
+		cellTable.getCellTable().getColumnSortList().clear();
+		cellTable.getCellTable().getColumnSortList().push(nameColumn);
 	}
 
-	/*
-	 * // only digits as input in text field
-	 * 
-	 * @UiHandler("testBox") public void onKeyPress(KeyPressEvent event) { if
-	 * (!"0123456789".contains(String.valueOf(event.getCharCode()))) {
-	 * textBox.cancelKey(); } }
-	 */
+	// only digits as input in text field
+
+	@UiHandler("price")
+	public void onKeyPress(KeyPressEvent event) {
+		if (KeyCodes.KEY_ENTER != event.getCharCode()) {
+			if (!"0123456789,.".contains(String.valueOf(event.getCharCode()))) {
+				price.cancelKey();
+			}
+		}
+	}
 
 	@UiHandler("deleteTableButton")
 	protected void onClickDeleteTableButton(ClickEvent event) {
@@ -314,6 +317,9 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		else if (field.equals("description"))
 			divElement = descriptionCG;
 
+		else if (field.equals("price"))
+			divElement = priceCG;
+
 		if (divElement != null)
 			divElement.setClassName("control-group error");
 	}
@@ -326,6 +332,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 		nameCG.setClassName(styleName);
 		descriptionCG.setClassName(styleName);
+		priceCG.setClassName(styleName);
 
 		validationAnchor.setVisible(false);
 		validationPanel.setVisible(false);

@@ -13,10 +13,13 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
+import cbmarc.cigbill.client.main.products.ProductsServiceAsync;
+import cbmarc.cigbill.client.main.products.ProductsServiceImpl;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.Invoice;
+import cbmarc.cigbill.shared.Product;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
@@ -40,6 +43,8 @@ public class InvoicesActivity extends AbstractActivity implements
 			.create(InvoicesConstants.class);
 	private InvoicesServiceAsync service = GWT
 			.create(InvoicesServiceImpl.class);
+	private ProductsServiceAsync serviceProducts = GWT
+			.create(ProductsServiceImpl.class);
 
 	@Inject
 	private InvoicesView view;
@@ -113,6 +118,14 @@ public class InvoicesActivity extends AbstractActivity implements
 		view.getFormDeleteButton().setVisible(false);
 
 		driver.edit(new Invoice());
+		
+		serviceProducts.getAll(new AppAsyncCallback<List<Product>>(){
+
+			@Override
+			public void onSuccess(List<Product> result) {
+				view.setListProduct(result);
+				
+			}});
 
 	}
 

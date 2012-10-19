@@ -71,9 +71,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	@UiField
 	Button addTableButton;
 	@UiField
-	Button deleteTableButton;
-	@UiField
-	Button toolbarRefreshButton;
+	Button deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
@@ -89,9 +87,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	@UiField
 	SubmitButton submitButton;
 	@UiField
-	Button backButton;
-	@UiField
-	Button formDeleteButton;
+	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
@@ -103,6 +99,8 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	private AppConstants appConstants;
 	private PaymentsConstants taxesConstants = GWT
 			.create(PaymentsConstants.class);
+	
+	Column<Payment, SafeHtml> nameColumn;
 
 	/**
 	 * Constructor
@@ -123,7 +121,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		Column<Payment, SafeHtml> nameColumn = new Column<Payment, SafeHtml>(
+		nameColumn = new Column<Payment, SafeHtml>(
 				new SafeHtmlCell()) {
 
 			@Override
@@ -173,6 +171,8 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	 */
 	public void setList(List<Payment> list) {
 		cellTable.setList(list);
+		cellTable.getCellTable().getColumnSortList().clear();
+		cellTable.getCellTable().getColumnSortList().push(nameColumn);
 	}
 
 	/*

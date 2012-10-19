@@ -13,7 +13,6 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
-import cbmarc.cigbill.client.main.users.UsersPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
@@ -150,6 +149,8 @@ public class ProductsActivity extends AbstractActivity implements
 	public void doSave() {
 		final Product product = driver.flush();
 		final String id = product.getId();
+		
+		//Window.alert();
 
 		if (validateForm(product)) {
 			service.save(product, new AppAsyncCallback<Void>() {

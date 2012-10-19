@@ -1,5 +1,7 @@
 package cbmarc.cigbill.client.main.payments;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +15,14 @@ public class PaymentsServiceImpl implements PaymentsServiceAsync {
 
 	@Override
 	public void getAll(final AsyncCallback<List<Payment>> callback) {
+		Collections.sort(list, new Comparator<Payment>() {
+
+			@Override
+			public int compare(Payment o1, Payment o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+		
 		callback.onSuccess(list);
 	}
 

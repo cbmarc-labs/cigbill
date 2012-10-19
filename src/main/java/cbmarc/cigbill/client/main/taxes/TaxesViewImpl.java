@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 
@@ -66,9 +67,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	@UiField
 	HTMLPanel cellTablePanel;
 	@UiField
-	Button addTableButton;
-	@UiField
-	Button deleteTableButton;
+	Button addTableButton, deleteTableButton;
 
 	// Validatior error messages
 	@UiField
@@ -86,20 +85,19 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	@UiField
 	SubmitButton submitButton;
 	@UiField
-	Button backButton;
-	@UiField
-	Button formDeleteButton;
+	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
-	DivElement nameCG;
-	@UiField
-	DivElement descriptionCG;
+	DivElement nameCG, descriptionCG;
 
 	private Presenter presenter;
 
-	private AppConstants appConstants = GWT.create(AppConstants.class);
+	@Inject
+	private AppConstants appConstants;
 	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
+	
+	Column<Tax, SafeHtml> nameColumn;
 
 	/**
 	 * Constructor
@@ -120,7 +118,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		Column<Tax, SafeHtml> nameColumn = new Column<Tax, SafeHtml>(
+		nameColumn = new Column<Tax, SafeHtml>(
 				new SafeHtmlCell()) {
 
 			@Override
@@ -190,6 +188,8 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	 */
 	public void setList(List<Tax> list) {
 		cellTable.setList(list);
+		cellTable.getCellTable().getColumnSortList().clear();
+		cellTable.getCellTable().getColumnSortList().push(nameColumn);
 	}
 
 	/*

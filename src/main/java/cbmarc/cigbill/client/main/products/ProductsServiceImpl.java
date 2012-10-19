@@ -1,5 +1,7 @@
 package cbmarc.cigbill.client.main.products;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +14,14 @@ public class ProductsServiceImpl implements ProductsServiceAsync {
 	private List<Product> list = ProductsDatabase.getInstance().getList();
 
 	public void getAll(final AsyncCallback<List<Product>> callback) {
+		Collections.sort(list, new Comparator<Product>() {
+
+			@Override
+			public int compare(Product o1, Product o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+
 		callback.onSuccess(list);
 	}
 

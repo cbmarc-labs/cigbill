@@ -1,5 +1,6 @@
 package cbmarc.cigbill.shared;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -15,8 +16,8 @@ public class Product implements Model {
 	@Size(max = 100)
 	private String description;
 
-	// TODO
-	private Float price;
+	@Digits(integer = 7, fraction=2)
+	private Double price = 0.0;
 	
 	@Size(max = 250)
 	private String notes;
@@ -49,11 +50,11 @@ public class Product implements Model {
 		this.description = description;
 	}
 
-	public Float getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Float price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 

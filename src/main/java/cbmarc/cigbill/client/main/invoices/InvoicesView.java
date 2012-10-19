@@ -5,6 +5,7 @@ import java.util.Set;
 
 import cbmarc.cigbill.client.utils.EditorView;
 import cbmarc.cigbill.shared.Invoice;
+import cbmarc.cigbill.shared.Product;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Button;
@@ -17,6 +18,7 @@ public interface InvoicesView extends IsWidget, EditorView<Invoice> {
 	void setPresenter(Presenter presenter);
 
 	void setList(List<Invoice> data);
+	void setListProduct(List<Product> data);
 
 	void showFormPanel(String legendText);
 

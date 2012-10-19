@@ -4,14 +4,12 @@ import java.util.List;
 
 import cbmarc.cigbill.shared.Product;
 
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Random;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.view.client.ListDataProvider;
 
 public class ProductsDatabase {
-
-	private static final String[] NAME = { "product 1", "product 2",
-			"product 3" };
-	private static final Float[] PRICE = { 10.10f, 5.00f, 30.44f };
 
 	private static ProductsDatabase instance;
 	private ListDataProvider<Product> dataProvider = new ListDataProvider<Product>();
@@ -39,7 +37,7 @@ public class ProductsDatabase {
 		List<Product> items = dataProvider.getList();
 
 		for (int i = 0; i < count; i++) {
-			items.add(createItem());
+			items.add(createItem("product " + i));
 		}
 	}
 
@@ -47,14 +45,15 @@ public class ProductsDatabase {
 	 * @param login
 	 * @return
 	 */
-	private Product createItem() {
+	private Product createItem(String name) {
 		Product item = new Product();
 
 		String id = ((Object) item.hashCode()).toString();
 
 		item.setId(id);
-		item.setName(nextValue(NAME));
-		item.setPrice(nextValue(PRICE));
+		item.setName(name);		
+		item.setPrice(Double.valueOf(NumberFormat.getFormat("#.00").format(
+				Random.nextDouble() * 10000)));
 
 		return item;
 	}

@@ -115,7 +115,7 @@ public class AppCellTable<T> extends Composite implements HasClickHandlers {
 						}));
 
 		simplePager.setDisplay(cellTable);
-
+		
 		selectionModel
 				.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
