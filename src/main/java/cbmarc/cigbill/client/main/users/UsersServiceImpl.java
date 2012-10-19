@@ -41,6 +41,14 @@ public class UsersServiceImpl implements UsersServiceAsync {
 	}
 
 	@Override
+	public void delete(User user, AsyncCallback<Void> callback) {
+		this.list.remove(user);
+		
+		callback.onSuccess(null);
+		
+	}
+
+	@Override
 	public void getById(String id, AsyncCallback<User> callback) {
 		User found = null;
 		

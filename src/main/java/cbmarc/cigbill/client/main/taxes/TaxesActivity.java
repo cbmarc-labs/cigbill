@@ -36,17 +36,17 @@ import com.google.inject.Inject;
 public class TaxesActivity extends AbstractActivity implements
 		TaxesView.Presenter {
 
-	private AppConstants appConstants = GWT.create(AppConstants.class);
 	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
 
 	private TaxesServiceAsync service = GWT.create(TaxesServiceImpl.class);
 	@Inject
 	private TaxesView view;
 	@Inject
+	private AppConstants appConstants;
+	@Inject
 	private PlaceController placeController;
 
 	private SimpleBeanEditorDriver<Tax, ?> driver;
-	private Tax entity = null;
 
 	/**
 	 * start method
@@ -57,19 +57,33 @@ public class TaxesActivity extends AbstractActivity implements
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		
-		String token = ((MainPlace) placeController.getWhere()).getToken();
+		driver.edit(new Tax());
 
-		//String token[] = ((MainPlace) place).getSplitToken();
-		if (token.equals("add")) {
+		initialize();
+	}
+
+	private void initialize() {
+		String token[] = ((MainPlace) placeController.getWhere())
+				.getSplitToken();
+
+		if (token[0].equals("add")) {
 			doAdd();
 
-		//} else if (token.equals("edit")) {
-		//	doEdit(token);
+		} else if (token[0].equals("edit")) {
+			if (token[1] == null) {
+				goTo(new TaxesPlace());
+
+			} else {
+				doEdit(token[1]);
+			}
+
+		} else if (token[0].isEmpty()) {
+			doLoad();
 
 		} else {
-			doLoad();
+			goTo(new TaxesPlace());
 		}
+
 	}
 
 	/**
@@ -94,9 +108,9 @@ public class TaxesActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(taxesConstants.addLegendLabel());
+		view.getFormDeleteButton().setVisible(false);
 
-		entity = new Tax();
-		driver.edit(entity);
+		driver.edit(new Tax());
 
 	}
 
@@ -106,36 +120,24 @@ public class TaxesActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(String token) {
-		if (token != null) {
-			service.getById(token, new AppAsyncCallback<Tax>() {
+		view.getFormDeleteButton().setVisible(true);
+		service.getById(token, new AppAsyncCallback<Tax>() {
 
-				@Override
-				public void onSuccess(Tax result) {
-					if (result == null) {
-						Scheduler.get().scheduleDeferred(
-								new ScheduledCommand() {
+			@Override
+			public void onSuccess(Tax result) {
+				if (result == null) {
+					goTo(new TaxesPlace());
 
-									@Override
-									public void execute() {
-										//goTo(new MainPlace("taxes"));
+					new AppMessage(appConstants.itemNotFound(),
+							AppMessage.ERROR);
 
-									}
-								});
-
-						new AppMessage(appConstants.itemNotFound(),
-								AppMessage.ERROR);
-
-					} else {
-						view.showFormPanel(taxesConstants.editLegendLabel());
-						entity = result;
-						driver.edit(entity);
-					}
-
+				} else {
+					view.showFormPanel(taxesConstants.editLegendLabel());
+					driver.edit(result);
 				}
-			});
-		} else {
-			doLoad();
-		}
+
+			}
+		});
 	}
 
 	/**
@@ -143,11 +145,11 @@ public class TaxesActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doSave() {
-		entity = driver.flush();
-		final String id = entity.getId();
+		final Tax tax = driver.flush();
+		final String id = tax.getId();
 
-		if (validateForm()) {
-			service.save(entity, new AppAsyncCallback<Void>() {
+		if (validateForm(tax)) {
+			service.save(tax, new AppAsyncCallback<Void>() {
 
 				@Override
 				public void onSuccess(Void result) {
@@ -155,7 +157,7 @@ public class TaxesActivity extends AbstractActivity implements
 						doAdd();
 
 					} else {
-						driver.edit(entity);
+						driver.edit(tax);
 					}
 
 					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
@@ -184,16 +186,32 @@ public class TaxesActivity extends AbstractActivity implements
 
 	}
 
+	@Override
+	public void doDelete() {
+		final Tax tax = driver.flush();
+		service.delete(tax, new AppAsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void result) {
+				goTo(new TaxesPlace());
+
+				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+
+			}
+		});
+
+	}
+
 	/**
 	 * validateForm method
 	 * 
 	 * @return
 	 */
-	private boolean validateForm() {
+	private boolean validateForm(Tax tax) {
 		Boolean result = true;
 		Validator validator = Validation.buildDefaultValidatorFactory()
 				.getValidator();
-		Set<ConstraintViolation<Tax>> violations = validator.validate(entity,
+		Set<ConstraintViolation<Tax>> violations = validator.validate(tax,
 				Default.class, ClientGroup.class);
 
 		StringBuffer validationErrors = new StringBuffer();
@@ -220,22 +238,25 @@ public class TaxesActivity extends AbstractActivity implements
 		return result;
 	}
 
-	/**
-	 * go to new place
-	 */
 	@Override
-	public void goTo(Place place) {
-		//clientFactory.getPlaceController().goTo(place);
+	public String mayStop() {
+		if (driver.isDirty())
+			return appConstants.formDiscardChanges();
 
+		return null;
 	}
 
 	@Override
-	public String mayStop() {
-		if (entity != null)
-			if (driver.isDirty())
-				return appConstants.formDiscardChanges();
+	public void goTo(final Place place) {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-		return null;
+			@Override
+			public void execute() {
+				placeController.goTo(place);
+
+			}
+		});
+
 	}
 
 }

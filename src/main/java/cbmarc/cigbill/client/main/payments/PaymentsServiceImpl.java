@@ -41,13 +41,21 @@ public class PaymentsServiceImpl implements PaymentsServiceAsync {
 	}
 
 	@Override
+	public void delete(Payment payment, AsyncCallback<Void> callback) {
+		this.list.remove(payment);
+
+		callback.onSuccess(null);
+
+	}
+
+	@Override
 	public void getById(String id, AsyncCallback<Payment> callback) {
 		Payment found = find(id);
-		
+
 		Payment payment = null;
-		if(find(id) != null)
+		if (find(id) != null)
 			payment = found.clone();
-		
+
 		callback.onSuccess(payment);
 	}
 

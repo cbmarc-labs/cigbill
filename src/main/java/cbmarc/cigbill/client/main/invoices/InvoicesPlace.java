@@ -9,6 +9,10 @@ public class InvoicesPlace extends MainPlace {
 
 	private static final String NAME = "invoices";
 	
+	public InvoicesPlace() {
+		super();
+	}
+	
 	public InvoicesPlace(String token) {
 		super(token);
 	}

@@ -13,7 +13,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.groups.Default;
 
-import cbmarc.cigbill.client.i18n.AppMessages;
+import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
@@ -38,47 +38,56 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 public class CustomersActivity extends AbstractActivity implements
 		CustomersView.Presenter {
 
-	private AppMessages messages;
-	private CustomersConstants customersConstants = GWT.create(CustomersConstants.class);
+	private CustomersConstants customersConstants = GWT
+			.create(CustomersConstants.class);
+	private CustomersServiceAsync service = GWT
+			.create(CustomersServiceImpl.class);
 
-	private CustomersServiceAsync service = GWT.create(CustomersServiceImpl.class);
-
-	private SimpleBeanEditorDriver<Customer, ?> driver;
-	private Customer customer = null;
-	
 	@Inject
 	private CustomersView view;
 	@Inject
+	private AppConstants appConstants;
+	@Inject
 	private PlaceController placeController;
+
+	private SimpleBeanEditorDriver<Customer, ?> driver;
 
 	/**
 	 * start method
 	 */
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-		// Internationalization
-		//messages = clientFactory.getMessages();
-
-		//view = new CustomersViewImpl();
 		view.setPresenter(this);
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		driver.edit(customer);
-		
-		String token = ((MainPlace) placeController.getWhere()).getToken();
+		driver.edit(new Customer());
 
-		//String token[] = ((MainPlace) place).getSplitToken();
-		if (token.equals("add")) {
+		initialize();
+	}
+
+	private void initialize() {
+		String token[] = ((MainPlace) placeController.getWhere())
+				.getSplitToken();
+
+		if (token[0].equals("add")) {
 			doAdd();
-			
-		} else if (token.equals("edit")) {
-			//doEdit(token[2]);
-			
-		} else {
+
+		} else if (token[0].equals("edit")) {
+			if (token[1] == null) {
+				goTo(new CustomersPlace());
+
+			} else {
+				doEdit(token[1]);
+			}
+
+		} else if (token[0].isEmpty()) {
 			doLoad();
-			
+
+		} else {
+			goTo(new CustomersPlace());
 		}
+
 	}
 
 	/**
@@ -102,10 +111,10 @@ public class CustomersActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doAdd() {
-		customer = new Customer();
-		driver.edit(customer);
-
 		view.showFormPanel(customersConstants.addLegendLabel());
+		view.getFormDeleteButton().setVisible(false);
+
+		driver.edit(new Customer());
 
 	}
 
@@ -115,35 +124,24 @@ public class CustomersActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(String token) {
-		if (token != null) {
-			service.getById(token, new AppAsyncCallback<Customer>() {
+		view.getFormDeleteButton().setVisible(true);
+		service.getById(token, new AppAsyncCallback<Customer>() {
 
-				@Override
-				public void onSuccess(Customer result) {
-					if (result == null) {
-						Scheduler.get().scheduleDeferred(
-								new ScheduledCommand() {
+			@Override
+			public void onSuccess(Customer result) {
+				if (result == null) {
+					goTo(new CustomersPlace());
 
-									@Override
-									public void execute() {
-										//goTo(new MainPlace("customers"));
+					new AppMessage(appConstants.itemNotFound(),
+							AppMessage.ERROR);
 
-									}
-								});
-
-						new AppMessage("Item not found", AppMessage.ERROR);
-
-					} else {
-						view.showFormPanel(customersConstants.editLegendLabel());
-						customer = result;
-						driver.edit(customer);
-					}
-
+				} else {
+					view.showFormPanel(customersConstants.editLegendLabel());
+					driver.edit(result);
 				}
-			});
-		} else {
-			doLoad();
-		}
+
+			}
+		});
 	}
 
 	/**
@@ -151,26 +149,22 @@ public class CustomersActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doSave() {
-		customer = driver.flush();
+		final Customer customer = driver.flush();
 		final String id = customer.getId();
-		
+
 		if (validateForm(customer)) {
 			service.save(customer, new AppAsyncCallback<Void>() {
 
 				@Override
 				public void onSuccess(Void result) {
-					String msg = "Item updated";
-
 					if (id == null) {
-						msg = "Item saved";
 						doAdd();
 
 					} else {
-						// Necessary for clear the dirty
 						driver.edit(customer);
 					}
 
-					new AppMessage(msg, AppMessage.SUCCESS);
+					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
 
 				}
 			});
@@ -184,14 +178,28 @@ public class CustomersActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doDelete(Set<Customer> list) {
-		final Integer total = list.size();
-
 		service.delete(list, new AppAsyncCallback<Void>() {
 
 			@Override
 			public void onSuccess(Void result) {
-				new AppMessage("items deleted", AppMessage.SUCCESS);
+				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
 				doLoad();
+
+			}
+		});
+
+	}
+
+	@Override
+	public void doDelete() {
+		final Customer customer = driver.flush();
+		service.delete(customer, new AppAsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void result) {
+				goTo(new CustomersPlace());
+
+				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
 
 			}
 		});
@@ -203,11 +211,11 @@ public class CustomersActivity extends AbstractActivity implements
 	 * 
 	 * @return
 	 */
-	private boolean validateForm(Customer item) {
+	private boolean validateForm(Customer customer) {
 		Validator validator = Validation.buildDefaultValidatorFactory()
 				.getValidator();
-		Set<ConstraintViolation<Customer>> violations = validator.validate(item,
-				Default.class, ClientGroup.class);
+		Set<ConstraintViolation<Customer>> violations = validator.validate(
+				customer, Default.class, ClientGroup.class);
 		Boolean result = true;
 
 		StringBuffer validationErrors = new StringBuffer();
@@ -234,22 +242,25 @@ public class CustomersActivity extends AbstractActivity implements
 		return result;
 	}
 
-	/**
-	 * go to new place
-	 */
 	@Override
-	public void goTo(Place place) {
-		//clientFactory.getPlaceController().goTo(place);
+	public String mayStop() {
+		if (driver.isDirty())
+			return appConstants.formDiscardChanges();
 
+		return null;
 	}
 
 	@Override
-	public String mayStop() {
-		if (customer != null)
-			if (driver.isDirty())
-				return "Have you finished your work ?";
+	public void goTo(final Place place) {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-		return null;
+			@Override
+			public void execute() {
+				placeController.goTo(place);
+
+			}
+		});
+
 	}
 
 }

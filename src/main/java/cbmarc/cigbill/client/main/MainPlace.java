@@ -5,6 +5,10 @@ import com.google.gwt.place.shared.Place;
 public abstract class MainPlace extends Place {
 	
 	protected String token;
+	
+	public MainPlace() {
+		token = "";
+	}
 
 	public MainPlace(String token) {
 		this.token = token;

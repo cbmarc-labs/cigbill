@@ -28,7 +28,7 @@ public class AuthActivity extends AbstractActivity implements
 
 	@Override
 	public void doLogin(String login, String password, Boolean remember) {
-		placeController.goTo(new InvoicesPlace(""));
+		placeController.goTo(new InvoicesPlace());
 
 	}
 

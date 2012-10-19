@@ -6,7 +6,7 @@ import java.util.Set;
 
 import javax.inject.Singleton;
 
-import cbmarc.cigbill.client.main.MainPlace;
+import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.Customer;
@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 @Singleton
 public class CustomersViewImpl extends Composite implements CustomersView,
@@ -77,6 +78,8 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	Button addTableButton;
 	@UiField
 	Button deleteTableButton;
+	@UiField
+	Button toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
@@ -95,6 +98,8 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	SubmitButton submitButton;
 	@UiField
 	Button backButton;
+	@UiField
+	Button formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
@@ -103,6 +108,11 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	DivElement emailCG;
 
 	private Presenter presenter;
+
+	@Inject
+	private AppConstants appConstants;
+	private CustomersConstants customersConstants = GWT
+			.create(CustomersConstants.class);
 
 	/**
 	 * Constructor
@@ -113,7 +123,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 		// hide by default
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(false);
-		
+
 		createCellTable();
 	}
 
@@ -137,7 +147,8 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 				return sb.toSafeHtml();
 			}
 		};
-		cellTable.getCellTable().addColumn(nameColumn, "Name");
+		cellTable.getCellTable().addColumn(nameColumn,
+				customersConstants.columnName());
 
 		// Make the first name column sortable.
 		nameColumn.setSortable(true);
@@ -155,7 +166,8 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 				return object.getEmail();
 			}
 		};
-		cellTable.getCellTable().addColumn(emailColumn, "Email");
+		cellTable.getCellTable().addColumn(emailColumn,
+				customersConstants.columnEmail());
 		emailColumn.setSortable(true);
 		cellTable.getListHandler().setComparator(emailColumn,
 				new Comparator<Customer>() {
@@ -200,7 +212,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 	@UiHandler("deleteTableButton")
 	protected void onClickDeleteTableButton(ClickEvent event) {
-		if (Window.confirm("Are you sure?")) {
+		if (Window.confirm(appConstants.areYouSure())) {
 			Set<Customer> items = cellTable.getSelectionModel()
 					.getSelectedSet();
 			presenter.doDelete(items);
@@ -209,6 +221,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 	@UiHandler(value = { "validationPanel", "validationAnchor" })
 	protected void onClickValidation(ClickEvent event) {
+		event.preventDefault();
 		boolean visible = true;
 
 		if (validationPanel.isVisible())
@@ -232,12 +245,28 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 	@UiHandler("addTableButton")
 	protected void onClickAddTableButton(ClickEvent event) {
-		//presenter.goTo(new MainPlace("customers/add"));
+		presenter.goTo(new CustomersPlace("add"));
 	}
 
 	@UiHandler("backButton")
 	protected void onCLickCancelButton(ClickEvent event) {
-		//presenter.goTo(new MainPlace("customers"));
+		presenter.goTo(new CustomersPlace());
+	}
+
+	@UiHandler("toolbarRefreshButton")
+	protected void onCLickToolbarRefreshButton(ClickEvent event) {
+		presenter.doLoad();
+	}
+
+	@UiHandler("formDeleteButton")
+	protected void onCLickFormDeleteButton(ClickEvent event) {
+		if (Window.confirm(appConstants.areYouSure()))
+			presenter.doDelete();
+	}
+
+	@Override
+	public Button getFormDeleteButton() {
+		return formDeleteButton;
 	}
 
 	/**
@@ -340,7 +369,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		
+
 	}
 
 }

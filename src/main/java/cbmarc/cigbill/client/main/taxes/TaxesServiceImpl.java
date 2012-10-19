@@ -37,6 +37,14 @@ public class TaxesServiceImpl implements TaxesServiceAsync {
 	}
 
 	@Override
+	public void delete(Tax tax, AsyncCallback<Void> callback) {
+		this.list.remove(tax);
+		
+		callback.onSuccess(null);
+		
+	}
+
+	@Override
 	public void getById(String id, AsyncCallback<Tax> callback) {
 		Tax found = null;
 		

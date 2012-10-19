@@ -51,6 +51,7 @@ import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 @Singleton
 public class UsersViewImpl extends Composite implements UsersView, Editor<User> {
@@ -82,9 +83,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	@UiField
 	HTMLPanel cellTablePanel;
 	@UiField
-	Button addTableButton;
-	@UiField
-	Button deleteTableButton;
+	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
@@ -113,23 +112,16 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	@UiField
 	SubmitButton submitButton;
 	@UiField
-	Button backButton;
+	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
-	DivElement loginCG;
-	@UiField
-	DivElement passwordCG;
-	@UiField
-	DivElement confirmPasswordCG;
-	@UiField
-	DivElement sexCG;
-	@UiField
-	DivElement descriptionCG;
+	DivElement loginCG, passwordCG, confirmPasswordCG, sexCG, descriptionCG;
 
 	private Presenter presenter;
 
-	private AppConstants appConstants = GWT.create(AppConstants.class);
+	@Inject
+	private AppConstants appConstants;
 	private UsersConstants usersConstants = GWT.create(UsersConstants.class);
 
 	/**
@@ -149,7 +141,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	 * Create celltable columns
 	 */
 	private void createCellTable() {
-		///////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////
 		// LOGIN COLUMN
 		Column<User, SafeHtml> loginColumn = new Column<User, SafeHtml>(
 				new SafeHtmlCell()) {
@@ -178,7 +170,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 					}
 				});
 
-		///////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////
 		// CREATED COLUMN
 		DateCell createdDateCell = new DateCell(
 				DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss"));
@@ -193,7 +185,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 		cellTable.getCellTable().addColumn(createdColumn,
 				usersConstants.columnCreated());
 
-		///////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////
 		// LAST UPDATED COLUMN
 		DateCell lastUpdatedDateCell = new DateCell(
 				DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss"));
@@ -208,7 +200,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 		cellTable.getCellTable().addColumn(lastUpdatedColumn,
 				usersConstants.columnUpdated());
 
-		///////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////
 		// ACTIVE COLUMN
 		Column<User, Boolean> activeColumn = new Column<User, Boolean>(
 				new CheckboxCell(true, false)) {
@@ -233,7 +225,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 				usersConstants.columnActive());
 		cellTable.getCellTable().setColumnWidth(activeColumn, 1.0, Unit.EM);
 
-		///////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////////////////////
 		// CELLTABLE CLICKHANDLER
 		cellTable.addClickHandler(new ClickHandler() {
 
@@ -276,6 +268,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 	@UiHandler(value = { "validationPanel", "validationAnchor" })
 	protected void onClickValidation(ClickEvent event) {
+		event.preventDefault();
 		boolean visible = true;
 
 		if (validationPanel.isVisible())
@@ -304,7 +297,23 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 	@UiHandler("backButton")
 	protected void onCLickCancelButton(ClickEvent event) {
-		presenter.goTo(new UsersPlace(""));
+		presenter.goTo(new UsersPlace());
+	}
+
+	@UiHandler("toolbarRefreshButton")
+	protected void onCLickToolbarRefreshButton(ClickEvent event) {
+		presenter.doLoad();
+	}
+
+	@UiHandler("formDeleteButton")
+	protected void onCLickFormDeleteButton(ClickEvent event) {
+		if (Window.confirm(appConstants.areYouSure()))
+			presenter.doDelete();
+	}
+
+	@Override
+	public Button getFormDeleteButton() {
+		return formDeleteButton;
 	}
 
 	/**
@@ -420,7 +429,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		
+
 	}
 
 }

@@ -36,18 +36,19 @@ import com.google.inject.Inject;
 public class InvoicesActivity extends AbstractActivity implements
 		InvoicesView.Presenter {
 
-	private AppConstants appConstants = GWT.create(AppConstants.class);
-	private InvoicesConstants taxesConstants = GWT.create(InvoicesConstants.class);
+	private InvoicesConstants taxesConstants = GWT
+			.create(InvoicesConstants.class);
+	private InvoicesServiceAsync service = GWT
+			.create(InvoicesServiceImpl.class);
 
-	private InvoicesServiceAsync service = GWT.create(InvoicesServiceImpl.class);
-	
 	@Inject
 	private InvoicesView view;
+	@Inject
+	private AppConstants appConstants;
 	@Inject
 	private PlaceController placeController;
 
 	private SimpleBeanEditorDriver<Invoice, ?> driver;
-	private Invoice entity = null;
 
 	/**
 	 * start method
@@ -58,20 +59,33 @@ public class InvoicesActivity extends AbstractActivity implements
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		
-		String token = ((MainPlace) placeController.getWhere()).getToken();
+		driver.edit(new Invoice());
 
-		//String token[] = ((MainPlace) place).getSplitToken();
-		if (token.equals("add")) {
+		initialize();
+	}
+
+	private void initialize() {
+		String token[] = ((MainPlace) placeController.getWhere())
+				.getSplitToken();
+
+		if (token[0].equals("add")) {
 			doAdd();
-			
-		//} else if (token.equals("edit")) {
-		//	doEdit(token);
-			
-		} else {
+
+		} else if (token[0].equals("edit")) {
+			if (token[1] == null) {
+				goTo(new InvoicesPlace());
+
+			} else {
+				doEdit(token[1]);
+			}
+
+		} else if (token[0].isEmpty()) {
 			doLoad();
-			
+
+		} else {
+			goTo(new InvoicesPlace());
 		}
+
 	}
 
 	/**
@@ -96,9 +110,9 @@ public class InvoicesActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(taxesConstants.addLegendLabel());
+		view.getFormDeleteButton().setVisible(false);
 
-		entity = new Invoice();
-		driver.edit(entity);
+		driver.edit(new Invoice());
 
 	}
 
@@ -108,36 +122,24 @@ public class InvoicesActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(String token) {
-		if (token != null) {
-			service.getById(token, new AppAsyncCallback<Invoice>() {
+		view.getFormDeleteButton().setVisible(true);
+		service.getById(token, new AppAsyncCallback<Invoice>() {
 
-				@Override
-				public void onSuccess(Invoice result) {
-					if (result == null) {
-						Scheduler.get().scheduleDeferred(
-								new ScheduledCommand() {
+			@Override
+			public void onSuccess(Invoice result) {
+				if (result == null) {
+					goTo(new InvoicesPlace());
 
-									@Override
-									public void execute() {
-										//goTo(new MainPlace("taxes"));
+					new AppMessage(appConstants.itemNotFound(),
+							AppMessage.ERROR);
 
-									}
-								});
-
-						new AppMessage(appConstants.itemNotFound(),
-								AppMessage.ERROR);
-
-					} else {
-						view.showFormPanel(taxesConstants.editLegendLabel());
-						entity = result;
-						driver.edit(entity);
-					}
-
+				} else {
+					view.showFormPanel(taxesConstants.editLegendLabel());
+					driver.edit(result);
 				}
-			});
-		} else {
-			doLoad();
-		}
+
+			}
+		});
 	}
 
 	/**
@@ -145,11 +147,11 @@ public class InvoicesActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doSave() {
-		entity = driver.flush();
-		final String id = entity.getId();
+		final Invoice invoice = driver.flush();
+		final String id = invoice.getId();
 
-		if (validateForm()) {
-			service.save(entity, new AppAsyncCallback<Void>() {
+		if (validateForm(invoice)) {
+			service.save(invoice, new AppAsyncCallback<Void>() {
 
 				@Override
 				public void onSuccess(Void result) {
@@ -157,7 +159,7 @@ public class InvoicesActivity extends AbstractActivity implements
 						doAdd();
 
 					} else {
-						driver.edit(entity);
+						driver.edit(invoice);
 					}
 
 					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
@@ -186,16 +188,32 @@ public class InvoicesActivity extends AbstractActivity implements
 
 	}
 
+	@Override
+	public void doDelete() {
+		final Invoice invoice = driver.flush();
+		service.delete(invoice, new AppAsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void result) {
+				goTo(new InvoicesPlace());
+
+				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+
+			}
+		});
+
+	}
+
 	/**
 	 * validateForm method
 	 * 
 	 * @return
 	 */
-	private boolean validateForm() {
+	private boolean validateForm(Invoice invoice) {
 		Validator validator = Validation.buildDefaultValidatorFactory()
 				.getValidator();
-		Set<ConstraintViolation<Invoice>> violations = validator.validate(entity,
-				Default.class, ClientGroup.class);
+		Set<ConstraintViolation<Invoice>> violations = validator.validate(
+				invoice, Default.class, ClientGroup.class);
 		Boolean result = true;
 
 		StringBuffer validationErrors = new StringBuffer();
@@ -222,22 +240,25 @@ public class InvoicesActivity extends AbstractActivity implements
 		return result;
 	}
 
-	/**
-	 * go to new place
-	 */
 	@Override
-	public void goTo(Place place) {
-		//clientFactory.getPlaceController().goTo(place);
+	public String mayStop() {
+		if (driver.isDirty())
+			return appConstants.formDiscardChanges();
 
+		return null;
 	}
 
 	@Override
-	public String mayStop() {
-		if (entity != null)
-			if (driver.isDirty())
-				return appConstants.formDiscardChanges();
+	public void goTo(final Place place) {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-		return null;
+			@Override
+			public void execute() {
+				placeController.goTo(place);
+
+			}
+		});
+
 	}
 
 }

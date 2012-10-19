@@ -9,6 +9,10 @@ public class TaxesPlace extends MainPlace {
 
 	private static final String NAME = "taxes";
 	
+	public TaxesPlace() {
+		super();
+	}
+	
 	public TaxesPlace(String token) {
 		super(token);
 	}

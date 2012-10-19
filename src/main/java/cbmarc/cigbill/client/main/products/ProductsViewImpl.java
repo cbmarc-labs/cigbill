@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.Product;
@@ -79,6 +78,8 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	Button addTableButton;
 	@UiField
 	Button deleteTableButton;
+	@UiField
+	Button toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
@@ -102,6 +103,8 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	SubmitButton submitButton;
 	@UiField
 	Button backButton;
+	@UiField
+	Button formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
@@ -238,6 +241,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 	@UiHandler(value = { "validationPanel", "validationAnchor" })
 	protected void onClickValidation(ClickEvent event) {
+		event.preventDefault();
 		boolean visible = true;
 
 		if (validationPanel.isVisible())
@@ -261,12 +265,28 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 	@UiHandler("addTableButton")
 	protected void onClickAddTableButton(ClickEvent event) {
-		//presenter.goTo(new MainPlace("products/add"));
+		presenter.goTo(new ProductsPlace("add"));
 	}
 
 	@UiHandler("backButton")
 	protected void onCLickCancelButton(ClickEvent event) {
-		//presenter.goTo(new MainPlace("products"));
+		presenter.goTo(new ProductsPlace());
+	}
+
+	@UiHandler("toolbarRefreshButton")
+	protected void onCLickToolbarRefreshButton(ClickEvent event) {
+		presenter.doLoad();
+	}
+
+	@UiHandler("formDeleteButton")
+	protected void onCLickFormDeleteButton(ClickEvent event) {
+		if (Window.confirm(appConstants.areYouSure()))
+			presenter.doDelete();
+	}
+
+	@Override
+	public Button getFormDeleteButton() {
+		return formDeleteButton;
 	}
 
 	/**
@@ -369,7 +389,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		
+
 	}
 
 }

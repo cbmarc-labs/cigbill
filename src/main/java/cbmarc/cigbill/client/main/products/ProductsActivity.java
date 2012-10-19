@@ -13,6 +13,7 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
+import cbmarc.cigbill.client.main.users.UsersPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
@@ -36,17 +37,19 @@ import com.google.inject.Inject;
 public class ProductsActivity extends AbstractActivity implements
 		ProductsView.Presenter {
 
-	private AppConstants appConstants = GWT.create(AppConstants.class);
-	private ProductsConstants productsConstants = GWT.create(ProductsConstants.class);
+	private ProductsConstants productsConstants = GWT
+			.create(ProductsConstants.class);
+	private ProductsServiceAsync service = GWT
+			.create(ProductsServiceImpl.class);
 
-	private ProductsServiceAsync service = GWT.create(ProductsServiceImpl.class);
 	@Inject
 	private ProductsView view;
+	@Inject
+	private AppConstants appConstants;
 	@Inject
 	private PlaceController placeController;
 
 	private SimpleBeanEditorDriver<Product, ?> driver;
-	private Product product = null;
 
 	/**
 	 * start method
@@ -57,20 +60,33 @@ public class ProductsActivity extends AbstractActivity implements
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		
-		String token = ((MainPlace) placeController.getWhere()).getToken();
+		driver.edit(new Product());
 
-		//String token[] = ((MainPlace) place).getSplitToken();
-		if (token.equals("add")) {
+		initialize();
+	}
+
+	private void initialize() {
+		String token[] = ((MainPlace) placeController.getWhere())
+				.getSplitToken();
+
+		if (token[0].equals("add")) {
 			doAdd();
 
-		//} else if (token[1].equals("edit")) {
-		//	doEdit(token[2]);
+		} else if (token[0].equals("edit")) {
+			if (token[1] == null) {
+				goTo(new ProductsPlace());
+
+			} else {
+				doEdit(token[1]);
+			}
+
+		} else if (token[0].isEmpty()) {
+			doLoad();
 
 		} else {
-			doLoad();
-			
+			goTo(new ProductsPlace());
 		}
+
 	}
 
 	/**
@@ -95,9 +111,9 @@ public class ProductsActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(productsConstants.addLegendLabel());
+		view.getFormDeleteButton().setVisible(false);
 
-		product = new Product();
-		driver.edit(product);
+		driver.edit(new Product());
 
 	}
 
@@ -107,36 +123,24 @@ public class ProductsActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(String token) {
-		if (token != null) {
-			service.getById(token, new AppAsyncCallback<Product>() {
+		view.getFormDeleteButton().setVisible(true);
+		service.getById(token, new AppAsyncCallback<Product>() {
 
-				@Override
-				public void onSuccess(Product result) {
-					if (result == null) {
-						Scheduler.get().scheduleDeferred(
-								new ScheduledCommand() {
+			@Override
+			public void onSuccess(Product result) {
+				if (result == null) {
+					goTo(new ProductsPlace());
 
-									@Override
-									public void execute() {
-										//goTo(new MainPlace("products"));
+					new AppMessage(appConstants.itemNotFound(),
+							AppMessage.ERROR);
 
-									}
-								});
-
-						new AppMessage(appConstants.itemNotFound(),
-								AppMessage.ERROR);
-
-					} else {
-						view.showFormPanel(productsConstants.editLegendLabel());
-						product = result;
-						driver.edit(product);
-					}
-
+				} else {
+					view.showFormPanel(productsConstants.editLegendLabel());
+					driver.edit(result);
 				}
-			});
-		} else {
-			doLoad();
-		}
+
+			}
+		});
 	}
 
 	/**
@@ -144,7 +148,7 @@ public class ProductsActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doSave() {
-		product = driver.flush();
+		final Product product = driver.flush();
 		final String id = product.getId();
 
 		if (validateForm(product)) {
@@ -185,6 +189,22 @@ public class ProductsActivity extends AbstractActivity implements
 
 	}
 
+	@Override
+	public void doDelete() {
+		final Product product = driver.flush();
+		service.delete(product, new AppAsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void result) {
+				goTo(new ProductsPlace());
+
+				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+
+			}
+		});
+
+	}
+
 	/**
 	 * validateForm method
 	 * 
@@ -193,8 +213,8 @@ public class ProductsActivity extends AbstractActivity implements
 	private boolean validateForm(Product product) {
 		Validator validator = Validation.buildDefaultValidatorFactory()
 				.getValidator();
-		Set<ConstraintViolation<Product>> violations = validator.validate(product,
-				Default.class, ClientGroup.class);
+		Set<ConstraintViolation<Product>> violations = validator.validate(
+				product, Default.class, ClientGroup.class);
 		Boolean result = true;
 
 		StringBuffer validationErrors = new StringBuffer();
@@ -221,22 +241,25 @@ public class ProductsActivity extends AbstractActivity implements
 		return result;
 	}
 
-	/**
-	 * go to new place
-	 */
 	@Override
-	public void goTo(Place place) {
-		//clientFactory.getPlaceController().goTo(place);
+	public String mayStop() {
+		if (driver.isDirty())
+			return appConstants.formDiscardChanges();
 
+		return null;
 	}
 
 	@Override
-	public String mayStop() {
-		if (product != null)
-			if (driver.isDirty())
-				return appConstants.formDiscardChanges();
+	public void goTo(final Place place) {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-		return null;
+			@Override
+			public void execute() {
+				placeController.goTo(place);
+
+			}
+		});
+
 	}
 
 }

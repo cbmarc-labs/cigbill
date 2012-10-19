@@ -37,6 +37,14 @@ public class InvoicesServiceImpl implements InvoicesServiceAsync {
 	}
 
 	@Override
+	public void delete(Invoice invoice, AsyncCallback<Void> callback) {
+		this.list.remove(invoice);
+		
+		callback.onSuccess(null);
+		
+	}
+
+	@Override
 	public void getById(String id, AsyncCallback<Invoice> callback) {
 		Invoice found = null;
 		

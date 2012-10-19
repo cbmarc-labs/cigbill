@@ -18,6 +18,12 @@ public interface AppConstants extends Constants {
 
 	@DefaultStringValue("Back")
 	String formBack();
+
+	@DefaultStringValue("Delete")
+	String formDelete();
+
+	@DefaultStringValue("Refresh")
+	String toolbarRefreshButton();
 	
 	@DefaultStringValue("* Required fields")
 	String formRequiredFieldsText();

@@ -36,17 +36,19 @@ import com.google.inject.Inject;
 public class PaymentsActivity extends AbstractActivity implements
 		PaymentsView.Presenter {
 
-	private AppConstants appConstants = GWT.create(AppConstants.class);
-	private PaymentsConstants paymentsConstants = GWT.create(PaymentsConstants.class);
+	private PaymentsConstants paymentsConstants = GWT
+			.create(PaymentsConstants.class);
+	private PaymentsServiceAsync service = GWT
+			.create(PaymentsServiceImpl.class);
 
-	private PaymentsServiceAsync service = GWT.create(PaymentsServiceImpl.class);
 	@Inject
 	private PaymentsView view;
+	@Inject
+	private AppConstants appConstants;
 	@Inject
 	private PlaceController placeController;
 
 	private SimpleBeanEditorDriver<Payment, ?> driver;
-	private Payment entity = null;
 
 	/**
 	 * start method
@@ -57,20 +59,33 @@ public class PaymentsActivity extends AbstractActivity implements
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		
-		String token = ((MainPlace) placeController.getWhere()).getToken();
+		driver.edit(new Payment());
 
-		//String token[] = ((MainPlace) place).getSplitToken();
-		if (token.equals("add")) {
+		initialize();
+	}
+
+	private void initialize() {
+		String token[] = ((MainPlace) placeController.getWhere())
+				.getSplitToken();
+
+		if (token[0].equals("add")) {
 			doAdd();
-			
-		//} else if (token.equals("edit")) {
-		//	doEdit(token);
-			
-		} else {
+
+		} else if (token[0].equals("edit")) {
+			if (token[1] == null) {
+				goTo(new PaymentsPlace());
+
+			} else {
+				doEdit(token[1]);
+			}
+
+		} else if (token[0].isEmpty()) {
 			doLoad();
-			
+
+		} else {
+			goTo(new PaymentsPlace());
 		}
+
 	}
 
 	/**
@@ -95,9 +110,9 @@ public class PaymentsActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(paymentsConstants.addLegendLabel());
+		view.getFormDeleteButton().setVisible(false);
 
-		entity = new Payment();
-		driver.edit(entity);
+		driver.edit(new Payment());
 
 	}
 
@@ -107,36 +122,24 @@ public class PaymentsActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(String token) {
-		if (token != null) {
-			service.getById(token, new AppAsyncCallback<Payment>() {
+		view.getFormDeleteButton().setVisible(true);
+		service.getById(token, new AppAsyncCallback<Payment>() {
 
-				@Override
-				public void onSuccess(Payment result) {
-					if (result == null) {
-						Scheduler.get().scheduleDeferred(
-								new ScheduledCommand() {
+			@Override
+			public void onSuccess(Payment result) {
+				if (result == null) {
+					goTo(new PaymentsPlace());
 
-									@Override
-									public void execute() {
-										//goTo(new MainPlace("payments"));
+					new AppMessage(appConstants.itemNotFound(),
+							AppMessage.ERROR);
 
-									}
-								});
-
-						new AppMessage(appConstants.itemNotFound(),
-								AppMessage.ERROR);
-
-					} else {
-						view.showFormPanel(paymentsConstants.editLegendLabel());
-						entity = result;
-						driver.edit(entity);
-					}
-
+				} else {
+					view.showFormPanel(paymentsConstants.editLegendLabel());
+					driver.edit(result);
 				}
-			});
-		} else {
-			doLoad();
-		}
+
+			}
+		});
 	}
 
 	/**
@@ -144,11 +147,11 @@ public class PaymentsActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doSave() {
-		entity = driver.flush();
-		final String id = entity.getId();
-		
-		if (validateForm()) {
-			service.save(entity, new AppAsyncCallback<Void>() {
+		final Payment payment = driver.flush();
+		final String id = payment.getId();
+
+		if (validateForm(payment)) {
+			service.save(payment, new AppAsyncCallback<Void>() {
 
 				@Override
 				public void onSuccess(Void result) {
@@ -156,7 +159,7 @@ public class PaymentsActivity extends AbstractActivity implements
 						doAdd();
 
 					} else {
-						driver.edit(entity);
+						driver.edit(payment);
 					}
 
 					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
@@ -185,16 +188,32 @@ public class PaymentsActivity extends AbstractActivity implements
 
 	}
 
+	@Override
+	public void doDelete() {
+		final Payment payment = driver.flush();
+		service.delete(payment, new AppAsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void result) {
+				goTo(new PaymentsPlace());
+
+				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+
+			}
+		});
+
+	}
+
 	/**
 	 * validateForm method
 	 * 
 	 * @return
 	 */
-	private boolean validateForm() {
+	private boolean validateForm(Payment payment) {
 		Validator validator = Validation.buildDefaultValidatorFactory()
 				.getValidator();
-		Set<ConstraintViolation<Payment>> violations = validator.validate(entity,
-				Default.class, ClientGroup.class);
+		Set<ConstraintViolation<Payment>> violations = validator.validate(
+				payment, Default.class, ClientGroup.class);
 		Boolean result = true;
 
 		StringBuffer validationErrors = new StringBuffer();
@@ -221,22 +240,25 @@ public class PaymentsActivity extends AbstractActivity implements
 		return result;
 	}
 
-	/**
-	 * go to new place
-	 */
 	@Override
-	public void goTo(Place place) {
-		//clientFactory.getPlaceController().goTo(place);
+	public String mayStop() {
+		if (driver.isDirty())
+			return appConstants.formDiscardChanges();
 
+		return null;
 	}
 
 	@Override
-	public String mayStop() {
-		if (entity != null)
-			if (driver.isDirty())
-				return appConstants.formDiscardChanges();
+	public void goTo(final Place place) {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-		return null;
+			@Override
+			public void execute() {
+				placeController.goTo(place);
+
+			}
+		});
+
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.Tax;
@@ -39,31 +38,26 @@ import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TaxesViewImpl extends Composite implements TaxesView,
-		Editor<Tax> {
+public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 
 	private static Binder uiBinder = GWT.create(Binder.class);
 
 	interface Binder extends UiBinder<Widget, TaxesViewImpl> {
 	}
 
-	public interface Driver extends
-			SimpleBeanEditorDriver<Tax, TaxesViewImpl> {
+	public interface Driver extends SimpleBeanEditorDriver<Tax, TaxesViewImpl> {
 	}
 
 	@UiField(provided = true)
-	AppCellTable<Tax> cellTable = new AppCellTable<Tax>(
-			new IFilter<Tax>() {
-				@Override
-				public boolean isValid(Tax value, String filter) {
-					if (filter == null || value == null)
-						return true;
-					return value.getName().toLowerCase()
-							.contains(filter.toLowerCase())
-							|| value.getDescription().contains(
-									filter.toLowerCase());
-				}
-			});
+	AppCellTable<Tax> cellTable = new AppCellTable<Tax>(new IFilter<Tax>() {
+		@Override
+		public boolean isValid(Tax value, String filter) {
+			if (filter == null || value == null)
+				return true;
+			return value.getName().toLowerCase().contains(filter.toLowerCase())
+					|| value.getDescription().contains(filter.toLowerCase());
+		}
+	});
 
 	@Ignore
 	@UiField
@@ -93,6 +87,8 @@ public class TaxesViewImpl extends Composite implements TaxesView,
 	SubmitButton submitButton;
 	@UiField
 	Button backButton;
+	@UiField
+	Button formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
@@ -103,8 +99,7 @@ public class TaxesViewImpl extends Composite implements TaxesView,
 	private Presenter presenter;
 
 	private AppConstants appConstants = GWT.create(AppConstants.class);
-	private TaxesConstants taxesConstants = GWT
-			.create(TaxesConstants.class);
+	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
 
 	/**
 	 * Constructor
@@ -215,6 +210,7 @@ public class TaxesViewImpl extends Composite implements TaxesView,
 
 	@UiHandler(value = { "validationPanel", "validationAnchor" })
 	protected void onClickValidation(ClickEvent event) {
+		event.preventDefault();
 		boolean visible = true;
 
 		if (validationPanel.isVisible())
@@ -238,12 +234,28 @@ public class TaxesViewImpl extends Composite implements TaxesView,
 
 	@UiHandler("addTableButton")
 	protected void onClickAddTableButton(ClickEvent event) {
-		//presenter.goTo(new MainPlace("taxes/add"));
+		presenter.goTo(new TaxesPlace("add"));
 	}
 
 	@UiHandler("backButton")
 	protected void onCLickCancelButton(ClickEvent event) {
-		//presenter.goTo(new MainPlace("taxes"));
+		presenter.goTo(new TaxesPlace());
+	}
+
+	@UiHandler("toolbarRefreshButton")
+	protected void onCLickToolbarRefreshButton(ClickEvent event) {
+		presenter.doLoad();
+	}
+
+	@UiHandler("formDeleteButton")
+	protected void onClickFormDeleteButton(ClickEvent event) {
+		if (Window.confirm(appConstants.areYouSure()))
+			presenter.doDelete();
+	}
+
+	@Override
+	public Button getFormDeleteButton() {
+		return formDeleteButton;
 	}
 
 	/**
@@ -346,7 +358,7 @@ public class TaxesViewImpl extends Composite implements TaxesView,
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		
+
 	}
 
 }

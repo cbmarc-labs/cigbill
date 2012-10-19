@@ -9,6 +9,10 @@ public class ProductsPlace extends MainPlace {
 
 	private static final String NAME = "products";
 	
+	public ProductsPlace() {
+		super();
+	}
+	
 	public ProductsPlace(String token) {
 		super(token);
 	}

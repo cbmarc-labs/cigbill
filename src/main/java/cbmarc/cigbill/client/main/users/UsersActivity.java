@@ -44,11 +44,11 @@ public class UsersActivity extends AbstractActivity implements
 	@Inject
 	private UsersView view;
 	@Inject
-	private PlaceController placeController;
+	private AppConstants appConstants;
 	@Inject
-	AppConstants appConstants;
+	protected PlaceController placeController;
 
-	private SimpleBeanEditorDriver<User, ?> driver;
+	protected SimpleBeanEditorDriver<User, ?> driver;
 
 	/**
 	 * start method
@@ -61,18 +61,31 @@ public class UsersActivity extends AbstractActivity implements
 		driver = view.createEditorDriver();
 		driver.edit(new User());
 
-		String token = ((MainPlace) placeController.getWhere()).getToken();
+		initialize();
+	}
 
-		// String token[] = ((MainPlace)
-		// placeController.getWhere()).getSplitToken();
-		if (token.equals("add"))
+	private void initialize() {
+		String token[] = ((MainPlace) placeController.getWhere())
+				.getSplitToken();
+
+		if (token[0].equals("add")) {
 			doAdd();
 
-		else if (token.equals("edit"))
-			doEdit(token);
+		} else if (token[0].equals("edit")) {
+			if (token[1] == null) {
+				goTo(new UsersPlace());
 
-		else
+			} else {
+				doEdit(token[1]);
+			}
+
+		} else if (token[0].isEmpty()) {
 			doLoad();
+
+		} else {
+			goTo(new UsersPlace());
+		}
+
 	}
 
 	/**
@@ -97,6 +110,7 @@ public class UsersActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(usersConstants.addLegendLabel());
+		view.getFormDeleteButton().setVisible(false);
 
 		driver.edit(new User());
 
@@ -108,35 +122,24 @@ public class UsersActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(String token) {
-		if (token != null) {
-			service.getById(token, new AppAsyncCallback<User>() {
+		view.getFormDeleteButton().setVisible(true);
+		service.getById(token, new AppAsyncCallback<User>() {
 
-				@Override
-				public void onSuccess(User result) {
-					if (result == null) {
-						Scheduler.get().scheduleDeferred(
-								new ScheduledCommand() {
+			@Override
+			public void onSuccess(User result) {
+				if (result == null) {
+					goTo(new UsersPlace());
 
-									@Override
-									public void execute() {
-										goTo(new UsersPlace(""));
+					new AppMessage(appConstants.itemNotFound(),
+							AppMessage.ERROR);
 
-									}
-								});
-
-						new AppMessage(appConstants.itemNotFound(),
-								AppMessage.ERROR);
-
-					} else {
-						view.showFormPanel(usersConstants.editLegendLabel());
-						driver.edit(result);
-					}
-
+				} else {
+					view.showFormPanel(usersConstants.editLegendLabel());
+					driver.edit(result);
 				}
-			});
-		} else {
-			doLoad();
-		}
+
+			}
+		});
 	}
 
 	/**
@@ -179,6 +182,22 @@ public class UsersActivity extends AbstractActivity implements
 			public void onSuccess(Void result) {
 				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
 				doLoad();
+
+			}
+		});
+
+	}
+
+	@Override
+	public void doDelete() {
+		final User user = driver.flush();
+		service.delete(user, new AppAsyncCallback<Void>() {
+
+			@Override
+			public void onSuccess(Void result) {
+				goTo(new UsersPlace());
+
+				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
 
 			}
 		});
@@ -233,21 +252,25 @@ public class UsersActivity extends AbstractActivity implements
 		return result;
 	}
 
-	/**
-	 * go to new place
-	 */
-	@Override
-	public void goTo(Place place) {
-		placeController.goTo(place);
-
-	}
-
 	@Override
 	public String mayStop() {
 		if (driver.isDirty())
 			return appConstants.formDiscardChanges();
 
 		return null;
+	}
+
+	@Override
+	public void goTo(final Place place) {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+			@Override
+			public void execute() {
+				placeController.goTo(place);
+
+			}
+		});
+
 	}
 
 }
