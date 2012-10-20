@@ -18,7 +18,7 @@ public class InvoicesServiceImpl implements InvoicesServiceAsync {
 
 			@Override
 			public int compare(Invoice o2, Invoice o1) {
-				return o1.getId().compareToIgnoreCase(o2.getId());
+				return o1.getId().compareTo(o2.getId());
 			}
 		});
 
@@ -28,7 +28,7 @@ public class InvoicesServiceImpl implements InvoicesServiceAsync {
 	@Override
 	public void save(Invoice product, final AsyncCallback<Void> callback) {
 		if (product.getId() == null) {
-			String id = ((Object) product.hashCode()).toString();
+			Long id = Long.valueOf(((Object) product.hashCode()).toString());
 
 			product.setId(id);
 
@@ -55,7 +55,7 @@ public class InvoicesServiceImpl implements InvoicesServiceAsync {
 	}
 
 	@Override
-	public void getById(String id, AsyncCallback<Invoice> callback) {
+	public void getById(Long id, AsyncCallback<Invoice> callback) {
 		Invoice found = null;
 
 		for (Invoice product : list) {

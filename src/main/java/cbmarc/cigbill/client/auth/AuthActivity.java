@@ -3,7 +3,7 @@ package cbmarc.cigbill.client.auth;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
+import cbmarc.cigbill.client.main.home.HomePlace;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -28,7 +28,7 @@ public class AuthActivity extends AbstractActivity implements
 
 	@Override
 	public void doLogin(String login, String password, Boolean remember) {
-		placeController.goTo(new InvoicesPlace());
+		placeController.goTo(new HomePlace());
 
 	}
 

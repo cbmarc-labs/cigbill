@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import cbmarc.cigbill.shared.Tax;
 import cbmarc.cigbill.shared.User;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -30,7 +29,7 @@ public class UsersServiceImpl implements UsersServiceAsync {
 	@Override
 	public void save(User user, final AsyncCallback<Void> callback) {
 		if (user.getId() == null) {
-			String id = ((Object)user.hashCode()).toString();
+			Long id = Long.parseLong(((Object)user.hashCode()).toString());
 
 			user.setId(id);
 			user.setCreated(new Date());
@@ -60,7 +59,7 @@ public class UsersServiceImpl implements UsersServiceAsync {
 	}
 
 	@Override
-	public void getById(String id, AsyncCallback<User> callback) {
+	public void getById(Long id, AsyncCallback<User> callback) {
 		User found = null;
 		
 		for (User user : list) {

@@ -72,11 +72,11 @@ public class UsersActivity extends AbstractActivity implements
 			doAdd();
 
 		} else if (token[0].equals("edit")) {
-			if (token[1] == null) {
-				goTo(new UsersPlace());
+			try {
+				doEdit(Long.parseLong(token[1]));
+			} catch (Exception e) {
 
-			} else {
-				doEdit(token[1]);
+				goTo(new UsersPlace());
 			}
 
 		} else if (token[0].isEmpty()) {
@@ -121,9 +121,9 @@ public class UsersActivity extends AbstractActivity implements
 	 * 
 	 * @param token
 	 */
-	public void doEdit(String token) {
+	public void doEdit(Long id) throws Exception {
 		view.getFormDeleteButton().setVisible(true);
-		service.getById(token, new AppAsyncCallback<User>() {
+		service.getById(id, new AppAsyncCallback<User>() {
 
 			@Override
 			public void onSuccess(User result) {
@@ -148,7 +148,7 @@ public class UsersActivity extends AbstractActivity implements
 	@Override
 	public void doSave() {
 		final User user = driver.flush();
-		final String id = user.getId();
+		final Long id = user.getId();
 
 		if (validateForm(user)) {
 			service.save(user, new AppAsyncCallback<Void>() {

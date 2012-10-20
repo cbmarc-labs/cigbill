@@ -47,7 +47,7 @@ public class PaymentsDatabase {
 	private Payment createItem(String name) {
 		Payment item = new Payment();
 
-		String id = ((Object) item.hashCode()).toString();
+		Long id = Long.parseLong(((Object) item.hashCode()).toString());
 
 		item.setId(id);
 		item.setName(name);

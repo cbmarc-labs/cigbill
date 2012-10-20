@@ -22,6 +22,7 @@ import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -130,7 +131,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			.create(InvoicesConstants.class);
 	private ProductsConstants productsConstants = GWT
 			.create(ProductsConstants.class);
-	
+
 	Column<Invoice, SafeHtml> idColumn;
 	TextColumn<Product> productsNameColumn;
 
@@ -155,15 +156,14 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	private void createInvoicesCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		idColumn = new Column<Invoice, SafeHtml>(
-				new SafeHtmlCell()) {
+		idColumn = new Column<Invoice, SafeHtml>(new SafeHtmlCell()) {
 
 			@Override
 			public SafeHtml getValue(Invoice object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
-				Anchor anchor = new Anchor(object.getId());
-				anchor.setHref("#invoices:edit/" + object.getId());
+				Anchor anchor = new Anchor(object.getId().toString());
+				anchor.setHref("#invoices:edit/" + object.getId().toString());
 
 				sb.appendHtmlConstant(anchor.toString());
 
@@ -226,7 +226,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		// /////////////////////////////////////////////////////////////////////
 		// PRODUCTS INVOICES PRICE COLUMN
 		Column<Product, Number> priceColumn = new Column<Product, Number>(
-				new NumberCell()) {
+				new NumberCell(NumberFormat.getFormat("#,##0.00"))) {
 			@Override
 			public Number getValue(Product object) {
 				return object.getPrice();
@@ -236,7 +236,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		productsInvoicesCellTable.getCellTable().addColumn(priceColumn,
 				productsConstants.columnPrice());
 		productsInvoicesCellTable.getCellTable().setColumnWidth(priceColumn,
-				1.0, Unit.EM);
+				6.0, Unit.EM);
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
 		productsInvoicesCellTable.getListHandler().setComparator(priceColumn,
@@ -289,7 +289,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		// /////////////////////////////////////////////////////////////////////
 		// PRODUCTS PRICE COLUMN
 		Column<Product, Number> priceColumn = new Column<Product, Number>(
-				new NumberCell()) {
+				new NumberCell(NumberFormat.getFormat("#,##0.00"))) {
 			@Override
 			public Number getValue(Product object) {
 				return object.getPrice();
@@ -298,8 +298,8 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		productsCellTable.getCellTable().addColumn(priceColumn,
 				productsConstants.columnPrice());
-		productsCellTable.getCellTable().setColumnWidth(priceColumn, 1.0,
-				Unit.EM);
+		productsCellTable.getCellTable().setColumnWidth(priceColumn,
+				6.0, Unit.EM);
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
 		productsCellTable.getListHandler().setComparator(priceColumn,
@@ -353,7 +353,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	 */
 	public void setList(List<Invoice> data) {
 		cellTable.setList(data);
-		
+
 		// sort descending
 		cellTable.getCellTable().getColumnSortList().clear();
 		cellTable.getCellTable().getColumnSortList().push(idColumn);
@@ -506,6 +506,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(true);
+		productsInvoicesPanel.setVisible(true);
 		productsPanel.setVisible(false);
 		deleteProductButton.setVisible(false);
 

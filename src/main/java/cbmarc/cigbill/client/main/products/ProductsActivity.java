@@ -13,6 +13,7 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
+import cbmarc.cigbill.client.main.users.UsersPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
@@ -76,7 +77,12 @@ public class ProductsActivity extends AbstractActivity implements
 				goTo(new ProductsPlace());
 
 			} else {
-				doEdit(token[1]);
+				try {
+					doEdit(Long.parseLong(token[1]));
+				} catch (Exception e) {
+
+					goTo(new ProductsPlace());
+				}
 			}
 
 		} else if (token[0].isEmpty()) {
@@ -121,9 +127,9 @@ public class ProductsActivity extends AbstractActivity implements
 	 * 
 	 * @param token
 	 */
-	public void doEdit(String token) {
+	public void doEdit(Long id) {
 		view.getFormDeleteButton().setVisible(true);
-		service.getById(token, new AppAsyncCallback<Product>() {
+		service.getById(id, new AppAsyncCallback<Product>() {
 
 			@Override
 			public void onSuccess(Product result) {
@@ -148,7 +154,7 @@ public class ProductsActivity extends AbstractActivity implements
 	@Override
 	public void doSave() {
 		final Product product = driver.flush();
-		final String id = product.getId();
+		final Long id = product.getId();
 		
 		//Window.alert();
 

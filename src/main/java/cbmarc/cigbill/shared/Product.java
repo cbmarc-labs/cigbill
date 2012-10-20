@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 @SuppressWarnings("serial")
 public class Product implements Model {
 	
-	private String id;
+	private Long id;
 	
 	@NotNull
 	@Size(min = 2, max = 25)
@@ -26,11 +26,11 @@ public class Product implements Model {
 	private Float length;
 	private Float width;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

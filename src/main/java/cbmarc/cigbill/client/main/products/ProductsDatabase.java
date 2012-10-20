@@ -48,7 +48,7 @@ public class ProductsDatabase {
 	private Product createItem(String name) {
 		Product item = new Product();
 
-		String id = ((Object) item.hashCode()).toString();
+		Long id = Long.parseLong(((Object) item.hashCode()).toString());
 
 		item.setId(id);
 		item.setName(name);		

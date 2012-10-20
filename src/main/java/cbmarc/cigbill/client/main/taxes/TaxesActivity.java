@@ -74,7 +74,12 @@ public class TaxesActivity extends AbstractActivity implements
 				goTo(new TaxesPlace());
 
 			} else {
-				doEdit(token[1]);
+				try {
+					doEdit(Long.parseLong(token[1]));
+				} catch (Exception e) {
+
+					goTo(new TaxesPlace());
+				}
 			}
 
 		} else if (token[0].isEmpty()) {
@@ -119,9 +124,9 @@ public class TaxesActivity extends AbstractActivity implements
 	 * 
 	 * @param token
 	 */
-	public void doEdit(String token) {
+	public void doEdit(Long id) {
 		view.getFormDeleteButton().setVisible(true);
-		service.getById(token, new AppAsyncCallback<Tax>() {
+		service.getById(id, new AppAsyncCallback<Tax>() {
 
 			@Override
 			public void onSuccess(Tax result) {
@@ -146,7 +151,7 @@ public class TaxesActivity extends AbstractActivity implements
 	@Override
 	public void doSave() {
 		final Tax tax = driver.flush();
-		final String id = tax.getId();
+		final Long id = tax.getId();
 
 		if (validateForm(tax)) {
 			service.save(tax, new AppAsyncCallback<Void>() {

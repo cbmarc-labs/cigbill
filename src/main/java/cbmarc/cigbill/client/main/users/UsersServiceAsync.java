@@ -11,7 +11,7 @@ public interface UsersServiceAsync {
 
 	void getAll(final AsyncCallback<List<User>> callback);
 
-	void getById(String id, final AsyncCallback<User> callback);
+	void getById(Long id, final AsyncCallback<User> callback);
 
 	void save(User user, final AsyncCallback<Void> callback);
 

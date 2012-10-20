@@ -54,7 +54,7 @@ public class UsersDatabase {
 	private User createItem(String login) {
 		User user = new User();
 
-		String id = ((Object) user.hashCode()).toString();
+		Long id = Long.parseLong(((Object) user.hashCode()).toString());
 
 		user.setId(id);
 		user.setLogin(login);

@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 @SuppressWarnings("serial")
 public class User implements Model {
 
-	private String id;
+	private Long id;
 
 	@NotNull
 	@Size(min = 2, max = 25, message = "{custom.login.size.message}")
@@ -36,7 +36,7 @@ public class User implements Model {
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -44,7 +44,7 @@ public class User implements Model {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

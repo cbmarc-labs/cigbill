@@ -11,7 +11,7 @@ public interface PaymentsServiceAsync {
 
 	void getAll(final AsyncCallback<List<Payment>> callback);
 
-	void getById(String id, final AsyncCallback<Payment> callback);
+	void getById(Long id, final AsyncCallback<Payment> callback);
 
 	void save(Payment product, final AsyncCallback<Void> callback);
 

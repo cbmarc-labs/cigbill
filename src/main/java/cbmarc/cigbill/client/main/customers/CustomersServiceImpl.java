@@ -27,7 +27,7 @@ public class CustomersServiceImpl implements CustomersServiceAsync {
 	@Override
 	public void save(Customer customer, final AsyncCallback<Void> callback) {
 		if (customer.getId() == null) {
-			String id = ((Object) customer.hashCode()).toString();
+			Long id = Long.parseLong(((Object) customer.hashCode()).toString());
 
 			customer.setId(id);
 
@@ -54,7 +54,7 @@ public class CustomersServiceImpl implements CustomersServiceAsync {
 	}
 
 	@Override
-	public void getById(String id, AsyncCallback<Customer> callback) {
+	public void getById(Long id, AsyncCallback<Customer> callback) {
 		Customer found = null;
 
 		for (Customer customer : list) {

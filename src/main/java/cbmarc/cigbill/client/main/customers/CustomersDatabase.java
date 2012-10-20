@@ -72,7 +72,7 @@ public class CustomersDatabase {
 		String firstName;
 		String lastName = nextValue(LAST_NAMES);
 
-		item.setId(((Object) item.hashCode()).toString());
+		item.setId(Long.parseLong(((Object) item.hashCode()).toString()));
 		if (Random.nextBoolean()) {
 			firstName = nextValue(MALE_FIRST_NAMES);
 

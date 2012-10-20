@@ -3,6 +3,7 @@ package cbmarc.cigbill.client.ui;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.user.client.ui.Anchor;
 
 public class AppBreadcrumb extends UlPanel {
 
@@ -14,13 +15,21 @@ public class AppBreadcrumb extends UlPanel {
 		setStyleName("breadcrumb");
 	}
 	
-	public void addCrumb(String crumb, Boolean hasDivider) {
+	public void addCrumb(String crumb) {
 		LiPanel liPanel = new LiPanel();
 		liPanel.setStyleName("active");
 		liPanel.setText(crumb);
 		
-		if(hasDivider)
-			liPanel.add(getDivider());
+		liPanel.add(getDivider());
+
+		add(liPanel);
+	}
+	
+	public void addCrumb(String crumb, String url) {
+		LiPanel liPanel = new LiPanel();
+		liPanel.add(new Anchor(crumb, url));
+		
+		liPanel.add(getDivider());
 
 		add(liPanel);
 		

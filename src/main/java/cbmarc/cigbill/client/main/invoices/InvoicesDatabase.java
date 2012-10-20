@@ -49,7 +49,7 @@ public class InvoicesDatabase {
 	private Invoice createItem(int i) {
 		Invoice item = new Invoice();
 
-		String id = ((Object) item.hashCode()).toString();
+		Long id = Long.parseLong(((Object) item.hashCode()).toString());
 
 		item.setId(id);
 

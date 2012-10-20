@@ -3,6 +3,7 @@ package cbmarc.cigbill.client.main;
 import javax.inject.Singleton;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
+import cbmarc.cigbill.client.main.home.HomePlace;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -40,7 +41,6 @@ public class TopActivity extends AbstractActivity implements
 	
 	// TODO localizated crumbs
 	private void updateAppBreadcrumb() {
-		
 		// return when not mainplace instance
 		if(!(placeController.getWhere() instanceof MainPlace))
 			return;
@@ -51,11 +51,14 @@ public class TopActivity extends AbstractActivity implements
 		String[] tokens = mainPlace.getSplitToken();
 		
 		view.getAppBreadcrumb().clear();
-		view.getAppBreadcrumb().addCrumb(appConstants.breadcrumbHome(), true);
-		view.getAppBreadcrumb().addCrumb(name, true);
+		view.getAppBreadcrumb().addCrumb(appConstants.breadcrumbHome(), "#home:");
 		
-		if(!tokens[0].isEmpty())
-			view.getAppBreadcrumb().addCrumb(tokens[0], true);
+		if(!(placeController.getWhere() instanceof HomePlace)) {
+			view.getAppBreadcrumb().addCrumb(name);
+		
+			if(!tokens[0].isEmpty())
+				view.getAppBreadcrumb().addCrumb(tokens[0]);
+		}
 	}
 
 }

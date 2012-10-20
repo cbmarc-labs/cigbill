@@ -46,7 +46,7 @@ public class TaxesDatabase {
 	private Tax createItem(int i) {
 		Tax item = new Tax();
 
-		String id = ((Object) item.hashCode()).toString();
+		Long id = Long.parseLong(((Object) item.hashCode()).toString());
 
 		item.setId(id);
 		item.setName("Tax " + i);

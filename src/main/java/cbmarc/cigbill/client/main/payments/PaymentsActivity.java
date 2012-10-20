@@ -76,7 +76,12 @@ public class PaymentsActivity extends AbstractActivity implements
 				goTo(new PaymentsPlace());
 
 			} else {
-				doEdit(token[1]);
+				try {
+					doEdit(Long.parseLong(token[1]));
+				} catch (Exception e) {
+
+					goTo(new PaymentsPlace());
+				}
 			}
 
 		} else if (token[0].isEmpty()) {
@@ -121,9 +126,9 @@ public class PaymentsActivity extends AbstractActivity implements
 	 * 
 	 * @param token
 	 */
-	public void doEdit(String token) {
+	public void doEdit(Long id) {
 		view.getFormDeleteButton().setVisible(true);
-		service.getById(token, new AppAsyncCallback<Payment>() {
+		service.getById(id, new AppAsyncCallback<Payment>() {
 
 			@Override
 			public void onSuccess(Payment result) {
@@ -148,7 +153,7 @@ public class PaymentsActivity extends AbstractActivity implements
 	@Override
 	public void doSave() {
 		final Payment payment = driver.flush();
-		final String id = payment.getId();
+		final Long id = payment.getId();
 
 		if (validateForm(payment)) {
 			service.save(payment, new AppAsyncCallback<Void>() {

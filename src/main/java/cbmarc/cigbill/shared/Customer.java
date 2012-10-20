@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 @SuppressWarnings("serial")
 public class Customer implements Model {
 	
-	private String id;
+	private Long id;
 	
 	@NotNull
 	@Size(min = 2, max = 25)
@@ -37,14 +37,14 @@ public class Customer implements Model {
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

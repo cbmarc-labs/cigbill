@@ -6,17 +6,17 @@ import javax.validation.constraints.Size;
 @SuppressWarnings("serial")
 public class Payment implements Model {
 	
-	private String id;
+	private Long id;
 	
 	@NotNull
 	@Size(min = 1, max = 25)
 	private String name;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

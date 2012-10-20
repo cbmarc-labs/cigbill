@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 @SuppressWarnings("serial")
 public class Tax implements Model {
 	
-	private String id;
+	private Long id;
 	
 	@NotNull
 	@Size(min = 1, max = 25)
@@ -15,11 +15,11 @@ public class Tax implements Model {
 	@Size(max = 100)
 	private String description;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

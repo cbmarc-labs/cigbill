@@ -29,7 +29,7 @@ public class PaymentsServiceImpl implements PaymentsServiceAsync {
 	@Override
 	public void save(Payment payment, final AsyncCallback<Void> callback) {
 		if (payment.getId() == null) {
-			String id = ((Object) payment.hashCode()).toString();
+			Long id = Long.parseLong(((Object) payment.hashCode()).toString());
 
 			payment.setId(id);
 
@@ -59,7 +59,7 @@ public class PaymentsServiceImpl implements PaymentsServiceAsync {
 	}
 
 	@Override
-	public void getById(String id, AsyncCallback<Payment> callback) {
+	public void getById(Long id, AsyncCallback<Payment> callback) {
 		Payment found = find(id);
 
 		Payment payment = null;
@@ -69,7 +69,7 @@ public class PaymentsServiceImpl implements PaymentsServiceAsync {
 		callback.onSuccess(payment);
 	}
 
-	private Payment find(String id) {
+	private Payment find(Long id) {
 		Payment found = null;
 
 		for (Payment item : list) {

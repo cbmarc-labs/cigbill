@@ -11,7 +11,7 @@ public interface ProductsServiceAsync {
 
 	void getAll(final AsyncCallback<List<Product>> callback);
 
-	void getById(String id, final AsyncCallback<Product> callback);
+	void getById(Long id, final AsyncCallback<Product> callback);
 
 	void save(Product product, final AsyncCallback<Void> callback);
 

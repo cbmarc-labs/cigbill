@@ -28,7 +28,7 @@ public class ProductsServiceImpl implements ProductsServiceAsync {
 	@Override
 	public void save(Product product, final AsyncCallback<Void> callback) {
 		if (product.getId() == null) {
-			String id = ((Object) product.hashCode()).toString();
+			Long id = Long.parseLong(((Object) product.hashCode()).toString());
 
 			product.setId(id);
 
@@ -55,7 +55,7 @@ public class ProductsServiceImpl implements ProductsServiceAsync {
 	}
 
 	@Override
-	public void getById(String id, AsyncCallback<Product> callback) {
+	public void getById(Long id, AsyncCallback<Product> callback) {
 		Product found = null;
 
 		for (Product product : list) {

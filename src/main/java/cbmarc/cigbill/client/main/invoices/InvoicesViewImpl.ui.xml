@@ -11,8 +11,8 @@
 
 		<g:HTMLPanel ui:field="cellTablePanel" styleName="container">
 			<div class="btn-toolbar">
-				<g:Button ui:field="addTableButton" styleName="btn btn-primary">
-					<i class="icon-plus icon-white"></i>
+				<g:Button ui:field="addTableButton" styleName="btn">
+					<i class="icon-plus"></i>
 					<ui:text from="{appCnts.addNewItemButton}"></ui:text>
 				</g:Button>
 				<g:Button ui:field="deleteTableButton" styleName="btn btn-danger">
@@ -52,58 +52,78 @@
 
 					<g:FocusPanel ui:field="validationPanel"
 						styleName="validation-panel alert alert-error"></g:FocusPanel>
-
-					<!-- PRODUCTS INVOICES ITEMS -->
-					<g:HTMLPanel styleName="well" ui:field="productsInvoicesPanel">
-						<div class="btn-toolbar">
-							<g:Button ui:field="addProductButton" styleName="btn btn-primary">
-								<i class="icon-plus icon-white"></i>
-								<ui:text from="{appCnts.addNewItemButton}"></ui:text>
-							</g:Button>
-							<g:Button ui:field="deleteProductButton" styleName="btn btn-danger">
-								<i class="icon-remove icon-white"></i>
-								<ui:text from="{appCnts.deleteSelectedItemsButton}"></ui:text>
-							</g:Button>
-						</div>
-						<div class="row-fluid" style="margin:5px 0;">
-							<div class="span">
-								<a:AppCellTable ui:field="productsInvoicesCellTable"></a:AppCellTable>
+					<div class="tabbable">
+						<ul class="nav nav-tabs">
+							<li class="active">
+								<a href="#customer" data-toggle="tab">Customer</a>
+							</li>
+							<li>
+								<a href="#products" data-toggle="tab">Products</a>
+							</li>
+							<li>
+								<a href="#notes" data-toggle="tab">Notes</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="customer">
 							</div>
-						</div>
-					</g:HTMLPanel>
-					
-					<!-- PRODUCTS ITEMS -->
-					<g:HTMLPanel styleName="well" ui:field="productsPanel">
-						<div class="btn-toolbar">
-							<g:Button ui:field="returnProductButton" styleName="btn">
-								<i class="icon-chevron-left"></i>
-								<ui:text from="{appCnts.formBack}"></ui:text>
-							</g:Button>
-						</div>
-						<div class="row-fluid" style="margin:5px 0;">
-							<div class="span">
-								<a:AppCellTable ui:field="productsCellTable"></a:AppCellTable>
-							</div>
-						</div>
-					</g:HTMLPanel>
+							<div class="tab-pane" id="products">
 
-					<div class="control-group" ui:field="notesCG">
-						<label class="control-label">
-							<ui:text from="{localCnts.formNotes}"></ui:text>
-						</label>
-						<div class="controls">
-							<g:TextArea ui:field="notes" visibleLines="4"
-								styleName="span10" />
+								<!-- PRODUCTS INVOICES ITEMS -->
+								<g:HTMLPanel styleName="" ui:field="productsInvoicesPanel">
+									<div class="btn-toolbar">
+										<g:Button ui:field="addProductButton" styleName="btn">
+											<i class="icon-plus"></i>
+											<ui:text from="{appCnts.addNewItemButton}"></ui:text>
+										</g:Button>
+										<g:Button ui:field="deleteProductButton" styleName="btn btn-danger">
+											<i class="icon-remove icon-white"></i>
+											<ui:text from="{appCnts.deleteSelectedItemsButton}"></ui:text>
+										</g:Button>
+									</div>
+									<div class="row-fluid" style="margin:5px 0;">
+										<div class="span">
+											<a:AppCellTable ui:field="productsInvoicesCellTable"></a:AppCellTable>
+										</div>
+									</div>
+								</g:HTMLPanel>
+
+								<!-- PRODUCTS ITEMS -->
+								<g:HTMLPanel styleName="" ui:field="productsPanel">
+									<div class="btn-toolbar">
+										<g:Button ui:field="returnProductButton" styleName="btn">
+											<i class="icon-chevron-left"></i>
+											<ui:text from="{appCnts.formBack}"></ui:text>
+										</g:Button>
+									</div>
+									<div class="row-fluid" style="margin:5px 0;">
+										<div class="span">
+											<a:AppCellTable ui:field="productsCellTable"></a:AppCellTable>
+										</div>
+									</div>
+								</g:HTMLPanel>
+							</div>
+
+							<div class="tab-pane" id="notes">
+								<div class="control-group" ui:field="notesCG">
+									<label class="control-label">
+										<ui:text from="{localCnts.formNotes}"></ui:text>
+									</label>
+									<div class="controls">
+										<g:TextArea ui:field="notes" visibleLines="4"
+											styleName="span10" />
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-
 					<p class="muted">
 						<ui:text from="{appCnts.formRequiredFieldsText}"></ui:text>
 					</p>
 
 					<div class="form-actions">
-						<g:SubmitButton ui:field="submitButton" styleName="btn btn-success">
-							<i class="icon-ok icon-white"></i>
+						<g:SubmitButton ui:field="submitButton" styleName="btn">
+							<i class="icon-ok"></i>
 							<ui:text from="{appCnts.formSubmit}"></ui:text>
 						</g:SubmitButton>
 						<g:Button ui:field="backButton" styleName="btn">

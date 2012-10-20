@@ -42,8 +42,7 @@
 							<span class="label label-warning pull-right">
 								<i class="icon-warning-sign icon-white">
 									<!-- IE Bug -->
-									<img
-										style="height:14px;width:14px;"
+									<img style="height:14px;width:14px;"
 										src="data:image/gif;base64,R0lGODlhAQABAJH/AP///wAAAMDAwAAAACH5BAEAAAIALAAAAAABAAEAQAICVAEAOw==" />
 								</i>
 							</span>
@@ -54,41 +53,57 @@
 					<g:FocusPanel ui:field="validationPanel"
 						styleName="validation-panel alert alert-error"></g:FocusPanel>
 
-					<div class="control-group" ui:field="nameCG">
-						<label class="control-label">
-							<ui:text from="{productsCnts.formName}"></ui:text>
-							*
-						</label>
-						<div class="controls">
-							<g:TextBox ui:field="name" />
-						</div>
-					</div>
+					<div class="tabbable">
+						<ul class="nav nav-tabs">
+							<li class="active">
+								<a href="#general" data-toggle="tab">General</a>
+							</li>
+							<li>
+								<a href="#notes" data-toggle="tab">Notes</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="general">
+								<div class="control-group" ui:field="nameCG">
+									<label class="control-label">
+										<ui:text from="{productsCnts.formName}"></ui:text>
+										*
+									</label>
+									<div class="controls">
+										<g:TextBox ui:field="name" />
+									</div>
+								</div>
 
-					<div class="control-group" ui:field="descriptionCG">
-						<label class="control-label">
-							<ui:text from="{productsCnts.formDescription}"></ui:text>
-						</label>
-						<div class="controls">
-							<g:TextBox ui:field="description" styleName="span8" />
-						</div>
-					</div>
+								<div class="control-group" ui:field="descriptionCG">
+									<label class="control-label">
+										<ui:text from="{productsCnts.formDescription}"></ui:text>
+									</label>
+									<div class="controls">
+										<g:TextBox ui:field="description" styleName="span8" />
+									</div>
+								</div>
 
-					<div class="control-group" ui:field="priceCG">
-						<label class="control-label">
-							<ui:text from="{productsCnts.formPrice}"></ui:text>
-						</label>
-						<div class="controls">
-							<g:DoubleBox ui:field="price" styleName="span2" maxLength="12" alignment="RIGHT"/>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label class="control-label">
-							<ui:text from="{productsCnts.formNotes}"></ui:text>
-						</label>
-						<div class="controls">
-							<g:TextArea ui:field="notes" visibleLines="4"
-								styleName="span10" />
+								<div class="control-group" ui:field="priceCG">
+									<label class="control-label">
+										<ui:text from="{productsCnts.formPrice}"></ui:text>
+									</label>
+									<div class="controls">
+										<g:DoubleBox ui:field="price" styleName="span2"
+											maxLength="12" alignment="RIGHT" />
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane" id="notes">
+								<div class="control-group">
+									<label class="control-label">
+										<ui:text from="{productsCnts.formNotes}"></ui:text>
+									</label>
+									<div class="controls">
+										<g:TextArea ui:field="notes" visibleLines="4"
+											styleName="span10" />
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -108,7 +123,7 @@
 						<div class="span pull-right">
 							<g:Button ui:field="formDeleteButton" styleName="btn btn-danger">
 								<i class="icon-remove icon-white"></i>
-							<ui:text from="{appCnts.formDelete}"></ui:text>
+								<ui:text from="{appCnts.formDelete}"></ui:text>
 							</g:Button>
 						</div>
 					</div>

@@ -11,7 +11,7 @@ public interface InvoicesServiceAsync {
 
 	void getAll(final AsyncCallback<List<Invoice>> callback);
 
-	void getById(String id, final AsyncCallback<Invoice> callback);
+	void getById(Long id, final AsyncCallback<Invoice> callback);
 
 	void save(Invoice product, final AsyncCallback<Void> callback);
 

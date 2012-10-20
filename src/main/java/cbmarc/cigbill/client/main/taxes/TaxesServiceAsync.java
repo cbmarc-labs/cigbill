@@ -11,7 +11,7 @@ public interface TaxesServiceAsync {
 
 	void getAll(final AsyncCallback<List<Tax>> callback);
 
-	void getById(String id, final AsyncCallback<Tax> callback);
+	void getById(Long id, final AsyncCallback<Tax> callback);
 
 	void save(Tax product, final AsyncCallback<Void> callback);
 

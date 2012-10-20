@@ -15,6 +15,7 @@ import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.main.products.ProductsServiceAsync;
 import cbmarc.cigbill.client.main.products.ProductsServiceImpl;
+import cbmarc.cigbill.client.main.users.UsersPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
@@ -81,7 +82,12 @@ public class InvoicesActivity extends AbstractActivity implements
 				goTo(new InvoicesPlace());
 
 			} else {
-				doEdit(token[1]);
+				try {
+					doEdit(Long.parseLong(token[1]));
+				} catch (Exception e) {
+
+					goTo(new InvoicesPlace());
+				}
 			}
 
 		} else if (token[0].isEmpty()) {
@@ -109,6 +115,18 @@ public class InvoicesActivity extends AbstractActivity implements
 		});
 	}
 
+	public void doLoadProducts() {
+		serviceProducts.getAll(new AppAsyncCallback<List<Product>>() {
+
+			@Override
+			public void onSuccess(List<Product> result) {
+				view.setListProduct(result);
+
+			}
+		});
+
+	}
+
 	/**
 	 * Show form and populate fields with editor driver
 	 */
@@ -118,14 +136,8 @@ public class InvoicesActivity extends AbstractActivity implements
 		view.getFormDeleteButton().setVisible(false);
 
 		driver.edit(new Invoice());
-		
-		serviceProducts.getAll(new AppAsyncCallback<List<Product>>(){
 
-			@Override
-			public void onSuccess(List<Product> result) {
-				view.setListProduct(result);
-				
-			}});
+		doLoadProducts();
 
 	}
 
@@ -134,9 +146,9 @@ public class InvoicesActivity extends AbstractActivity implements
 	 * 
 	 * @param token
 	 */
-	public void doEdit(String token) {
+	public void doEdit(Long id) {
 		view.getFormDeleteButton().setVisible(true);
-		service.getById(token, new AppAsyncCallback<Invoice>() {
+		service.getById(id, new AppAsyncCallback<Invoice>() {
 
 			@Override
 			public void onSuccess(Invoice result) {
@@ -148,6 +160,7 @@ public class InvoicesActivity extends AbstractActivity implements
 
 				} else {
 					view.showFormPanel(taxesConstants.editLegendLabel());
+					doLoadProducts();
 					driver.edit(result);
 				}
 
@@ -161,7 +174,7 @@ public class InvoicesActivity extends AbstractActivity implements
 	@Override
 	public void doSave() {
 		final Invoice invoice = driver.flush();
-		final String id = invoice.getId();
+		final Long id = invoice.getId();
 
 		if (validateForm(invoice)) {
 			service.save(invoice, new AppAsyncCallback<Void>() {
