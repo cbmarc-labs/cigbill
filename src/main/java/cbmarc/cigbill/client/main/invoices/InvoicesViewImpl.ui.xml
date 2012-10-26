@@ -4,12 +4,14 @@
 	xmlns:a="urn:import:cbmarc.cigbill.client.ui">
 
 	<ui:with field="appCnts" type="cbmarc.cigbill.client.i18n.AppConstants" />
-	<ui:with field="localCnts"
+	<ui:with field="invoicesCnts"
 		type="cbmarc.cigbill.client.main.invoices.InvoicesConstants" />
+	<ui:with field="customersCnts"
+		type="cbmarc.cigbill.client.main.customers.CustomersConstants" />
 
-	<g:HTMLPanel styleName="container">
+	<g:HTMLPanel>
 
-		<g:HTMLPanel ui:field="cellTablePanel" styleName="container">
+		<g:HTMLPanel ui:field="cellTablePanel">
 			<div class="btn-toolbar">
 				<g:Button ui:field="addTableButton" styleName="btn">
 					<i class="icon-plus"></i>
@@ -66,6 +68,29 @@
 						</ul>
 						<div class="tab-content">
 							<div class="tab-pane active" id="customer">
+								<div class="row">
+									<div class="span3">
+										<div class="control-group" ui:field="customerNameCG">
+											<label class="control-label">
+												<ui:text from="{customersCnts.formName}"></ui:text>
+												*
+											</label>
+											<div class="controls">
+												<g:SuggestBox ui:field="customerName" />
+											</div>
+										</div>
+									</div>
+									<div class="span3">
+										<div class="control-group" ui:field="customerEmailCG">
+											<label class="control-label">
+												<ui:text from="{customersCnts.formEmail}"></ui:text>
+											</label>
+											<div class="controls">
+												<g:TextBox ui:field="customerEmail" />
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 							<div class="tab-pane" id="products">
 
@@ -107,7 +132,7 @@
 							<div class="tab-pane" id="notes">
 								<div class="control-group" ui:field="notesCG">
 									<label class="control-label">
-										<ui:text from="{localCnts.formNotes}"></ui:text>
+										<ui:text from="{invoicesCnts.formNotes}"></ui:text>
 									</label>
 									<div class="controls">
 										<g:TextArea ui:field="notes" visibleLines="4"

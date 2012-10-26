@@ -149,7 +149,8 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 			}
 		};
 		cellTable.getCellTable().addColumn(nameColumn,
-				productsConstants.columnName());;
+				productsConstants.columnName());
+		;
 		cellTable.getCellTable().setColumnWidth(nameColumn, 16.0, Unit.EM);
 
 		// Make the first name column sortable.
@@ -176,7 +177,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		// /////////////////////////////////////////////////////////////////////
 		// PRICE COLUMN
 		Column<Product, Number> priceColumn = new Column<Product, Number>(
-				//new NumberCell(NumberFormat.getFormat("+#,##0.00;-#,##0.00"))) {
+		// new NumberCell(NumberFormat.getFormat("+#,##0.00;-#,##0.00"))) {
 				new NumberCell(NumberFormat.getFormat("#,##0.00"))) {
 			@Override
 			public Number getValue(Product object) {

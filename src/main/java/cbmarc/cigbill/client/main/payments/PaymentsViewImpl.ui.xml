@@ -7,9 +7,9 @@
 	<ui:with field="localCnts"
 		type="cbmarc.cigbill.client.main.payments.PaymentsConstants" />
 
-	<g:HTMLPanel styleName="container">
+	<g:HTMLPanel>
 
-		<g:HTMLPanel ui:field="cellTablePanel" styleName="container">
+		<g:HTMLPanel ui:field="cellTablePanel">
 			<div class="btn-toolbar">
 				<g:Button ui:field="addTableButton" styleName="btn">
 					<i class="icon-plus"></i>
@@ -42,8 +42,7 @@
 							<span class="label label-warning pull-right">
 								<i class="icon-warning-sign icon-white">
 									<!-- IE Bug -->
-									<img
-										style="height:14px;width:14px;"
+									<img style="height:14px;width:14px;"
 										src="data:image/gif;base64,R0lGODlhAQABAJH/AP///wAAAMDAwAAAACH5BAEAAAIALAAAAAABAAEAQAICVAEAOw==" />
 								</i>
 							</span>
@@ -80,7 +79,7 @@
 						<div class="span pull-right">
 							<g:Button ui:field="formDeleteButton" styleName="btn btn-danger">
 								<i class="icon-remove icon-white"></i>
-							<ui:text from="{appCnts.formDelete}"></ui:text>
+								<ui:text from="{appCnts.formDelete}"></ui:text>
 							</g:Button>
 						</div>
 					</div>

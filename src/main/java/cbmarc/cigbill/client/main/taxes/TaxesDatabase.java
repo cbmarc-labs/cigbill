@@ -4,13 +4,22 @@ import java.util.List;
 
 import cbmarc.cigbill.shared.Tax;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 public class TaxesDatabase {
 
 	private static TaxesDatabase instance;
 	private ListDataProvider<Tax> dataProvider = new ListDataProvider<Tax>();
+	
+	interface MyFactory extends AutoBeanFactory {
+		AutoBean<Tax> tax();
+	}
+	
+	MyFactory factory = GWT.create(MyFactory.class);
 
 	public TaxesDatabase() {
 		generateItems(5);
@@ -44,7 +53,8 @@ public class TaxesDatabase {
 	 * @return
 	 */
 	private Tax createItem(int i) {
-		Tax item = new Tax();
+		//Tax1 item = new Tax1();
+		Tax item = factory.tax().as();
 
 		Long id = Long.parseLong(((Object) item.hashCode()).toString());
 

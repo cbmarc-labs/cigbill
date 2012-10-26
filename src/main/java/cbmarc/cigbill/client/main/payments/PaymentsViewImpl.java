@@ -99,7 +99,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	private AppConstants appConstants;
 	private PaymentsConstants taxesConstants = GWT
 			.create(PaymentsConstants.class);
-	
+
 	Column<Payment, SafeHtml> nameColumn;
 
 	/**
@@ -121,8 +121,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		nameColumn = new Column<Payment, SafeHtml>(
-				new SafeHtmlCell()) {
+		nameColumn = new Column<Payment, SafeHtml>(new SafeHtmlCell()) {
 
 			@Override
 			public SafeHtml getValue(Payment object) {
@@ -147,7 +146,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 						return o1.getName().compareTo(o2.getName());
 					}
 				});
-		
+
 		// /////////////////////////////////////////////////////////////////////
 		// CELLTABLE CLICKHANDLER
 		cellTable.addClickHandler(new ClickHandler() {
@@ -337,7 +336,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		
+
 	}
 
 }

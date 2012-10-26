@@ -59,7 +59,7 @@ public class UsersActivity extends AbstractActivity implements
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		driver.edit(new User());
+		driver.edit(null);
 
 		initialize();
 	}

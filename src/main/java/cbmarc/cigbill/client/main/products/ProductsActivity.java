@@ -60,7 +60,7 @@ public class ProductsActivity extends AbstractActivity implements
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		driver.edit(new Product());
+		driver.edit(null);
 
 		initialize();
 	}

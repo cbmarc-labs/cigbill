@@ -26,13 +26,13 @@ public class TaxesServiceImpl implements TaxesServiceAsync {
 	}
 
 	@Override
-	public void save(Tax product, final AsyncCallback<Void> callback) {
-		if (product.getId() == null) {
-			Long id = Long.parseLong(((Object) product.hashCode()).toString());
+	public void save(Tax tax, final AsyncCallback<Void> callback) {
+		if (tax.getId() == null) {
+			Long id = Long.parseLong(((Object) tax.hashCode()).toString());
 
-			product.setId(id);
+			tax.setId(id);
 
-			list.add(product);
+			list.add(tax);
 		}
 
 		callback.onSuccess(null);
@@ -58,9 +58,9 @@ public class TaxesServiceImpl implements TaxesServiceAsync {
 	public void getById(Long id, AsyncCallback<Tax> callback) {
 		Tax found = null;
 
-		for (Tax product : list) {
-			if (product.getId().equals(id)) {
-				found = product;
+		for (Tax tax : list) {
+			if (tax.getId().equals(id)) {
+				found = tax;
 				break;
 			}
 		}

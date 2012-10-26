@@ -60,7 +60,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 		}
 	});
 
-	@Ignore
+	@Editor.Ignore
 	@UiField
 	Label legend;
 
@@ -96,7 +96,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	@Inject
 	private AppConstants appConstants;
 	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
-	
+
 	Column<Tax, SafeHtml> nameColumn;
 
 	/**
@@ -118,8 +118,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		nameColumn = new Column<Tax, SafeHtml>(
-				new SafeHtmlCell()) {
+		nameColumn = new Column<Tax, SafeHtml>(new SafeHtmlCell()) {
 
 			@Override
 			public SafeHtml getValue(Tax object) {

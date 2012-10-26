@@ -40,7 +40,9 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SubmitButton;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -88,6 +90,12 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	// Form fields
 	@UiField
 	FormPanel formPanel;
+
+	MultiWordSuggestOracle customerSuggestions = new MultiWordSuggestOracle();
+	@Editor.Ignore
+	@UiField(provided = true)
+	SuggestBox customerName = new SuggestBox(customerSuggestions);
+
 	@UiField
 	HTMLPanel productsInvoicesPanel, productsPanel;
 	@UiField(provided = true)
@@ -144,6 +152,11 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		// hide by default
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(false);
+
+		customerSuggestions.add("aa");
+		customerSuggestions.add("ab");
+		customerSuggestions.add("ac");
+		customerSuggestions.add("ad");
 
 		createInvoicesCellTable();
 		createInvoicesProductsCellTable();
@@ -298,8 +311,8 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		productsCellTable.getCellTable().addColumn(priceColumn,
 				productsConstants.columnPrice());
-		productsCellTable.getCellTable().setColumnWidth(priceColumn,
-				6.0, Unit.EM);
+		productsCellTable.getCellTable().setColumnWidth(priceColumn, 6.0,
+				Unit.EM);
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
 		productsCellTable.getListHandler().setComparator(priceColumn,

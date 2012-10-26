@@ -59,7 +59,7 @@ public class PaymentsActivity extends AbstractActivity implements
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		driver.edit(new Payment());
+		driver.edit(null);
 
 		initialize();
 	}

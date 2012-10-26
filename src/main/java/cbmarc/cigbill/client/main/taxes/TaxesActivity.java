@@ -28,6 +28,8 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 /**
  * @author marc
@@ -46,6 +48,12 @@ public class TaxesActivity extends AbstractActivity implements
 	@Inject
 	private PlaceController placeController;
 
+	interface Factory extends AutoBeanFactory {
+		AutoBean<Tax> tax();
+	}
+
+	Factory factory = GWT.create(Factory.class);
+
 	private SimpleBeanEditorDriver<Tax, ?> driver;
 
 	/**
@@ -57,7 +65,7 @@ public class TaxesActivity extends AbstractActivity implements
 		panel.setWidget(view);
 
 		driver = view.createEditorDriver();
-		driver.edit(new Tax());
+		driver.edit(null);
 
 		initialize();
 	}
@@ -115,7 +123,7 @@ public class TaxesActivity extends AbstractActivity implements
 		view.showFormPanel(taxesConstants.addLegendLabel());
 		view.getFormDeleteButton().setVisible(false);
 
-		driver.edit(new Tax());
+		driver.edit(factory.tax().as());
 
 	}
 
@@ -143,6 +151,7 @@ public class TaxesActivity extends AbstractActivity implements
 
 			}
 		});
+
 	}
 
 	/**

@@ -5,7 +5,7 @@
 
 	<ui:with field="appCnts" type="cbmarc.cigbill.client.i18n.AppConstants" />
 
-	<g:HTMLPanel styleName="container">
+	<g:HTMLPanel>
 		<div class="hero-unit">
 			<div class="row">
 				<div class="span5">

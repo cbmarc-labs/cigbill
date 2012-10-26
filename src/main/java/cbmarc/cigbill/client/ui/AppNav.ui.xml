@@ -8,83 +8,83 @@
 		<div class="navbar-inner">
 			<ul class="nav">
 				<li class="dropdown">
-					<g:Anchor href="javascript:;" ui:field="moneyAnchor"
+					<g:Anchor href="javascript:;" ui:field="money"
 						styleName="dropdown-toggle disabled">
 						<ui:text from="{cnt.navMoney}"></ui:text>
 						<b class="caret"></b>
 					</g:Anchor>
 					<ul class="dropdown-menu">
 						<li>
-							<a href="#invoices:">
+							<g:Anchor href="javascript:;" ui:field="invoices">
 								<i class="icon-book"></i>
 								<ui:text from="{cnt.navInvoices}"></ui:text>
-							</a>
+							</g:Anchor>
 						</li>
 						<li>
-							<a href="#payments:">
+							<g:Anchor href="javascript:;" ui:field="payments">
 								<i class="icon-briefcase"></i>
 								<ui:text from="{cnt.navPayments}"></ui:text>
-							</a>
+							</g:Anchor>
 						</li>
 					</ul>
 				</li>
 
 				<li class="dropdown">
-					<g:Anchor href="javascript:;" ui:field="stockAnchor"
+					<g:Anchor href="javascript:;" ui:field="stock"
 						styleName="dropdown-toggle disabled">
 						<ui:text from="{cnt.navStock}"></ui:text>
 						<b class="caret"></b>
 					</g:Anchor>
 					<ul class="dropdown-menu">
 						<li>
-							<a href="#products:">
+							<g:Anchor href="javascript:;" ui:field="products">
 								<i class="icon-shopping-cart"></i>
 								<ui:text from="{cnt.navProducts}"></ui:text>
-							</a>
+							</g:Anchor>
 						</li>
 						<li>
-							<a href="#taxes:">
+							<g:Anchor href="javascript:;" ui:field="taxes">
 								<i class="icon-barcode"></i>
 								<ui:text from="{cnt.navTaxes}"></ui:text>
-							</a>
+							</g:Anchor>
 						</li>
 					</ul>
 				</li>
 
 				<li class="dropdown">
-					<g:Anchor href="javascript:;" ui:field="peopleAnchor"
+					<g:Anchor href="javascript:;" ui:field="people"
 						styleName="dropdown-toggle disabled">
 						<ui:text from="{cnt.navPeople}"></ui:text>
 						<b class="caret"></b>
 					</g:Anchor>
 					<ul class="dropdown-menu">
 						<li>
-							<a href="#customers:">
+							<g:Anchor href="javascript:;" ui:field="customers">
 								<i class="icon-road"></i>
 								<ui:text from="{cnt.navCustomers}"></ui:text>
-							</a>
+							</g:Anchor>
 						</li>
 						<li>
-							<a href="#users:">
+							<g:Anchor href="javascript:;" ui:field="users">
 								<i class="icon-user"></i>
 								<ui:text from="{cnt.navUsers}"></ui:text>
-							</a>
+							</g:Anchor>
 						</li>
 					</ul>
 				</li>
 
 				<li class="dropdown">
-					<g:Anchor href="javascript:;" ui:field="settingsAnchor"
+					<g:Anchor href="javascript:;" ui:field="settings"
 						styleName="dropdown-toggle disabled">
 						<ui:text from="{cnt.navSettings}"></ui:text>
 						<b class="caret"></b>
 					</g:Anchor>
 					<ul class="dropdown-menu">
 						<li>
-							<a>
+							<g:Anchor href="javascript:;" ui:field="messages">
 								<i class="icon-align-justify"></i>
 								<ui:text from="{cnt.navMessages}"></ui:text>
-							</a>
+							</g:Anchor>
 						</li>
 					</ul>
 				</li>

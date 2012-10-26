@@ -9,6 +9,8 @@ public class Cigbill implements EntryPoint {
 	AppGinjector ginjector = GWT.create(AppGinjector.class);
 
 	public void onModuleLoad() {
+		AppResources.INSTANCE.css().ensureInjected();
+
 		RootPanel.get().add(ginjector.getAppView());
 
 		ginjector.getHistoryHandler().handleCurrentHistory();

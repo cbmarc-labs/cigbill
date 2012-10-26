@@ -1,7 +1,7 @@
 package cbmarc.cigbill.client;
 
+import cbmarc.cigbill.client.auth.AuthPlace;
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
 import cbmarc.cigbill.client.mvp.AppPlaceHistoryMapper;
 
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -18,22 +18,25 @@ public class AppGinModule extends AbstractGinModule {
 	@Override
 	protected void configure() {
 		bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
-		bind(PlaceHistoryMapper.class).to(AppPlaceHistoryMapper.class).in(Singleton.class);
-		
+		bind(PlaceHistoryMapper.class).to(AppPlaceHistoryMapper.class).in(
+				Singleton.class);
+
 		bind(AppConstants.class).in(Singleton.class);
-		
+
 	}
-	
-	@Provides 
-	@Singleton  
-	public PlaceHistoryHandler getHistoryHandler(PlaceController placeController,
-			PlaceHistoryMapper historyMapper, EventBus eventBus) {
-		PlaceHistoryHandler historyHandler =  new PlaceHistoryHandler(historyMapper);
-		historyHandler.register(placeController, eventBus, new InvoicesPlace(""));
-		
+
+	@Provides
+	@Singleton
+	public PlaceHistoryHandler getHistoryHandler(
+			PlaceController placeController, PlaceHistoryMapper historyMapper,
+			EventBus eventBus) {
+		PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
+				historyMapper);
+		historyHandler.register(placeController, eventBus, new AuthPlace("login"));
+
 		return historyHandler;
 	}
-	
+
 	@Provides
 	@Singleton
 	public PlaceController getPlaceController(EventBus eventBus) {
