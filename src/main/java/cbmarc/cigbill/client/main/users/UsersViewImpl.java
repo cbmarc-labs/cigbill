@@ -1,38 +1,26 @@
 package cbmarc.cigbill.client.main.users;
 
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Singleton;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.ui.ListBoxEditor;
 import cbmarc.cigbill.client.ui.ListBoxMultiEditor;
-import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.User;
 
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
@@ -43,8 +31,6 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SubmitButton;
@@ -64,7 +50,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	public interface Driver extends SimpleBeanEditorDriver<User, UsersViewImpl> {
 	}
 
-	@UiField(provided = true)
+	/*@UiField(provided = true)
 	AppCellTable<User> cellTable = new AppCellTable<User>(new IFilter<User>() {
 		@Override
 		public boolean isValid(User value, String filter) {
@@ -74,7 +60,9 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 					.contains(filter.toLowerCase());// ||
 			// Integer.toString(value.getName()).contains(filter.toLowerCase());
 		}
-	});
+	});*/
+	
+	CellTable<User> cellTable = new CellTable<User>();
 
 	@Ignore
 	@UiField
@@ -142,7 +130,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	/**
 	 * Create celltable columns
 	 */
-	private void createCellTable() {
+	private void createCellTable() {/*
 		// /////////////////////////////////////////////////////////////////////
 		// LOGIN COLUMN
 		loginColumn = new Column<User, SafeHtml>(new SafeHtmlCell()) {
@@ -238,7 +226,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 				deleteTableButton.setVisible(selectedSet.size() > 0 ? true
 						: false);
 			}
-		});
+		});*/
 
 	}
 
@@ -247,10 +235,10 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	 * 
 	 * @param list
 	 */
-	public void setList(List<User> list) {
+	public void setList(List<User> list) {/*
 		cellTable.setList(list);
 		cellTable.getCellTable().getColumnSortList().clear();
-		cellTable.getCellTable().getColumnSortList().push(loginColumn);
+		cellTable.getCellTable().getColumnSortList().push(loginColumn);*/
 	}
 
 	/*
@@ -262,11 +250,11 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	 */
 
 	@UiHandler("deleteTableButton")
-	protected void onClickDeleteTableButton(ClickEvent event) {
+	protected void onClickDeleteTableButton(ClickEvent event) {/*
 		if (Window.confirm(appConstants.areYouSure())) {
 			Set<User> users = cellTable.getSelectionModel().getSelectedSet();
 			presenter.doDelete(users);
-		}
+		}*/
 	}
 
 	@UiHandler(value = { "validationPanel", "validationAnchor" })
@@ -417,7 +405,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 			@Override
 			public void execute() {
-				cellTable.setFocus();
+				//cellTable.setFocus();
 
 			}
 		});

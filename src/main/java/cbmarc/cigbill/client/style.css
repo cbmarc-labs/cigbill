@@ -1,6 +1,23 @@
 /* bootstrap modifications */
-.navbar {
-	margin: 10px 0;
+body {
+	padding-top: 10px;
+}
+
+.modal {
+	left: 50px;
+	right: 50px;
+	width: auto;
+	margin: -250px 0 0 0;
+}
+
+@media ( max-width : 767px) {
+	.modal {
+		margin: 0;
+	}
+}
+
+.modal-footer {
+	text-align: inherit;
 }
 
 .breadcrumb {
@@ -16,7 +33,7 @@
 }
 
 .validation-panel {
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .alert {

@@ -28,7 +28,7 @@
 			</div>
 			<div class="row-fluid" style="margin:5px 0;">
 				<div class="span">
-					<a:AppCellTable ui:field="cellTable"></a:AppCellTable>
+					<!-- <a:AppCellTable ui:field="cellTable"></a:AppCellTable> -->
 				</div>
 			</div>
 		</g:HTMLPanel>

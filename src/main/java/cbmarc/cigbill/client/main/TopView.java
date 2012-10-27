@@ -1,6 +1,6 @@
 package cbmarc.cigbill.client.main;
 
-import cbmarc.cigbill.client.ui.AppBreadcrumb;
+import cbmarc.cigbill.client.ui.AppBreadcrumbs;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -11,7 +11,7 @@ public interface TopView extends IsWidget {
 
 	void setPresenter(Presenter presenter);
 
-	AppBreadcrumb getAppBreadcrumb();
+	AppBreadcrumbs getAppBreadcrumbs();
 
 	public interface Presenter {
 		void goTo(Place place);

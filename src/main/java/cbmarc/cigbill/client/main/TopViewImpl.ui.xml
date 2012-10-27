@@ -3,6 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:a="urn:import:cbmarc.cigbill.client.ui">
 	<g:HTMLPanel>
 		<a:AppNav ui:field="appNav"></a:AppNav>
-		<a:AppBreadcrumb ui:field="appBreadcrumb"></a:AppBreadcrumb>
+		<a:AppBreadcrumbs ui:field="appBreadcrumbs"></a:AppBreadcrumbs>
 	</g:HTMLPanel>
 </ui:UiBinder> 

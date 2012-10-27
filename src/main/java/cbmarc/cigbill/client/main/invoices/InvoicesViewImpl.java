@@ -11,12 +11,20 @@ import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.Invoice;
 import cbmarc.cigbill.shared.Product;
 
+import com.github.gwtbootstrap.client.ui.AlertBlock;
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
+import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.TextArea;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.WellForm;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
@@ -32,18 +40,12 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SubmitButton;
-import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -83,18 +85,23 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	// Validatior error messages
 	@UiField
-	Anchor validationAnchor;
+	Button validationButton;
 	@UiField
-	FocusPanel validationPanel;
+	AlertBlock validationPanel;
 
 	// Form fields
 	@UiField
-	FormPanel formPanel;
+	WellForm formPanel;
+
+	@UiField
+	Button selectCustomerButton;
 
 	MultiWordSuggestOracle customerSuggestions = new MultiWordSuggestOracle();
 	@Editor.Ignore
-	@UiField(provided = true)
-	SuggestBox customerName = new SuggestBox(customerSuggestions);
+	// @UiField(provided = true)
+	// SuggestBox customerName = new SuggestBox(customerSuggestions);
+	@UiField
+	TextBox customerName;
 
 	@UiField
 	HTMLPanel productsInvoicesPanel, productsPanel;
@@ -129,7 +136,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	// Control groups for mark errors
 	@UiField
-	DivElement notesCG;
+	ControlGroup notesCG;
 
 	private Presenter presenter;
 
@@ -396,7 +403,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		}
 	}
 
-	@UiHandler(value = { "validationPanel", "validationAnchor" })
+	@UiHandler("validationButton")
 	protected void onClickValidation(ClickEvent event) {
 		event.preventDefault();
 		boolean visible = true;
@@ -405,6 +412,10 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			visible = false;
 
 		validationPanel.setVisible(visible);
+	}
+
+	@UiHandler("selectCustomerButton")
+	protected void onClickSelectCustomerButton(ClickEvent event) {
 	}
 
 	@UiHandler("submitButton")
@@ -465,7 +476,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	 * @param error
 	 */
 	public void setFormErrors(String error) {
-		validationAnchor.setVisible(true);
+		validationButton.setVisible(true);
 		validationPanel.getElement().setInnerHTML(error);
 	}
 
@@ -476,24 +487,17 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	 * @param error
 	 */
 	public void setFieldError(String field, String error) {
-		DivElement divElement = null;
-
 		if (field.equals("notes"))
-			divElement = notesCG;
-
-		if (divElement != null)
-			divElement.setClassName("control-group error");
+			notesCG.setType(ControlGroupType.ERROR);
 	}
 
 	/**
 	 * Clear errors from form
 	 */
 	public void clearErrors() {
-		String styleName = "control-group";
+		notesCG.setType(ControlGroupType.NONE);
 
-		notesCG.setClassName(styleName);
-
-		validationAnchor.setVisible(false);
+		validationButton.setVisible(false);
 		validationPanel.setVisible(false);
 	}
 

@@ -1,5 +1,6 @@
 package cbmarc.cigbill.client.ui;
 
+import cbmarc.cigbill.client.auth.AuthPlace;
 import cbmarc.cigbill.client.main.customers.CustomersPlace;
 import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
 import cbmarc.cigbill.client.main.payments.PaymentsPlace;
@@ -31,10 +32,10 @@ public class AppNav extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	// IE8 bug
 	@UiHandler(value = { "money", "stock", "people", "settings" })
 	protected void onClickValidation(ClickEvent event) {
 		event.preventDefault();
+		event.stopPropagation();
 	}
 
 	@UiHandler("invoices")
@@ -70,6 +71,11 @@ public class AppNav extends Composite {
 	@UiHandler("messages")
 	void onClickMessages(ClickEvent event) {
 		//changePlace(new MessagesPlace());
+	}
+	
+	@UiHandler("logout")
+	void onClickLogout(ClickEvent event) {
+		changePlace(new AuthPlace("logout"));
 	}
 
 	private void changePlace(Place place) {

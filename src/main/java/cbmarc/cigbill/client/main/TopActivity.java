@@ -3,7 +3,13 @@ package cbmarc.cigbill.client.main;
 import javax.inject.Singleton;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
+import cbmarc.cigbill.client.main.customers.CustomersPlace;
 import cbmarc.cigbill.client.main.home.HomePlace;
+import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
+import cbmarc.cigbill.client.main.payments.PaymentsPlace;
+import cbmarc.cigbill.client.main.products.ProductsPlace;
+import cbmarc.cigbill.client.main.taxes.TaxesPlace;
+import cbmarc.cigbill.client.main.users.UsersPlace;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -29,7 +35,7 @@ public class TopActivity extends AbstractActivity implements
 		panel.setWidget(view);
 		view.setPresenter(this);
 
-		updateAppBreadcrumb();
+		updateAppBreadcrumbs();
 
 		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
 
@@ -37,30 +43,59 @@ public class TopActivity extends AbstractActivity implements
 
 	@Override
 	public void onPlaceChange(PlaceChangeEvent event) {
-		updateAppBreadcrumb();
+		updateAppBreadcrumbs();
 
 	}
 
-	// TODO localized crumbs
-	private void updateAppBreadcrumb() {
+	private void updateAppBreadcrumbs() {
 		// return when not mainplace instance
 		if (!(placeController.getWhere() instanceof MainPlace))
 			return;
 
 		MainPlace mainPlace = ((MainPlace) placeController.getWhere());
 
-		String name = mainPlace.getName();
 		String[] tokens = mainPlace.getSplitToken();
 
-		view.getAppBreadcrumb().clear();
-		view.getAppBreadcrumb().addCrumb(appConstants.breadcrumbHome(),
+		view.getAppBreadcrumbs().clear();
+		view.getAppBreadcrumbs().addCrumb(appConstants.breadcrumbHome(),
 				new HomePlace());
 
-		if (!(placeController.getWhere() instanceof HomePlace)) {
-			view.getAppBreadcrumb().addCrumb(name);
+		Place where = placeController.getWhere();
+		if (!(where instanceof HomePlace)) {
+
+			if (where instanceof InvoicesPlace) {
+				view.getAppBreadcrumbs().addCrumb(appConstants.navInvoices(),
+						new InvoicesPlace());
+
+			} else if (where instanceof PaymentsPlace) {
+				view.getAppBreadcrumbs().addCrumb(appConstants.navPayments(),
+						new PaymentsPlace());
+
+			} else if (where instanceof ProductsPlace) {
+				view.getAppBreadcrumbs().addCrumb(appConstants.navProducts(),
+						new ProductsPlace());
+
+			} else if (where instanceof TaxesPlace) {
+				view.getAppBreadcrumbs().addCrumb(appConstants.navTaxes(),
+						new TaxesPlace());
+
+			} else if (where instanceof CustomersPlace) {
+				view.getAppBreadcrumbs().addCrumb(appConstants.navCustomers(),
+						new CustomersPlace());
+
+			} else if (where instanceof UsersPlace) {
+				view.getAppBreadcrumbs().addCrumb(appConstants.navUsers(),
+						new UsersPlace());
+
+			} /*
+			 * else if(where instanceof MessagesPlace) {
+			 * view.getAppBreadcrumbs().addCrumb(name, new MessagesPlace());
+			 * 
+			 * }
+			 */
 
 			if (!tokens[0].isEmpty())
-				view.getAppBreadcrumb().addCrumb(tokens[0]);
+				view.getAppBreadcrumbs().addCrumb(tokens[0]);
 		}
 	}
 

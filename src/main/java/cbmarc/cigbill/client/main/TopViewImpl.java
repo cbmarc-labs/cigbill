@@ -1,6 +1,6 @@
 package cbmarc.cigbill.client.main;
 
-import cbmarc.cigbill.client.ui.AppBreadcrumb;
+import cbmarc.cigbill.client.ui.AppBreadcrumbs;
 import cbmarc.cigbill.client.ui.AppNav;
 
 import com.google.gwt.core.client.GWT;
@@ -26,18 +26,18 @@ public class TopViewImpl extends Composite implements TopView,
 	AppNav appNav;
 
 	@UiField
-	AppBreadcrumb appBreadcrumb;
+	AppBreadcrumbs appBreadcrumbs;
 
 	public TopViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
-		
+
 		appNav.addPlaceChangeHandler(this);
-		appBreadcrumb.addPlaceChangeHandler(this);
+		appBreadcrumbs.addPlaceChangeHandler(this);
 	}
 
 	@Override
-	public AppBreadcrumb getAppBreadcrumb() {
-		return appBreadcrumb;
+	public AppBreadcrumbs getAppBreadcrumbs() {
+		return appBreadcrumbs;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class TopViewImpl extends Composite implements TopView,
 	@Override
 	public void onPlaceChange(PlaceChangeEvent event) {
 		presenter.goTo(event.getNewPlace());
-		
+
 	}
 
 }

@@ -7,8 +7,8 @@ import cbmarc.cigbill.client.utils.EditorView;
 import cbmarc.cigbill.shared.Invoice;
 import cbmarc.cigbill.shared.Product;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 

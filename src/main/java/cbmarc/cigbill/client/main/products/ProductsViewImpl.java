@@ -9,12 +9,19 @@ import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.Product;
 
+import com.github.gwtbootstrap.client.ui.AlertBlock;
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
+import com.github.gwtbootstrap.client.ui.TextArea;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.WellForm;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
@@ -32,18 +39,12 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DoubleBox;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SubmitButton;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -84,13 +85,13 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 	// Validatior error messages
 	@UiField
-	Anchor validationAnchor;
+	Button validationButton;
 	@UiField
-	FocusPanel validationPanel;
+	AlertBlock validationPanel;
 
 	// Form fields
 	@UiField
-	FormPanel formPanel;
+	WellForm formPanel;
 	@UiField
 	TextBox name, description;
 	@UiField
@@ -104,7 +105,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 	// Control groups for mark errors
 	@UiField
-	DivElement nameCG, descriptionCG, priceCG;
+	ControlGroup nameCG, descriptionCG, priceCG;
 
 	private Presenter presenter;
 
@@ -243,7 +244,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		}
 	}
 
-	@UiHandler(value = { "validationPanel", "validationAnchor" })
+	@UiHandler("validationButton")
 	protected void onClickValidation(ClickEvent event) {
 		event.preventDefault();
 		boolean visible = true;
@@ -299,8 +300,8 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	 * @param error
 	 */
 	public void setFormErrors(String error) {
-		validationAnchor.setVisible(true);
-		validationPanel.getElement().setInnerHTML(error);
+		validationButton.setVisible(true);
+		validationPanel.setHTML(error);
 	}
 
 	/**
@@ -310,32 +311,25 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	 * @param error
 	 */
 	public void setFieldError(String field, String error) {
-		DivElement divElement = null;
-
 		if (field.equals("name"))
-			divElement = nameCG;
+			nameCG.setType(ControlGroupType.ERROR);
 
 		else if (field.equals("description"))
-			divElement = descriptionCG;
+			descriptionCG.setType(ControlGroupType.ERROR);
 
 		else if (field.equals("price"))
-			divElement = priceCG;
-
-		if (divElement != null)
-			divElement.setClassName("control-group error");
+			priceCG.setType(ControlGroupType.ERROR);
 	}
 
 	/**
 	 * Clear errors from form
 	 */
 	public void clearErrors() {
-		String styleName = "control-group";
+		nameCG.setType(ControlGroupType.NONE);
+		descriptionCG.setType(ControlGroupType.NONE);
+		priceCG.setType(ControlGroupType.NONE);
 
-		nameCG.setClassName(styleName);
-		descriptionCG.setClassName(styleName);
-		priceCG.setClassName(styleName);
-
-		validationAnchor.setVisible(false);
+		validationButton.setVisible(false);
 		validationPanel.setVisible(false);
 	}
 
