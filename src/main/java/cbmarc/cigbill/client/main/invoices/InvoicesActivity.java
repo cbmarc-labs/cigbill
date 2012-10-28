@@ -13,12 +13,14 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
+import cbmarc.cigbill.client.main.customers.CustomersServiceAsync;
+import cbmarc.cigbill.client.main.customers.CustomersServiceImpl;
 import cbmarc.cigbill.client.main.products.ProductsServiceAsync;
 import cbmarc.cigbill.client.main.products.ProductsServiceImpl;
-import cbmarc.cigbill.client.main.users.UsersPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
+import cbmarc.cigbill.shared.Customer;
 import cbmarc.cigbill.shared.Invoice;
 import cbmarc.cigbill.shared.Product;
 
@@ -30,7 +32,6 @@ import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
@@ -43,10 +44,13 @@ public class InvoicesActivity extends AbstractActivity implements
 
 	private InvoicesConstants taxesConstants = GWT
 			.create(InvoicesConstants.class);
+	
 	private InvoicesServiceAsync service = GWT
 			.create(InvoicesServiceImpl.class);
-	private ProductsServiceAsync serviceProducts = GWT
+	private ProductsServiceAsync productsService = GWT
 			.create(ProductsServiceImpl.class);
+	private CustomersServiceAsync customersService = GWT
+			.create(CustomersServiceImpl.class);
 
 	@Inject
 	private InvoicesView view;
@@ -117,11 +121,23 @@ public class InvoicesActivity extends AbstractActivity implements
 	}
 
 	public void doLoadProducts() {
-		serviceProducts.getAll(new AppAsyncCallback<List<Product>>() {
+		productsService.getAll(new AppAsyncCallback<List<Product>>() {
 
 			@Override
 			public void onSuccess(List<Product> result) {
 				view.setListProduct(result);
+
+			}
+		});
+
+	}
+
+	public void doLoadCustomers() {
+		customersService.getAll(new AppAsyncCallback<List<Customer>>() {
+
+			@Override
+			public void onSuccess(List<Customer> result) {
+				view.setListCustomer(result);
 
 			}
 		});
@@ -138,6 +154,7 @@ public class InvoicesActivity extends AbstractActivity implements
 
 		driver.edit(new Invoice());
 
+		doLoadCustomers();
 		doLoadProducts();
 
 	}
@@ -161,6 +178,7 @@ public class InvoicesActivity extends AbstractActivity implements
 
 				} else {
 					view.showFormPanel(taxesConstants.editLegendLabel());
+					doLoadCustomers();
 					doLoadProducts();
 					driver.edit(result);
 				}

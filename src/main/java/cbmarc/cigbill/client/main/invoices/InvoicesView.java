@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import cbmarc.cigbill.client.utils.EditorView;
+import cbmarc.cigbill.shared.Customer;
 import cbmarc.cigbill.shared.Invoice;
 import cbmarc.cigbill.shared.Product;
 
@@ -19,6 +20,7 @@ public interface InvoicesView extends IsWidget, EditorView<Invoice> {
 
 	void setList(List<Invoice> data);
 	void setListProduct(List<Product> data);
+	void setListCustomer(List<Customer> data);
 
 	void showFormPanel(String legendText);
 

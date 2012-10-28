@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
+import cbmarc.cigbill.client.main.customers.CustomersConstants;
 import cbmarc.cigbill.client.main.products.ProductsConstants;
 import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.utils.IFilter;
+import cbmarc.cigbill.shared.Customer;
 import cbmarc.cigbill.shared.Invoice;
 import cbmarc.cigbill.shared.Product;
 
@@ -46,6 +48,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SubmitButton;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -81,6 +84,8 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	@UiField
 	HTMLPanel cellTablePanel;
 	@UiField
+	Modal selectCustomerModal;
+	@UiField
 	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
@@ -98,10 +103,10 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	MultiWordSuggestOracle customerSuggestions = new MultiWordSuggestOracle();
 	@Editor.Ignore
-	// @UiField(provided = true)
-	// SuggestBox customerName = new SuggestBox(customerSuggestions);
-	@UiField
-	TextBox customerName;
+	@UiField(provided = true)
+	SuggestBox customerName = new SuggestBox(customerSuggestions);
+	@UiField(provided = true)
+	AppCellTable<Customer> customersCellTable = new AppCellTable<Customer>(null);
 
 	@UiField
 	HTMLPanel productsInvoicesPanel, productsPanel;
@@ -146,6 +151,8 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			.create(InvoicesConstants.class);
 	private ProductsConstants productsConstants = GWT
 			.create(ProductsConstants.class);
+	private CustomersConstants customersConstants = GWT
+			.create(CustomersConstants.class);
 
 	Column<Invoice, SafeHtml> idColumn;
 	TextColumn<Product> productsNameColumn;
@@ -160,12 +167,8 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(false);
 
-		customerSuggestions.add("aa");
-		customerSuggestions.add("ab");
-		customerSuggestions.add("ac");
-		customerSuggestions.add("ad");
-
 		createInvoicesCellTable();
+		createCustomersCellTable();
 		createInvoicesProductsCellTable();
 		createProductsCellTable();
 	}
@@ -216,6 +219,43 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			}
 		});
 
+	}
+
+	private void createCustomersCellTable() {
+		// /////////////////////////////////////////////////////////////////////
+		// CUSTOMERS NAME COLUMN
+		TextColumn<Customer> nameColumn = new TextColumn<Customer>() {
+
+			@Override
+			public String getValue(Customer object) {
+				return object.getName();
+			}
+		};
+		customersCellTable.getCellTable().addColumn(nameColumn,
+				customersConstants.columnName());
+
+		// /////////////////////////////////////////////////////////////////////
+		// CUSTOMERS EMAIL COLUMN
+		TextColumn<Customer> emailColumn = new TextColumn<Customer>() {
+
+			@Override
+			public String getValue(Customer object) {
+				return object.getEmail();
+			}
+		};
+		customersCellTable.getCellTable().addColumn(emailColumn,
+				customersConstants.columnEmail());
+
+		// /////////////////////////////////////////////////////////////////////
+		// CUSTOMERS CELLTABLE CLICKHANDLER
+		customersCellTable.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				selectCustomerModal.hide();
+				Window.alert("SELECTED");
+			}
+		});
 	}
 
 	private void createInvoicesProductsCellTable() {
@@ -387,6 +427,16 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	}
 
+	@Override
+	public void setListCustomer(List<Customer> data) {
+		customersCellTable.setList(data);
+		
+		for(Customer customer:data) {
+			customerSuggestions.add(customer.getName());
+		}
+		
+	}
+
 	/*
 	 * // only digits as input in text field
 	 * 
@@ -416,6 +466,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	@UiHandler("selectCustomerButton")
 	protected void onClickSelectCustomerButton(ClickEvent event) {
+		selectCustomerModal.show();
 	}
 
 	@UiHandler("submitButton")

@@ -1,43 +1,32 @@
+/* GWT modifications */
+.gwt-SuggestBox {
+	border: 1px solid #666;
+	text-align: left;
+}
+
+.gwt-SuggestBoxPopup {
+	text-align: left;
+	cursor: pointer;
+	cursor: hand;
+	border: 1px solid #666;
+	border-top: 0;
+	background-color: #fff;
+	overflow-y: auto !important;
+	max-height: 250px;
+}
+
+.gwt-SuggestBoxPopup .item {
+	border: 1px dotted #aaa;
+	width: 220px;
+}
+
+.gwt-SuggestBoxPopup .item-selected {
+	background-color: #ffc;
+}
+
 /* bootstrap modifications */
 body {
 	padding-top: 10px;
-}
-
-.modal {
-	left: 50px;
-	right: 50px;
-	width: auto;
-	margin: -250px 0 0 0;
-}
-
-@media ( max-width : 767px) {
-	.modal {
-		margin: 0;
-	}
-}
-
-.modal-footer {
-	text-align: inherit;
-}
-
-.breadcrumb {
-	margin: 10px 0;
-}
-
-.btn-toolbar {
-	margin: 0;
-}
-
-.popupContent i {
-	margin-right: 10px;
-}
-
-.validation-panel {
-	cursor: pointer;
-}
-
-.alert {
-	padding: 8px 25px;
 }
 
 ul.nav li.dropdown:hover ul.dropdown-menu {
@@ -47,4 +36,40 @@ ul.nav li.dropdown:hover ul.dropdown-menu {
 
 a.menu:after,.dropdown-toggle:after {
 	content: none;
+}
+
+.modal-backdrop,.modal-backdrop.fade.in {
+	opacity: 0.7;
+	filter: alpha(opacity\=70);
+	background: #fff;
+}
+
+.modal {
+	width: 940px;
+	margin-left: -470px;
+}
+
+.modal-footer {
+	text-align: left;
+}
+
+/* Responsive */
+@media ( min-width : 1200px) {
+	.modal {
+		width: 1170px;
+		margin-left: -585px;
+	}
+}
+
+@media ( max-width : 979px) {
+	.modal {
+		top: 1%;
+		right: 1%;
+		left: 1%;
+		bottom: auto;
+		width: auto !important;
+		height: auto !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
 }

@@ -32,7 +32,6 @@
 
 		</g:HTMLPanel>
 
-		<!-- <g:FormPanel ui:field="formPanel" styleName="well"> -->
 		<b:WellForm ui:field="formPanel">
 
 			<b:Fieldset>
@@ -45,7 +44,7 @@
 				</b:Legend>
 
 				<b:AlertBlock ui:field="validationPanel" heading="Warning"
-					type="WARNING" close="false"></b:AlertBlock>
+					type="ERROR" close="false"></b:AlertBlock>
 
 				<b:TabPanel>
 					<b:TabPane heading="General" active="true">
