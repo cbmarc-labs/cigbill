@@ -22,7 +22,7 @@ public class TaxesDatabase {
 	MyFactory factory = GWT.create(MyFactory.class);
 
 	public TaxesDatabase() {
-		generateItems(5);
+		generateItems(25);
 	}
 
 	public static TaxesDatabase getInstance() {

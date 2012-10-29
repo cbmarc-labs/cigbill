@@ -13,11 +13,15 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
+import cbmarc.cigbill.client.main.taxes.TaxesServiceAsync;
+import cbmarc.cigbill.client.main.taxes.TaxesServiceImpl;
 import cbmarc.cigbill.client.main.users.UsersPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppMessage;
 import cbmarc.cigbill.shared.ClientGroup;
+import cbmarc.cigbill.shared.Customer;
 import cbmarc.cigbill.shared.Product;
+import cbmarc.cigbill.shared.Tax;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
@@ -30,11 +34,13 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author marc
  * 
  */
+@Singleton
 public class ProductsActivity extends AbstractActivity implements
 		ProductsView.Presenter {
 
@@ -42,6 +48,8 @@ public class ProductsActivity extends AbstractActivity implements
 			.create(ProductsConstants.class);
 	private ProductsServiceAsync service = GWT
 			.create(ProductsServiceImpl.class);
+	private TaxesServiceAsync taxesService = GWT
+			.create(TaxesServiceImpl.class);
 
 	@Inject
 	private ProductsView view;
@@ -111,6 +119,19 @@ public class ProductsActivity extends AbstractActivity implements
 		});
 	}
 
+	@Override
+	public void doLoadTaxes() {
+		taxesService.getAll(new AppAsyncCallback<List<Tax>>() {
+
+			@Override
+			public void onSuccess(List<Tax> result) {
+				view.setTaxList(result);
+
+			}
+		});
+
+	}
+
 	/**
 	 * Show form and populate fields with editor driver
 	 */
@@ -120,6 +141,8 @@ public class ProductsActivity extends AbstractActivity implements
 		view.getFormDeleteButton().setVisible(false);
 
 		driver.edit(new Product());
+		
+		doLoadTaxes();
 
 	}
 
@@ -143,6 +166,8 @@ public class ProductsActivity extends AbstractActivity implements
 				} else {
 					view.showFormPanel(productsConstants.editLegendLabel());
 					driver.edit(result);
+					
+					doLoadTaxes();
 				}
 
 			}
@@ -156,8 +181,6 @@ public class ProductsActivity extends AbstractActivity implements
 	public void doSave() {
 		final Product product = driver.flush();
 		final Long id = product.getId();
-		
-		//Window.alert();
 
 		if (validateForm(product)) {
 			service.save(product, new AppAsyncCallback<Void>() {

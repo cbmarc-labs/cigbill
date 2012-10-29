@@ -30,6 +30,9 @@ public interface ProductsConstants extends Constants {
 	@DefaultStringValue("Price")
 	String formPrice();
 	
+	@DefaultStringValue("Tax")
+	String formTax();
+	
 	@DefaultStringValue("Notes")
 	String formNotes();
 

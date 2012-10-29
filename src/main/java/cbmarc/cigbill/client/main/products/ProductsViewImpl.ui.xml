@@ -27,7 +27,7 @@
 			</b:Paragraph>
 
 			<b:Paragraph>
-				<a:AppCellTable ui:field="cellTable"></a:AppCellTable>
+				<a:AppCellTable ui:field="cellTable"/>
 			</b:Paragraph>
 
 		</g:HTMLPanel>
@@ -51,6 +51,7 @@
 						<b:ControlGroup ui:field="nameCG">
 							<b:ControlLabel for="name">
 								<ui:text from="{productsCnts.formName}"></ui:text>
+								*
 							</b:ControlLabel>
 							<b:Controls>
 								<b:TextBox ui:field="name" b:id="name"></b:TextBox>
@@ -67,15 +68,32 @@
 							</b:Controls>
 						</b:ControlGroup>
 
-						<b:ControlGroup ui:field="priceCG">
-							<b:ControlLabel for="price">
-								<ui:text from="{productsCnts.formPrice}"></ui:text>
-							</b:ControlLabel>
-							<b:Controls>
-								<g:DoubleBox ui:field="price" maxLength="12"
-									alignment="RIGHT" />
-							</b:Controls>
-						</b:ControlGroup>
+						<b:Row>
+							<b:Column size="3">
+								<b:ControlGroup ui:field="priceCG">
+									<b:ControlLabel for="price">
+										<ui:text from="{productsCnts.formPrice}"></ui:text>
+									</b:ControlLabel>
+									<b:Controls>
+										<g:DoubleBox ui:field="price" maxLength="12"
+											alignment="RIGHT" width="10em" />
+									</b:Controls>
+								</b:ControlGroup>
+							</b:Column>
+							<b:Column size="3">
+								<b:ControlGroup>
+									<b:ControlLabel for="taxName">
+										<ui:text from="{productsCnts.formTax}"></ui:text>
+									</b:ControlLabel>
+									<b:Controls>
+										<b:AppendButton>
+											<g:SuggestBox ui:field="taxName" width="10em" />
+											<b:Button ui:field="selectTaxButton" icon="SEARCH"></b:Button>
+										</b:AppendButton>
+									</b:Controls>
+								</b:ControlGroup>
+							</b:Column>
+						</b:Row>
 					</b:TabPane>
 
 					<b:TabPane heading="Notes">
@@ -115,6 +133,14 @@
 			</b:Fieldset>
 
 		</b:WellForm>
+
+		<!-- TAX MODAL -->
+		<b:Modal ui:field="taxModal" title="Select Tax">
+			<a:AppCellTable ui:field="taxCellTable"/>
+			<b:ModalFooter>
+				<b:Button icon="CHEVRON_LEFT" ui:field="taxModalCancelButton">Cancel</b:Button>
+			</b:ModalFooter>
+		</b:Modal>
 
 	</g:HTMLPanel>
 

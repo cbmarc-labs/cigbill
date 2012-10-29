@@ -29,6 +29,14 @@ body {
 	padding-top: 10px;
 }
 
+.pagination {
+	margin: 5px 0;
+}
+
+.pagination a, .pagination span {
+	background-color: inherit;
+}
+
 ul.nav li.dropdown:hover ul.dropdown-menu {
 	display: block;
 	top: 37px;

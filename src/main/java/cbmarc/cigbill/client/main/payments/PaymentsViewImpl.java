@@ -37,7 +37,9 @@ import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PaymentsViewImpl extends Composite implements PaymentsView,
 		Editor<Payment> {
 
@@ -50,17 +52,8 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 			SimpleBeanEditorDriver<Payment, PaymentsViewImpl> {
 	}
 
-	@UiField(provided = true)
-	AppCellTable<Payment> cellTable = new AppCellTable<Payment>(
-			new IFilter<Payment>() {
-				@Override
-				public boolean isValid(Payment value, String filter) {
-					if (filter == null || value == null)
-						return true;
-					return value.getName().toLowerCase()
-							.contains(filter.toLowerCase());
-				}
-			});
+	@UiField
+	AppCellTable<Payment> cellTable;
 
 	@Ignore
 	@UiField
@@ -135,12 +128,12 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 				return sb.toSafeHtml();
 			}
 		};
-		cellTable.getCellTable().addColumn(nameColumn,
+		cellTable.addColumn(nameColumn,
 				taxesConstants.columnName());
 
 		// Make column sortable.
 		nameColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(nameColumn,
+		cellTable.setComparator(nameColumn,
 				new Comparator<Payment>() {
 					public int compare(Payment o1, Payment o2) {
 						return o1.getName().compareTo(o2.getName());
@@ -153,11 +146,10 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 
 			@Override
 			public void onClick(ClickEvent event) {
-				Set<Payment> selectedSet = cellTable.getSelectionModel()
-						.getSelectedSet();
+				Set<Payment> selectedSet = cellTable.getSelectedSet();
 
-				deleteTableButton.setVisible(selectedSet.size() > 0 ? true
-						: false);
+				boolean visible = selectedSet.size() > 0 ? true : false;
+				deleteTableButton.setVisible(visible);
 			}
 		});
 
@@ -170,8 +162,6 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	 */
 	public void setList(List<Payment> list) {
 		cellTable.setList(list);
-		cellTable.getCellTable().getColumnSortList().clear();
-		cellTable.getCellTable().getColumnSortList().push(nameColumn);
 	}
 
 	/*
@@ -185,8 +175,7 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 	@UiHandler("deleteTableButton")
 	protected void onClickDeleteTableButton(ClickEvent event) {
 		if (Window.confirm(appConstants.areYouSure())) {
-			Set<Payment> items = cellTable.getSelectionModel().getSelectedSet();
-			presenter.doDelete(items);
+			presenter.doDelete(cellTable.getSelectedSet());
 		}
 	}
 
@@ -321,15 +310,6 @@ public class PaymentsViewImpl extends Composite implements PaymentsView,
 		formPanel.setVisible(false);
 
 		deleteTableButton.setVisible(false);
-
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-			@Override
-			public void execute() {
-				cellTable.setFocus();
-
-			}
-		});
 
 	}
 

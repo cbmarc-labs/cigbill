@@ -5,6 +5,7 @@ import java.util.Set;
 
 import cbmarc.cigbill.client.utils.EditorView;
 import cbmarc.cigbill.shared.Product;
+import cbmarc.cigbill.shared.Tax;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.place.shared.Place;
@@ -17,6 +18,7 @@ public interface ProductsView extends IsWidget, EditorView<Product> {
 	void setPresenter(Presenter presenter);
 
 	void setList(List<Product> data);
+	void setTaxList(List<Tax> data);
 
 	void showFormPanel(String legendText);
 
@@ -32,6 +34,7 @@ public interface ProductsView extends IsWidget, EditorView<Product> {
 		void doAdd();
 
 		void doLoad();
+		void doLoadTaxes();
 
 		void doSave();
 

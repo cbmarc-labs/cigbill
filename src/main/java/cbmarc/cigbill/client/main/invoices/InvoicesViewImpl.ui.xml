@@ -48,6 +48,7 @@
 
 				<b:TabPanel>
 					<b:TabPane heading="General" active="true">
+					
 						<b:Row>
 							<b:Column size="4">
 								<b:ControlGroup ui:field="customerNameCG">
@@ -77,6 +78,7 @@
 								</b:ControlGroup>
 							</b:Column>
 						</b:Row>
+						
 					</b:TabPane>
 					<b:TabPane heading="Products">
 
@@ -94,21 +96,10 @@
 								</div>
 							</div>
 						</g:HTMLPanel>
-
-						<!-- PRODUCTS ITEMS -->
-						<g:HTMLPanel styleName="" ui:field="productsPanel">
-							<div class="btn-toolbar">
-								<b:Button ui:field="returnProductButton" icon="CHEVRON_LEFT"
-									text="{appCnts.formBack}"></b:Button>
-							</div>
-							<div class="row-fluid" style="margin:5px 0;">
-								<div class="span">
-									<a:AppCellTable ui:field="productsCellTable"></a:AppCellTable>
-								</div>
-							</div>
-						</g:HTMLPanel>
+						
 					</b:TabPane>
 					<b:TabPane heading="Notes">
+					
 						<b:ControlGroup ui:field="notesCG">
 							<b:ControlLabel for="notes">
 								<ui:text from="{invoicesCnts.formNotes}"></ui:text>
@@ -118,6 +109,7 @@
 									b:id="notes" />
 							</b:Controls>
 						</b:ControlGroup>
+						
 					</b:TabPane>
 				</b:TabPanel>
 
@@ -126,6 +118,7 @@
 
 				<b:FormActions>
 					<g:HTMLPanel>
+					
 						<span>
 							<g:SubmitButton ui:field="submitButton" styleName="btn">
 								<i class="icon-ok"></i>
@@ -140,7 +133,6 @@
 								text="{appCnts.formDelete}" type="DANGER"></b:Button>
 						</span>
 
-
 					</g:HTMLPanel>
 				</b:FormActions>
 
@@ -152,7 +144,16 @@
 		<b:Modal ui:field="selectCustomerModal" title="Select Customer">
 			<a:AppCellTable ui:field="customersCellTable"></a:AppCellTable>
 			<b:ModalFooter>
-				<b:Button icon="FILE" type="PRIMARY">Save</b:Button>
+				<b:Button icon="CHEVRON_LEFT" ui:field="selectCustomerModalCancel">Cancel</b:Button>
+			</b:ModalFooter>
+		</b:Modal>
+
+		<!-- PRODUCTS MODAL -->
+		<b:Modal ui:field="selectProductsModal" title="Select Customer">
+			<a:AppCellTable ui:field="productsCellTable"></a:AppCellTable>
+			<b:ModalFooter>
+				<b:Button icon="OK" ui:field="selectProductsModalOk">Ok</b:Button>
+				<b:Button icon="CHEVRON_LEFT" ui:field="selectProductsModalCancel">Cancel</b:Button>
 			</b:ModalFooter>
 		</b:Modal>
 

@@ -1,5 +1,5 @@
 @def selectionBorderWidth 2px;
-.cellTableWidget {}
+.cellTableWidget {width:100%;}
 .cellTableFirstColumn {}
 .cellTableLastColumn {}
 .cellTableFooter {}

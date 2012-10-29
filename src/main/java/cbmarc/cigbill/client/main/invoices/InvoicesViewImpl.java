@@ -19,7 +19,6 @@ import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextArea;
-import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.WellForm;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.NumberCell;
@@ -66,87 +65,57 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			SimpleBeanEditorDriver<Invoice, InvoicesViewImpl> {
 	}
 
-	@UiField(provided = true)
-	AppCellTable<Invoice> cellTable = new AppCellTable<Invoice>(
-			new IFilter<Invoice>() {
-				@Override
-				public boolean isValid(Invoice value, String filter) {
-					if (filter == null || value == null)
-						return true;
-					return true;
-				}
-			});
+	@UiField
+	AppCellTable<Invoice> cellTable;
+	
+	@UiField
+	WellForm formPanel;
 
 	@Ignore
 	@UiField
 	Label legend;
 
 	@UiField
-	HTMLPanel cellTablePanel;
+	HTMLPanel cellTablePanel, productsInvoicesPanel;
+	
 	@UiField
-	Modal selectCustomerModal;
-	@UiField
-	Button addTableButton, deleteTableButton, toolbarRefreshButton;
-
-	// Validatior error messages
-	@UiField
-	Button validationButton;
+	TextArea notes;
+	
 	@UiField
 	AlertBlock validationPanel;
 
-	// Form fields
 	@UiField
-	WellForm formPanel;
+	Modal selectCustomerModal, selectProductsModal;
+	
+	@UiField
+	ControlGroup notesCG;
 
 	@UiField
-	Button selectCustomerButton;
+	Button addTableButton, deleteTableButton, toolbarRefreshButton,
+			selectCustomerModalCancel, validationButton, selectCustomerButton,
+			addProductButton, deleteProductButton, selectProductsModalOk,
+			selectProductsModalCancel, backButton, formDeleteButton;
+	
+	@UiField
+	SubmitButton submitButton;
 
 	MultiWordSuggestOracle customerSuggestions = new MultiWordSuggestOracle();
 	@Editor.Ignore
 	@UiField(provided = true)
 	SuggestBox customerName = new SuggestBox(customerSuggestions);
-	@UiField(provided = true)
-	AppCellTable<Customer> customersCellTable = new AppCellTable<Customer>(null);
+	@UiField
+	AppCellTable<Customer> customersCellTable;
 
 	@UiField
-	HTMLPanel productsInvoicesPanel, productsPanel;
-	@UiField(provided = true)
-	AppCellTable<Product> productsInvoicesCellTable = new AppCellTable<Product>(
-			new IFilter<Product>() {
-
-				@Override
-				public boolean isValid(Product value, String filter) {
-					// TODO Auto-generated method stub
-					return true;
-				}
-			});
-	@UiField(provided = true)
-	AppCellTable<Product> productsCellTable = new AppCellTable<Product>(
-			new IFilter<Product>() {
-
-				@Override
-				public boolean isValid(Product value, String filter) {
-					// TODO Auto-generated method stub
-					return true;
-				}
-			});
+	AppCellTable<Product> productsInvoicesCellTable;
 	@UiField
-	Button addProductButton, deleteProductButton, returnProductButton;
-	@UiField
-	TextArea notes;
-	@UiField
-	SubmitButton submitButton;
-	@UiField
-	Button backButton, formDeleteButton;
-
-	// Control groups for mark errors
-	@UiField
-	ControlGroup notesCG;
+	AppCellTable<Product> productsCellTable;
 
 	private Presenter presenter;
 
 	@Inject
 	private AppConstants appConstants;
+	
 	private InvoicesConstants invoicesConstants = GWT
 			.create(InvoicesConstants.class);
 	private ProductsConstants productsConstants = GWT
@@ -193,12 +162,12 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return sb.toSafeHtml();
 			}
 		};
-		cellTable.getCellTable().addColumn(idColumn,
+		cellTable.addColumn(idColumn,
 				invoicesConstants.columnId());
 
 		// Make column sortable.
 		idColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(idColumn,
+		cellTable.setComparator(idColumn,
 				new Comparator<Invoice>() {
 					public int compare(Invoice o1, Invoice o2) {
 						return o1.getId().compareTo(o2.getId());
@@ -211,11 +180,10 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 			@Override
 			public void onClick(ClickEvent event) {
-				Set<Invoice> selectedSet = cellTable.getSelectionModel()
-						.getSelectedSet();
-
-				deleteTableButton.setVisible(selectedSet.size() > 0 ? true
-						: false);
+				Set<Invoice> selectedSet = cellTable.getSelectedSet();
+				
+				boolean visible = selectedSet.size() > 0 ? true : false;
+				deleteTableButton.setVisible(visible);
 			}
 		});
 
@@ -231,7 +199,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return object.getName();
 			}
 		};
-		customersCellTable.getCellTable().addColumn(nameColumn,
+		customersCellTable.addColumn(nameColumn,
 				customersConstants.columnName());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -243,7 +211,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return object.getEmail();
 			}
 		};
-		customersCellTable.getCellTable().addColumn(emailColumn,
+		customersCellTable.addColumn(emailColumn,
 				customersConstants.columnEmail());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -252,8 +220,11 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 			@Override
 			public void onClick(ClickEvent event) {
-				selectCustomerModal.hide();
-				Window.alert("SELECTED");
+				if (customersCellTable.getSelected() != null) {
+					selectCustomerModal.hide();
+					Window.alert("SELECTED");
+					//taxName.setValue(taxCellTable.getSelected().getName());
+				}
 			}
 		});
 	}
@@ -268,7 +239,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return object.getName();
 			}
 		};
-		productsInvoicesCellTable.getCellTable().addColumn(nameColumn,
+		productsInvoicesCellTable.addColumn(nameColumn,
 				productsConstants.columnName());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -280,7 +251,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return object.getDescription();
 			}
 		};
-		productsInvoicesCellTable.getCellTable().addColumn(descriptionColumn,
+		productsInvoicesCellTable.addColumn(descriptionColumn,
 				productsConstants.columnDescription());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -293,13 +264,13 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			}
 		};
 		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		productsInvoicesCellTable.getCellTable().addColumn(priceColumn,
+		productsInvoicesCellTable.addColumn(priceColumn,
 				productsConstants.columnPrice());
-		productsInvoicesCellTable.getCellTable().setColumnWidth(priceColumn,
-				6.0, Unit.EM);
+		productsInvoicesCellTable.setColumnWidth(priceColumn,
+				"6em");
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
-		productsInvoicesCellTable.getListHandler().setComparator(priceColumn,
+		productsInvoicesCellTable.setComparator(priceColumn,
 				new Comparator<Product>() {
 					public int compare(Product o1, Product o2) {
 						return o1.getName().compareTo(o2.getName());
@@ -313,10 +284,10 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			@Override
 			public void onClick(ClickEvent event) {
 				Set<Product> selectedSet = productsInvoicesCellTable
-						.getSelectionModel().getSelectedSet();
+						.getSelectedSet();
 
-				deleteProductButton.setVisible(selectedSet.size() > 0 ? true
-						: false);
+				boolean visible = selectedSet.size() > 0 ? true : false;
+				deleteProductButton.setVisible(visible);
 			}
 		});
 	}
@@ -331,7 +302,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return object.getName();
 			}
 		};
-		productsCellTable.getCellTable().addColumn(productsNameColumn,
+		productsCellTable.addColumn(productsNameColumn,
 				productsConstants.columnName());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -343,7 +314,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return object.getDescription();
 			}
 		};
-		productsCellTable.getCellTable().addColumn(descriptionColumn,
+		productsCellTable.addColumn(descriptionColumn,
 				productsConstants.columnDescription());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -356,53 +327,17 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			}
 		};
 		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		productsCellTable.getCellTable().addColumn(priceColumn,
+		productsCellTable.addColumn(priceColumn,
 				productsConstants.columnPrice());
-		productsCellTable.getCellTable().setColumnWidth(priceColumn, 6.0,
-				Unit.EM);
+		productsCellTable.setColumnWidth(priceColumn, "6em");
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
-		productsCellTable.getListHandler().setComparator(priceColumn,
+		productsCellTable.setComparator(priceColumn,
 				new Comparator<Product>() {
 					public int compare(Product o1, Product o2) {
 						return o1.getName().compareTo(o2.getName());
 					}
 				});
-
-		// /////////////////////////////////////////////////////////////////////
-		// PRODUCTS CELLTABLE CLICKHANDLER
-		productsCellTable.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				Set<Product> selected = productsCellTable.getSelectionModel()
-						.getSelectedSet();
-				productsCellTable.getSelectionModel().clear();
-
-				if (selected.size() > 0) {
-					List<Product> list = productsInvoicesCellTable
-							.getDataProvider().getList();
-					list.addAll(selected);
-
-					productsInvoicesPanel.setVisible(true);
-					productsPanel.setVisible(false);
-
-					// Its ugly but it works
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-						@Override
-						public void execute() {
-							productsInvoicesCellTable.getCellTable()
-									.setVisibleRangeAndClearData(
-											productsInvoicesCellTable
-													.getCellTable()
-													.getVisibleRange(), true);
-
-						}
-					});
-				}
-			}
-		});
 
 	}
 
@@ -414,27 +349,26 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	public void setList(List<Invoice> data) {
 		cellTable.setList(data);
 
-		// sort descending
-		cellTable.getCellTable().getColumnSortList().clear();
-		cellTable.getCellTable().getColumnSortList().push(idColumn);
-		cellTable.getCellTable().getColumnSortList().push(idColumn);
+		// TODO sort descending
+		//cellTable.getCellTable().getColumnSortList().clear();
+		//cellTable.getCellTable().getColumnSortList().push(idColumn);
+		//cellTable.getCellTable().getColumnSortList().push(idColumn);
 	}
 
 	@Override
 	public void setListProduct(List<Product> data) {
 		productsCellTable.setList(data);
-		cellTable.getCellTable().getColumnSortList().push(productsNameColumn);
 
 	}
 
 	@Override
 	public void setListCustomer(List<Customer> data) {
 		customersCellTable.setList(data);
-		
-		for(Customer customer:data) {
+
+		for (Customer customer : data) {
 			customerSuggestions.add(customer.getName());
 		}
-		
+
 	}
 
 	/*
@@ -448,8 +382,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	@UiHandler("deleteTableButton")
 	protected void onClickDeleteTableButton(ClickEvent event) {
 		if (Window.confirm(appConstants.areYouSure())) {
-			Set<Invoice> items = cellTable.getSelectionModel().getSelectedSet();
-			presenter.doDelete(items);
+			presenter.doDelete(cellTable.getSelectedSet());
 		}
 	}
 
@@ -466,6 +399,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	@UiHandler("selectCustomerButton")
 	protected void onClickSelectCustomerButton(ClickEvent event) {
+		customersCellTable.clearSelected();
 		selectCustomerModal.show();
 	}
 
@@ -505,14 +439,41 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	@UiHandler("addProductButton")
 	protected void onClickAddProductButton(ClickEvent event) {
-		productsInvoicesPanel.setVisible(false);
-		productsPanel.setVisible(true);
+		productsCellTable.clearSelected();
+		selectProductsModal.show();
 	}
 
-	@UiHandler("returnProductButton")
-	protected void onClickReturnProductButton(ClickEvent event) {
-		productsInvoicesPanel.setVisible(true);
-		productsPanel.setVisible(false);
+	@UiHandler("selectProductsModalCancel")
+	protected void onClickSelectProductsModalCancel(ClickEvent event) {
+		selectProductsModal.hide();
+
+	}
+
+	@UiHandler("selectProductsModalOk")
+	protected void onClickSelectProductsModalOk(ClickEvent event) {
+		selectProductsModal.hide();
+
+		Set<Product> selected = productsCellTable.getSelectedSet();
+		productsCellTable.clearSelected();
+
+		if (selected.size() > 0) {
+			/*List<Product> list = productsInvoicesCellTable.getDataProvider()
+					.getList();
+			list.addAll(selected);
+
+			// Its ugly but it works
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+				@Override
+				public void execute() {
+					productsInvoicesCellTable.getCellTable()
+							.setVisibleRangeAndClearData(
+									productsInvoicesCellTable.getCellTable()
+											.getVisibleRange(), true);
+
+				}
+			});*/
+		}
 
 	}
 
@@ -574,8 +535,6 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(true);
-		productsInvoicesPanel.setVisible(true);
-		productsPanel.setVisible(false);
 		deleteProductButton.setVisible(false);
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -598,15 +557,6 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 		formPanel.setVisible(false);
 
 		deleteTableButton.setVisible(false);
-
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-			@Override
-			public void execute() {
-				cellTable.setFocus();
-
-			}
-		});
 
 	}
 

@@ -1,48 +1,26 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-  	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+	xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+
 	<ui:style>
-		.topBox {
-			border-top-left-radius: 5px;
-			border-top-right-radius: 5px;
-			background: #eee;
-			height: 40px;
-		}
-		.lengthListBox {
-			margin: 6px;
-			width:5em;
-		}
-		.filterTextBox {
-			float: right;
-			margin: 6px;
-		}
-		.bottomBox {
-			background: #eee;
-			height:30px;
-		}
-		.simplePager {
-			float:right;
-		}
+		
 	</ui:style>
- 	<g:HTMLPanel>
- 	    
- 	    <g:HTMLPanel styleName="{style.topBox}">
- 	        <g:ListBox ui:field="lengthListBox" styleName="{style.lengthListBox}">
-				<g:item value="10">10</g:item>
-				<g:item value="25">25</g:item>
-				<g:item value="50">50</g:item>
-				<g:item value="100">100</g:item>
- 	        </g:ListBox>
-			<g:TextBox ui:field="filterTextBox" styleName="{style.filterTextBox}"></g:TextBox>
-		</g:HTMLPanel>
+
+	<g:HTMLPanel>
 		
+		<c:CellTable ui:field="cellTable" pageSize="10" />
+
 		<g:HTMLPanel>
-			<c:CellTable ui:field="cellTable"/>
-		</g:HTMLPanel>
-		
-		<g:HTMLPanel styleName="{style.bottomBox}">
-			<c:SimplePager ui:field='simplePager' styleName="{style.simplePager}"/>
+			<span class="pull-right">
+				<b:Pagination>
+					<b:NavLink ui:field="fastBackward" icon="FAST_BACKWARD"></b:NavLink>
+					<b:NavLink ui:field="backward" icon="BACKWARD"></b:NavLink>
+					<b:NavLink ui:field="count" disabled="true">0-100:250</b:NavLink>
+					<b:NavLink ui:field="forward" icon="FORWARD"></b:NavLink>
+					<b:NavLink ui:field="fastForward" icon="FAST_FORWARD"></b:NavLink>
+				</b:Pagination>
+			</span>
 		</g:HTMLPanel>
 		
 	</g:HTMLPanel>

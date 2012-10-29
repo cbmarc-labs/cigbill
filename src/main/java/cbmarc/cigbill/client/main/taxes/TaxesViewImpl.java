@@ -38,7 +38,9 @@ import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 
 	private static Binder uiBinder = GWT.create(Binder.class);
@@ -49,16 +51,8 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	public interface Driver extends SimpleBeanEditorDriver<Tax, TaxesViewImpl> {
 	}
 
-	@UiField(provided = true)
-	AppCellTable<Tax> cellTable = new AppCellTable<Tax>(new IFilter<Tax>() {
-		@Override
-		public boolean isValid(Tax value, String filter) {
-			if (filter == null || value == null)
-				return true;
-			return value.getName().toLowerCase().contains(filter.toLowerCase())
-					|| value.getDescription().contains(filter.toLowerCase());
-		}
-	});
+	@UiField
+	AppCellTable<Tax> cellTable;
 
 	@Editor.Ignore
 	@UiField
@@ -132,12 +126,12 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 				return sb.toSafeHtml();
 			}
 		};
-		cellTable.getCellTable().addColumn(nameColumn,
+		cellTable.addColumn(nameColumn,
 				taxesConstants.columnName());
 
 		// Make column sortable.
 		nameColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(nameColumn,
+		cellTable.setComparator(nameColumn,
 				new Comparator<Tax>() {
 					public int compare(Tax o1, Tax o2) {
 						return o1.getName().compareTo(o2.getName());
@@ -153,12 +147,12 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 				return object.getDescription();
 			}
 		};
-		cellTable.getCellTable().addColumn(descriptionColumn,
+		cellTable.addColumn(descriptionColumn,
 				taxesConstants.columnDescription());
 
 		// Make column sortable.
 		descriptionColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(descriptionColumn,
+		cellTable.setComparator(descriptionColumn,
 				new Comparator<Tax>() {
 					public int compare(Tax o1, Tax o2) {
 						return o1.getName().compareTo(o2.getName());
@@ -170,11 +164,10 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				Set<Tax> selectedSet = cellTable.getSelectionModel()
-						.getSelectedSet();
+				Set<Tax> selectedSet = cellTable.getSelectedSet();
 
-				deleteTableButton.setVisible(selectedSet.size() > 0 ? true
-						: false);
+				boolean visible = selectedSet.size() > 0 ? true : false;
+				deleteTableButton.setVisible(visible);
 			}
 		});
 
@@ -187,8 +180,6 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	 */
 	public void setList(List<Tax> list) {
 		cellTable.setList(list);
-		cellTable.getCellTable().getColumnSortList().clear();
-		cellTable.getCellTable().getColumnSortList().push(nameColumn);
 	}
 
 	/*
@@ -202,8 +193,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	@UiHandler("deleteTableButton")
 	protected void onClickDeleteTableButton(ClickEvent event) {
 		if (Window.confirm(appConstants.areYouSure())) {
-			Set<Tax> items = cellTable.getSelectionModel().getSelectedSet();
-			presenter.doDelete(items);
+			presenter.doDelete(cellTable.getSelectedSet());
 		}
 	}
 
@@ -342,15 +332,6 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 		formPanel.setVisible(false);
 
 		deleteTableButton.setVisible(false);
-
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-			@Override
-			public void execute() {
-				cellTable.setFocus();
-
-			}
-		});
 
 	}
 

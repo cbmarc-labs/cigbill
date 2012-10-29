@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.Set;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
+import cbmarc.cigbill.client.main.taxes.TaxesConstants;
 import cbmarc.cigbill.client.ui.AppCellTable;
-import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.Product;
+import cbmarc.cigbill.shared.Tax;
 
 import com.github.gwtbootstrap.client.ui.AlertBlock;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
+import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.WellForm;
@@ -44,10 +46,14 @@ import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SubmitButton;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class ProductsViewImpl extends Composite implements ProductsView,
 		Editor<Product> {
 
@@ -60,19 +66,8 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 			SimpleBeanEditorDriver<Product, ProductsViewImpl> {
 	}
 
-	@UiField(provided = true)
-	AppCellTable<Product> cellTable = new AppCellTable<Product>(
-			new IFilter<Product>() {
-				@Override
-				public boolean isValid(Product value, String filter) {
-					if (filter == null || value == null)
-						return true;
-					return value.getName().toLowerCase()
-							.contains(filter.toLowerCase())
-							|| value.getDescription().contains(
-									filter.toLowerCase());
-				}
-			});
+	@UiField
+	AppCellTable<Product> cellTable;
 
 	@Editor.Ignore
 	@UiField
@@ -80,26 +75,42 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 	@UiField
 	HTMLPanel cellTablePanel;
+
 	@UiField
 	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
 	Button validationButton;
+
 	@UiField
 	AlertBlock validationPanel;
 
 	// Form fields
 	@UiField
 	WellForm formPanel;
+
 	@UiField
 	TextBox name, description;
+
 	@UiField
 	DoubleBox price;
+
+	MultiWordSuggestOracle taxSuggestions = new MultiWordSuggestOracle();
+
+	@Editor.Ignore
+	@UiField(provided = true)
+	SuggestBox taxName = new SuggestBox(taxSuggestions);
+
+	@UiField
+	Button selectTaxButton;
+
 	@UiField
 	TextArea notes;
+
 	@UiField
 	SubmitButton submitButton;
+
 	@UiField
 	Button backButton, formDeleteButton;
 
@@ -107,12 +118,22 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	@UiField
 	ControlGroup nameCG, descriptionCG, priceCG;
 
+	@UiField
+	Modal taxModal;
+
+	@UiField
+	AppCellTable<Tax> taxCellTable;
+
+	@UiField
+	Button taxModalCancelButton;
+
 	private Presenter presenter;
 
 	@Inject
 	private AppConstants appConstants;
 	private ProductsConstants productsConstants = GWT
 			.create(ProductsConstants.class);
+	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
 
 	Column<Product, SafeHtml> nameColumn;
 
@@ -127,6 +148,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		formPanel.setVisible(false);
 
 		createCellTable();
+		createTaxCellTable();
 	}
 
 	/**
@@ -149,19 +171,17 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 				return sb.toSafeHtml();
 			}
 		};
-		cellTable.getCellTable().addColumn(nameColumn,
-				productsConstants.columnName());
-		;
-		cellTable.getCellTable().setColumnWidth(nameColumn, 16.0, Unit.EM);
+		cellTable.addColumn(nameColumn, productsConstants.columnName());
+		cellTable.setColumnWidth(nameColumn, "16em");
 
 		// Make the first name column sortable.
+
 		nameColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(nameColumn,
-				new Comparator<Product>() {
-					public int compare(Product o1, Product o2) {
-						return o1.getName().compareTo(o2.getName());
-					}
-				});
+		cellTable.setComparator(nameColumn, new Comparator<Product>() {
+			public int compare(Product o1, Product o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 
 		// /////////////////////////////////////////////////////////////////////
 		// DESCRIPTION COLUMN
@@ -172,7 +192,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 				return object.getDescription();
 			}
 		};
-		cellTable.getCellTable().addColumn(descriptionColumn,
+		cellTable.addColumn(descriptionColumn,
 				productsConstants.columnDescription());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -186,17 +206,17 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 			}
 		};
 		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		cellTable.getCellTable().addColumn(priceColumn,
-				productsConstants.columnPrice());
-		cellTable.getCellTable().setColumnWidth(priceColumn, 6.0, Unit.EM);
+		cellTable.addColumn(priceColumn, productsConstants.columnPrice());
+		cellTable.setColumnWidth(priceColumn, "6em");
+		
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(priceColumn,
-				new Comparator<Product>() {
-					public int compare(Product o1, Product o2) {
-						return o1.getPrice().compareTo(o2.getPrice());
-					}
-				});
+
+		cellTable.setComparator(priceColumn, new Comparator<Product>() {
+			public int compare(Product o1, Product o2) {
+				return o1.getPrice().compareTo(o2.getPrice());
+			}
+		});
 
 		// /////////////////////////////////////////////////////////////////////
 		// CELLTABLE CLICKHANDLER
@@ -204,14 +224,53 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 			@Override
 			public void onClick(ClickEvent event) {
-				Set<Product> selectedSet = cellTable.getSelectionModel()
-						.getSelectedSet();
+				Set<Product> selectedSet = cellTable.getSelectedSet();
 
-				deleteTableButton.setVisible(selectedSet.size() > 0 ? true
-						: false);
+				boolean visible = selectedSet.size() > 0 ? true : false;
+				deleteTableButton.setVisible(visible);
 			}
 		});
 
+	}
+
+	/**
+	 * Create celltable columns
+	 */
+	private void createTaxCellTable() {
+		// /////////////////////////////////////////////////////////////////////
+		// NAME COLUMN
+		TextColumn<Tax> nameColumn = new TextColumn<Tax>() {
+
+			@Override
+			public String getValue(Tax object) {
+				return object.getName();
+			}
+		};
+		taxCellTable.addColumn(nameColumn, taxesConstants.columnName());
+
+		// /////////////////////////////////////////////////////////////////////
+		// DESCRIPTION COLUMN
+		TextColumn<Tax> descriptionColumn = new TextColumn<Tax>() {
+
+			@Override
+			public String getValue(Tax object) {
+				return object.getDescription();
+			}
+		};
+		taxCellTable.addColumn(descriptionColumn,
+				taxesConstants.columnDescription());
+
+		taxCellTable.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (taxCellTable.getSelected() != null) {
+					taxModal.hide();
+					taxName.setValue(taxCellTable.getSelected().getName());
+				}
+
+			}
+		});
 	}
 
 	/**
@@ -221,8 +280,16 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	 */
 	public void setList(List<Product> list) {
 		cellTable.setList(list);
-		cellTable.getCellTable().getColumnSortList().clear();
-		cellTable.getCellTable().getColumnSortList().push(nameColumn);
+	}
+
+	@Override
+	public void setTaxList(List<Tax> data) {
+		taxCellTable.setList(data);
+
+		for (Tax tax : data) {
+			taxSuggestions.add(tax.getName());
+		}
+
 	}
 
 	// only digits as input in text field
@@ -239,9 +306,9 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	@UiHandler("deleteTableButton")
 	protected void onClickDeleteTableButton(ClickEvent event) {
 		if (Window.confirm(appConstants.areYouSure())) {
-			Set<Product> items = cellTable.getSelectionModel().getSelectedSet();
-			presenter.doDelete(items);
+			presenter.doDelete(cellTable.getSelectedSet());
 		}
+
 	}
 
 	@UiHandler("validationButton")
@@ -287,6 +354,17 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	protected void onCLickFormDeleteButton(ClickEvent event) {
 		if (Window.confirm(appConstants.areYouSure()))
 			presenter.doDelete();
+	}
+
+	@UiHandler("selectTaxButton")
+	protected void onCLickSelectTaxButton(ClickEvent event) {
+		taxCellTable.clearSelected();
+		taxModal.show();
+	}
+
+	@UiHandler("taxModalCancelButton")
+	protected void onCLickTaxModalCancelButton(ClickEvent event) {
+		taxModal.hide();
 	}
 
 	@Override
@@ -376,15 +454,6 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		formPanel.setVisible(false);
 
 		deleteTableButton.setVisible(false);
-
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-			@Override
-			public void execute() {
-				cellTable.setFocus();
-
-			}
-		});
 
 	}
 

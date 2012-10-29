@@ -55,19 +55,8 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 			SimpleBeanEditorDriver<Customer, CustomersViewImpl> {
 	}
 
-	@UiField(provided = true)
-	AppCellTable<Customer> cellTable = new AppCellTable<Customer>(
-			new IFilter<Customer>() {
-				@Override
-				public boolean isValid(Customer value, String filter) {
-					if (filter == null || value == null)
-						return true;
-					return value.getName().toLowerCase()
-							.contains(filter.toLowerCase())
-							|| value.getEmail().toLowerCase()
-									.contains(filter.toLowerCase());
-				}
-			});
+	@UiField
+	AppCellTable<Customer> cellTable;
 
 	@Ignore
 	@UiField
@@ -141,12 +130,12 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 				return sb.toSafeHtml();
 			}
 		};
-		cellTable.getCellTable().addColumn(nameColumn,
+		cellTable.addColumn(nameColumn,
 				customersConstants.columnName());
 
 		// Make the first name column sortable.
 		nameColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(nameColumn,
+		cellTable.setComparator(nameColumn,
 				new Comparator<Customer>() {
 					public int compare(Customer o1, Customer o2) {
 						return o1.getName().compareTo(o2.getName());
@@ -161,10 +150,10 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 				return object.getEmail();
 			}
 		};
-		cellTable.getCellTable().addColumn(emailColumn,
+		cellTable.addColumn(emailColumn,
 				customersConstants.columnEmail());
 		emailColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(emailColumn,
+		cellTable.setComparator(emailColumn,
 				new Comparator<Customer>() {
 
 					@Override
@@ -178,11 +167,10 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 			@Override
 			public void onClick(ClickEvent event) {
-				Set<Customer> selectedSet = cellTable.getSelectionModel()
-						.getSelectedSet();
-
-				deleteTableButton.setVisible(selectedSet.size() > 0 ? true
-						: false);
+				Set<Customer> selectedSet = cellTable.getSelectedSet();
+				
+				boolean visible = selectedSet.size() > 0 ? true : false;
+				deleteTableButton.setVisible(visible);
 			}
 		});
 
@@ -195,8 +183,6 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	 */
 	public void setList(List<Customer> list) {
 		cellTable.setList(list);
-		cellTable.getCellTable().getColumnSortList().clear();
-		cellTable.getCellTable().getColumnSortList().push(nameColumn);
 	}
 
 	/*
@@ -210,9 +196,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	@UiHandler("deleteTableButton")
 	protected void onClickDeleteTableButton(ClickEvent event) {
 		if (Window.confirm(appConstants.areYouSure())) {
-			Set<Customer> items = cellTable.getSelectionModel()
-					.getSelectedSet();
-			presenter.doDelete(items);
+			presenter.doDelete(cellTable.getSelectedSet());
 		}
 	}
 
@@ -344,15 +328,6 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 		formPanel.setVisible(false);
 
 		deleteTableButton.setVisible(false);
-
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-			@Override
-			public void execute() {
-				cellTable.setFocus();
-
-			}
-		});
 
 	}
 

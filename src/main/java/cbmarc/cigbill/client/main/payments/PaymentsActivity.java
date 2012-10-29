@@ -29,11 +29,13 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author marc
  * 
  */
+@Singleton
 public class PaymentsActivity extends AbstractActivity implements
 		PaymentsView.Presenter {
 

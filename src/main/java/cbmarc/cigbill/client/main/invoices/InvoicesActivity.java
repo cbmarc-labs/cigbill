@@ -34,17 +34,19 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author marc
  * 
  */
+@Singleton
 public class InvoicesActivity extends AbstractActivity implements
 		InvoicesView.Presenter {
 
-	private InvoicesConstants taxesConstants = GWT
+	private InvoicesConstants invoicesConstants = GWT
 			.create(InvoicesConstants.class);
-	
+
 	private InvoicesServiceAsync service = GWT
 			.create(InvoicesServiceImpl.class);
 	private ProductsServiceAsync productsService = GWT
@@ -149,7 +151,7 @@ public class InvoicesActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doAdd() {
-		view.showFormPanel(taxesConstants.addLegendLabel());
+		view.showFormPanel(invoicesConstants.addLegendLabel());
 		view.getFormDeleteButton().setVisible(false);
 
 		driver.edit(new Invoice());
@@ -177,7 +179,7 @@ public class InvoicesActivity extends AbstractActivity implements
 							AppMessage.ERROR);
 
 				} else {
-					view.showFormPanel(taxesConstants.editLegendLabel());
+					view.showFormPanel(invoicesConstants.editLegendLabel());
 					doLoadCustomers();
 					doLoadProducts();
 					driver.edit(result);

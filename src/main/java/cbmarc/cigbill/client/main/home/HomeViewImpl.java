@@ -12,7 +12,9 @@ import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.PieChart;
 import com.google.gwt.visualization.client.visualizations.PieChart.Options;
+import com.google.inject.Singleton;
 
+@Singleton
 public class HomeViewImpl extends Composite implements HomeView {
 
 	private static Binder uiBinder = GWT.create(Binder.class);
