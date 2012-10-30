@@ -43,7 +43,7 @@ public class CustomersDatabase {
 	private ListDataProvider<Customer> dataProvider = new ListDataProvider<Customer>();
 
 	public CustomersDatabase() {
-		generateItems(100);
+		generateItems(25);
 	}
 
 	public static CustomersDatabase getInstance() {

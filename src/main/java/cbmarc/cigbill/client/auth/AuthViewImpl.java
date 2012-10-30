@@ -2,18 +2,18 @@ package cbmarc.cigbill.client.auth;
 
 import javax.inject.Singleton;
 
+import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
+import com.github.gwtbootstrap.client.ui.PasswordTextBox;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.WellForm;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SubmitButton;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 @Singleton
@@ -26,13 +26,17 @@ public class AuthViewImpl extends Composite implements AuthView {
 	}
 
 	@UiField
-	FormPanel formPanel;
+	WellForm formPanel;
+
 	@UiField
 	TextBox login;
+
 	@UiField
 	PasswordTextBox password;
+
 	@UiField
-	CheckBox remember;
+	CheckBox rememberMe;
+
 	@UiField
 	SubmitButton submitButton;
 
@@ -40,7 +44,7 @@ public class AuthViewImpl extends Composite implements AuthView {
 
 	public AuthViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
-		
+
 		login.setFocus(true);
 
 	}
@@ -48,7 +52,7 @@ public class AuthViewImpl extends Composite implements AuthView {
 	@Override
 	protected void onAttach() {
 		super.onAttach();
-		
+
 		login.setFocus(true);
 		login.selectAll();
 	}
@@ -63,13 +67,13 @@ public class AuthViewImpl extends Composite implements AuthView {
 	protected void onSubmitformPanel(SubmitEvent event) {
 		event.cancel();
 		presenter.doLogin(login.getValue(), password.getValue(),
-				remember.getValue());
+				rememberMe.getValue());
 	}
 
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
-		
+
 	}
 
 }

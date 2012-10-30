@@ -7,7 +7,6 @@ import java.util.Set;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -18,8 +17,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -85,6 +84,9 @@ public class AppCellTable<T> extends Composite implements HasClickHandlers,
 	}
 
 	public T getSelected() {
+		if(selectionModel.getSelectedSet().isEmpty())
+			return null;
+		
 		return selectionModel.getSelectedSet().iterator().next();
 	}
 
@@ -113,6 +115,7 @@ public class AppCellTable<T> extends Composite implements HasClickHandlers,
 		
 		cellTable.getColumnSortList().clear();
 		cellTable.getColumnSortList().push(cellTable.getColumn(0));
+		cellTable.redraw();
 		
 		simplePager.firstPage();
 

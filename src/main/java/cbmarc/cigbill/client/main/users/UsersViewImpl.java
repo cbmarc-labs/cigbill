@@ -1,41 +1,54 @@
 package cbmarc.cigbill.client.main.users;
 
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Singleton;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
+import cbmarc.cigbill.client.ui.AppCellTable;
 import cbmarc.cigbill.client.ui.ListBoxEditor;
 import cbmarc.cigbill.client.ui.ListBoxMultiEditor;
 import cbmarc.cigbill.shared.User;
 
+import com.github.gwtbootstrap.client.ui.AlertBlock;
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
+import com.github.gwtbootstrap.client.ui.PasswordTextBox;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.WellForm;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
+import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -50,19 +63,8 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	public interface Driver extends SimpleBeanEditorDriver<User, UsersViewImpl> {
 	}
 
-	/*@UiField(provided = true)
-	AppCellTable<User> cellTable = new AppCellTable<User>(new IFilter<User>() {
-		@Override
-		public boolean isValid(User value, String filter) {
-			if (filter == null || value == null)
-				return true;
-			return value.getLogin().toLowerCase()
-					.contains(filter.toLowerCase());// ||
-			// Integer.toString(value.getName()).contains(filter.toLowerCase());
-		}
-	});*/
-	
-	CellTable<User> cellTable = new CellTable<User>();
+	@UiField
+	AppCellTable<User> cellTable;
 
 	@Ignore
 	@UiField
@@ -70,41 +72,47 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 	@UiField
 	HTMLPanel cellTablePanel;
+
 	@UiField
 	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
-	// Validatior error messages
 	@UiField
-	Anchor validationAnchor;
+	Button validationButton;
+
 	@UiField
-	FocusPanel validationPanel;
+	AlertBlock validationPanel;
 
 	// Form fields
 	@UiField
-	FormPanel formPanel;
+	WellForm formPanel;
+
 	@UiField
 	TextBox login;
+
 	@UiField
 	PasswordTextBox password;
-	@Ignore
-	@UiField
-	PasswordTextBox confirmPassword;
+
 	@UiField
 	ListBoxEditor sex;
+
 	@UiField
 	ListBoxMultiEditor favoriteColor;
+
 	@UiField
 	TextArea description;
+
 	@UiField
 	CheckBox active;
+
 	@UiField
 	SubmitButton submitButton;
+
 	@UiField
 	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
-	DivElement loginCG, passwordCG, confirmPasswordCG, sexCG, descriptionCG;
+	ControlGroup loginCG, passwordCG, sexCG, descriptionCG;
 
 	private Presenter presenter;
 
@@ -130,7 +138,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	/**
 	 * Create celltable columns
 	 */
-	private void createCellTable() {/*
+	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// LOGIN COLUMN
 		loginColumn = new Column<User, SafeHtml>(new SafeHtmlCell()) {
@@ -147,17 +155,15 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 				return sb.toSafeHtml();
 			}
 		};
-		cellTable.getCellTable().addColumn(loginColumn,
-				usersConstants.columnLogin());
+		cellTable.addColumn(loginColumn, usersConstants.columnLogin());
 
 		// Make the first name column sortable.
 		loginColumn.setSortable(true);
-		cellTable.getListHandler().setComparator(loginColumn,
-				new Comparator<User>() {
-					public int compare(User o1, User o2) {
-						return o1.getLogin().compareTo(o2.getLogin());
-					}
-				});
+		cellTable.setComparator(loginColumn, new Comparator<User>() {
+			public int compare(User o1, User o2) {
+				return o1.getLogin().compareTo(o2.getLogin());
+			}
+		});
 
 		// /////////////////////////////////////////////////////////////////////
 		// CREATED COLUMN
@@ -171,8 +177,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 				return object.getCreated();
 			}
 		};
-		cellTable.getCellTable().addColumn(createdColumn,
-				usersConstants.columnCreated());
+		cellTable.addColumn(createdColumn, usersConstants.columnCreated());
 
 		// /////////////////////////////////////////////////////////////////////
 		// LAST UPDATED COLUMN
@@ -186,8 +191,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 				return object.getUpdated();
 			}
 		};
-		cellTable.getCellTable().addColumn(lastUpdatedColumn,
-				usersConstants.columnUpdated());
+		cellTable.addColumn(lastUpdatedColumn, usersConstants.columnUpdated());
 
 		// /////////////////////////////////////////////////////////////////////
 		// ACTIVE COLUMN
@@ -210,9 +214,8 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 			}
 		});
-		cellTable.getCellTable().addColumn(activeColumn,
-				usersConstants.columnActive());
-		cellTable.getCellTable().setColumnWidth(activeColumn, 1.0, Unit.EM);
+		cellTable.addColumn(activeColumn, usersConstants.columnActive());
+		cellTable.setColumnWidth(activeColumn, "1em");
 
 		// /////////////////////////////////////////////////////////////////////
 		// CELLTABLE CLICKHANDLER
@@ -220,13 +223,12 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 			@Override
 			public void onClick(ClickEvent event) {
-				Set<User> selectedSet = cellTable.getSelectionModel()
-						.getSelectedSet();
+				Set<User> selectedSet = cellTable.getSelectedSet();
 
-				deleteTableButton.setVisible(selectedSet.size() > 0 ? true
-						: false);
+				boolean visible = selectedSet.size() > 0 ? true : false;
+				deleteTableButton.setVisible(visible);
 			}
-		});*/
+		});
 
 	}
 
@@ -235,10 +237,8 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	 * 
 	 * @param list
 	 */
-	public void setList(List<User> list) {/*
+	public void setList(List<User> list) {
 		cellTable.setList(list);
-		cellTable.getCellTable().getColumnSortList().clear();
-		cellTable.getCellTable().getColumnSortList().push(loginColumn);*/
 	}
 
 	/*
@@ -250,14 +250,13 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	 */
 
 	@UiHandler("deleteTableButton")
-	protected void onClickDeleteTableButton(ClickEvent event) {/*
+	protected void onClickDeleteTableButton(ClickEvent event) {
 		if (Window.confirm(appConstants.areYouSure())) {
-			Set<User> users = cellTable.getSelectionModel().getSelectedSet();
-			presenter.doDelete(users);
-		}*/
+			presenter.doDelete(cellTable.getSelectedSet());
+		}
 	}
 
-	@UiHandler(value = { "validationPanel", "validationAnchor" })
+	@UiHandler("validationButton")
 	protected void onClickValidation(ClickEvent event) {
 		event.preventDefault();
 		boolean visible = true;
@@ -313,7 +312,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	 * @param error
 	 */
 	public void setFormErrors(String error) {
-		validationAnchor.setVisible(true);
+		validationButton.setVisible(true);
 		validationPanel.getElement().setInnerHTML(error);
 	}
 
@@ -324,36 +323,26 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	 * @param error
 	 */
 	public void setFieldError(String field, String error) {
-		DivElement divElement = null;
 
 		if (field.equals("login"))
-			divElement = loginCG;
+			loginCG.setType(ControlGroupType.ERROR);
 
 		else if (field.equals("password"))
-			divElement = passwordCG;
-
-		else if (field.equals("confirmPassword"))
-			divElement = confirmPasswordCG;
+			passwordCG.setType(ControlGroupType.ERROR);
 
 		else if (field.equals("sex"))
-			divElement = sexCG;
-
-		if (divElement != null)
-			divElement.setClassName("control-group error");
+			sexCG.setType(ControlGroupType.ERROR);
 	}
 
 	/**
 	 * Clear errors from form
 	 */
 	public void clearErrors() {
-		String styleName = "control-group";
+		loginCG.setType(ControlGroupType.NONE);
+		passwordCG.setType(ControlGroupType.NONE);
+		sexCG.setType(ControlGroupType.NONE);
 
-		loginCG.setClassName(styleName);
-		passwordCG.setClassName(styleName);
-		confirmPasswordCG.setClassName(styleName);
-		sexCG.setClassName(styleName);
-
-		validationAnchor.setVisible(false);
+		validationButton.setVisible(false);
 		validationPanel.setVisible(false);
 	}
 
@@ -400,21 +389,6 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 		formPanel.setVisible(false);
 
 		deleteTableButton.setVisible(false);
-
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-			@Override
-			public void execute() {
-				//cellTable.setFocus();
-
-			}
-		});
-
-	}
-
-	@Override
-	public String getConfirmPassword() {
-		return confirmPassword.getValue();
 	}
 
 	@Override

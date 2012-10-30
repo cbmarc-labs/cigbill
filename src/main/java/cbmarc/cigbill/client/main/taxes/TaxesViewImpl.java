@@ -6,9 +6,15 @@ import java.util.Set;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.ui.AppCellTable;
-import cbmarc.cigbill.client.utils.IFilter;
 import cbmarc.cigbill.shared.Tax;
 
+import com.github.gwtbootstrap.client.ui.AlertBlock;
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
+import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.WellForm;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -27,15 +33,12 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SubmitButton;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -60,30 +63,36 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 
 	@UiField
 	HTMLPanel cellTablePanel;
+	
 	@UiField
 	Button addTableButton, deleteTableButton;
 
 	// Validatior error messages
 	@UiField
-	Anchor validationAnchor;
+	Button validationButton;
+	
 	@UiField
-	FocusPanel validationPanel;
+	AlertBlock validationPanel;
 
 	// Form fields
 	@UiField
-	FormPanel formPanel;
+	WellForm formPanel;
+	
 	@UiField
 	TextBox name;
+	
 	@UiField
 	TextBox description;
+	
 	@UiField
 	SubmitButton submitButton;
+	
 	@UiField
 	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
-	DivElement nameCG, descriptionCG;
+	ControlGroup nameCG, descriptionCG;
 
 	private Presenter presenter;
 
@@ -197,7 +206,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 		}
 	}
 
-	@UiHandler(value = { "validationPanel", "validationAnchor" })
+	@UiHandler("validationButton")
 	protected void onClickValidation(ClickEvent event) {
 		event.preventDefault();
 		boolean visible = true;
@@ -253,7 +262,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	 * @param error
 	 */
 	public void setFormErrors(String error) {
-		validationAnchor.setVisible(true);
+		validationButton.setVisible(true);
 		validationPanel.getElement().setInnerHTML(error);
 	}
 
@@ -264,28 +273,21 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	 * @param error
 	 */
 	public void setFieldError(String field, String error) {
-		DivElement divElement = null;
-
 		if (field.equals("name"))
-			divElement = nameCG;
+			nameCG.setType(ControlGroupType.ERROR);
 
 		else if (field.equals("description"))
-			divElement = descriptionCG;
-
-		if (divElement != null)
-			divElement.setClassName("control-group error");
+			descriptionCG.setType(ControlGroupType.ERROR);
 	}
 
 	/**
 	 * Clear errors from form
 	 */
 	public void clearErrors() {
-		String styleName = "control-group";
+		nameCG.setType(ControlGroupType.NONE);
+		descriptionCG.setType(ControlGroupType.NONE);
 
-		nameCG.setClassName(styleName);
-		descriptionCG.setClassName(styleName);
-
-		validationAnchor.setVisible(false);
+		validationButton.setVisible(false);
 		validationPanel.setVisible(false);
 	}
 

@@ -64,24 +64,30 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 	@UiField
 	HTMLPanel cellTablePanel;
+	
 	@UiField
 	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
 	Button validationButton;
+	
 	@UiField
 	AlertBlock validationPanel;
 
 	// Form fields
 	@UiField
 	WellForm formPanel;
+	
 	@UiField
 	TextBox name;
+	
 	@UiField
 	TextBox email;
+	
 	@UiField
 	SubmitButton submitButton;
+	
 	@UiField
 	Button backButton, formDeleteButton;
 
@@ -93,6 +99,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 	@Inject
 	private AppConstants appConstants;
+	
 	private CustomersConstants customersConstants = GWT
 			.create(CustomersConstants.class);
 

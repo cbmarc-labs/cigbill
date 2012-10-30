@@ -6,22 +6,24 @@ import javax.validation.constraints.Size;
 
 @SuppressWarnings("serial")
 public class Product implements Model {
-	
+
 	private Long id;
-	
+
 	@NotNull
 	@Size(min = 2, max = 25)
 	private String name;
-	
+
 	@Size(max = 100)
 	private String description;
 
-	@Digits(integer = 7, fraction=2)
+	@Digits(integer = 7, fraction = 2)
 	private Double price = 0.0;
-	
+
+	private Tax tax;
+
 	@Size(max = 250)
 	private String notes;
-	
+
 	private String model;
 	private Float length;
 	private Float width;
@@ -58,6 +60,14 @@ public class Product implements Model {
 		this.price = price;
 	}
 
+	public Tax getTax() {
+		return tax;
+	}
+
+	public void setTax(Tax tax) {
+		this.tax = tax;
+	}
+
 	public String getNotes() {
 		return notes;
 	}
@@ -65,5 +75,29 @@ public class Product implements Model {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public Float getLength() {
+		return length;
+	}
+
+	public void setLength(Float length) {
+		this.length = length;
+	}
+
+	public Float getWidth() {
+		return width;
+	}
+
+	public void setWidth(Float width) {
+		this.width = width;
+	}
+
 }

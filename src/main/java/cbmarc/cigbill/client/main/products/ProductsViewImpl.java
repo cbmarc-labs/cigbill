@@ -15,6 +15,7 @@ import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.WellForm;
@@ -24,8 +25,8 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.editor.client.Editor;
+import com.google.gwt.editor.client.LeafValueEditor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -89,6 +90,9 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	// Form fields
 	@UiField
 	WellForm formPanel;
+	
+	@UiField
+	TabPanel productsTabPanel;
 
 	@UiField
 	TextBox name, description;
@@ -101,6 +105,23 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	@Editor.Ignore
 	@UiField(provided = true)
 	SuggestBox taxName = new SuggestBox(taxSuggestions);
+	Tax selectedTax = null;
+	LeafValueEditor<Tax> tax = new LeafValueEditor<Tax>() {
+
+		@Override
+		public void setValue(Tax value) {
+			taxName.setValue("");
+
+			if (value != null)
+				taxName.setValue(value.getName());
+
+		}
+
+		@Override
+		public Tax getValue() {
+			return selectedTax;
+		}
+	};
 
 	@UiField
 	Button selectTaxButton;
@@ -208,7 +229,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		cellTable.addColumn(priceColumn, productsConstants.columnPrice());
 		cellTable.setColumnWidth(priceColumn, "6em");
-		
+
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
 
@@ -267,6 +288,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 				if (taxCellTable.getSelected() != null) {
 					taxModal.hide();
 					taxName.setValue(taxCellTable.getSelected().getName());
+					selectedTax = taxCellTable.getSelected();
 				}
 
 			}
@@ -434,6 +456,8 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(true);
 
+		selectFirstTab(productsTabPanel.getId());
+
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
 			@Override
@@ -444,6 +468,11 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		});
 
 	}
+
+	// TabPane.setActive dont work
+	public static native void selectFirstTab(String tab) /*-{
+		$wnd.jQuery('#' + tab + ' a:first').tab('show');
+	}-*/;
 
 	/**
 	 * Show CellTable panel

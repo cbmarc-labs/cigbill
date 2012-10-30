@@ -25,8 +25,10 @@ public class TopActivity extends AbstractActivity implements
 
 	@Inject
 	PlaceController placeController;
+	
 	@Inject
 	AppConstants appConstants;
+	
 	@Inject
 	TopView view;
 

@@ -46,8 +46,8 @@
 				<b:AlertBlock ui:field="validationPanel" heading="Warning"
 					type="ERROR" close="false"></b:AlertBlock>
 
-				<b:TabPanel>
-					<b:TabPane heading="General" active="true">
+				<b:TabPanel ui:field="productsTabPanel" b:id="productsTabPanel">
+					<b:TabPane heading="General">
 						<b:ControlGroup ui:field="nameCG">
 							<b:ControlLabel for="name">
 								<ui:text from="{productsCnts.formName}"></ui:text>

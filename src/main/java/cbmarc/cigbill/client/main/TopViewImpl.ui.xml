@@ -1,8 +1,12 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:a="urn:import:cbmarc.cigbill.client.ui">
+	
 	<g:HTMLPanel>
+	
 		<a:AppNav ui:field="appNav"></a:AppNav>
 		<a:AppBreadcrumbs ui:field="appBreadcrumbs"></a:AppBreadcrumbs>
+		
 	</g:HTMLPanel>
+	
 </ui:UiBinder> 

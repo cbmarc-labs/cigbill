@@ -22,7 +22,7 @@ public class PaymentsServiceImpl implements PaymentsServiceAsync {
 				return o1.getName().compareToIgnoreCase(o2.getName());
 			}
 		});
-		
+
 		callback.onSuccess(list);
 	}
 
@@ -34,9 +34,6 @@ public class PaymentsServiceImpl implements PaymentsServiceAsync {
 			payment.setId(id);
 
 			list.add(payment);
-		} else {
-			Payment p = find(payment.getId());
-			p.copy(payment);
 		}
 
 		callback.onSuccess(null);
@@ -60,25 +57,16 @@ public class PaymentsServiceImpl implements PaymentsServiceAsync {
 
 	@Override
 	public void getById(Long id, AsyncCallback<Payment> callback) {
-		Payment found = find(id);
-
-		Payment payment = null;
-		if (find(id) != null)
-			payment = found.clone();
-
-		callback.onSuccess(payment);
-	}
-
-	private Payment find(Long id) {
 		Payment found = null;
 
-		for (Payment item : list) {
-			if (item.getId().equals(id)) {
-				return item;
+		for (Payment payment : list) {
+			if (payment.getId().equals(id)) {
+				found = payment;
+				break;
 			}
 		}
 
-		return found;
+		callback.onSuccess(found);
 	}
 
 }

@@ -12,17 +12,20 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 public class TaxesDatabase {
 
+	private static final String[] NAME = { "GST", "No Tax", "Postage",
+			"Sales Tax", "VAT", "IVA" };
+
 	private static TaxesDatabase instance;
 	private ListDataProvider<Tax> dataProvider = new ListDataProvider<Tax>();
-	
+
 	interface MyFactory extends AutoBeanFactory {
 		AutoBean<Tax> tax();
 	}
-	
+
 	MyFactory factory = GWT.create(MyFactory.class);
 
 	public TaxesDatabase() {
-		generateItems(25);
+		generateItems();
 	}
 
 	public static TaxesDatabase getInstance() {
@@ -40,11 +43,11 @@ public class TaxesDatabase {
 	/**
 	 * 
 	 */
-	public void generateItems(int count) {
+	public void generateItems() {
 		List<Tax> items = dataProvider.getList();
 
-		for (int i = 0; i < count; i++) {
-			items.add(createItem(i));
+		for (String name : NAME) {
+			items.add(createItem(name));
 		}
 	}
 
@@ -52,15 +55,15 @@ public class TaxesDatabase {
 	 * @param login
 	 * @return
 	 */
-	private Tax createItem(int i) {
-		//Tax1 item = new Tax1();
+	private Tax createItem(String name) {
+		// Tax item = new Tax();
 		Tax item = factory.tax().as();
 
 		Long id = Long.parseLong(((Object) item.hashCode()).toString());
 
 		item.setId(id);
-		item.setName("Tax " + i);
-		item.setDescription("this is a description for a Tax " + i);
+		item.setName(name);
+		item.setDescription("This is a description for tax " + name);
 
 		return item;
 	}
