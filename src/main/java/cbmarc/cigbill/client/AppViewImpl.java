@@ -1,5 +1,8 @@
 package cbmarc.cigbill.client;
 
+import cbmarc.cigbill.client.mvp.AuthActivityMapper;
+import cbmarc.cigbill.client.mvp.CachingBreadcrumbActivityMapper;
+import cbmarc.cigbill.client.mvp.CachingNavActivityMapper;
 import cbmarc.cigbill.client.mvp.CachingTopActivityMapper;
 import cbmarc.cigbill.client.mvp.ContentActivityMapper;
 
@@ -24,19 +27,32 @@ public class AppViewImpl extends Composite implements AppView {
 	}
 
 	@UiField
-	SimplePanel topPanel;
-	@UiField
-	SimplePanel contentPanel;
+	SimplePanel topPanel, authPanel, navPanel, breadcrumbPanel, contentPanel;
 
 	@Inject
-	public AppViewImpl(	CachingTopActivityMapper cachingTopActivityMapper,
+	public AppViewImpl(CachingTopActivityMapper cachingTopActivityMapper,
+			CachingNavActivityMapper cachingNavActivityMapper,
+			AuthActivityMapper authActivityMapper,
+			CachingBreadcrumbActivityMapper cachingBreadcrumbActivityMapper,
 			ContentActivityMapper contentActivityMapper, EventBus eventBus) {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		ActivityManager cachingTopActivityManager = new ActivityManager(
+		ActivityManager topActivityManager = new ActivityManager(
 				cachingTopActivityMapper, eventBus);
-		cachingTopActivityManager.setDisplay(topPanel);
-		
+		topActivityManager.setDisplay(topPanel);
+
+		ActivityManager authActivityManager = new ActivityManager(
+				authActivityMapper, eventBus);
+		authActivityManager.setDisplay(authPanel);
+
+		ActivityManager navActivityManager = new ActivityManager(
+				cachingNavActivityMapper, eventBus);
+		navActivityManager.setDisplay(navPanel);
+
+		ActivityManager breadcrumbActivityManager = new ActivityManager(
+				cachingBreadcrumbActivityMapper, eventBus);
+		breadcrumbActivityManager.setDisplay(breadcrumbPanel);
+
 		ActivityManager contentActivityManager = new ActivityManager(
 				contentActivityMapper, eventBus);
 		contentActivityManager.setDisplay(contentPanel);

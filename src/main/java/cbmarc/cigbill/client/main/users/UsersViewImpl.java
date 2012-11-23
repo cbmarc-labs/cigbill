@@ -8,20 +8,12 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.ui.AppCellTable;
+import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
+import cbmarc.cigbill.client.ui.AppCheckboxCellTable;
 import cbmarc.cigbill.client.ui.ListBoxEditor;
 import cbmarc.cigbill.client.ui.ListBoxMultiEditor;
 import cbmarc.cigbill.shared.User;
 
-import com.github.gwtbootstrap.client.ui.AlertBlock;
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.WellForm;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -29,6 +21,7 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -40,15 +33,22 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -64,7 +64,7 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	}
 
 	@UiField
-	AppCellTable<User> cellTable;
+	AppCheckboxCellTable<User> cellTable;
 
 	@Ignore
 	@UiField
@@ -80,11 +80,11 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	Button validationButton;
 
 	@UiField
-	AlertBlock validationPanel;
+	HTMLPanel validationPanel;
 
 	// Form fields
 	@UiField
-	WellForm formPanel;
+	FormPanel formPanel;
 
 	@UiField
 	TextBox login;
@@ -112,15 +112,14 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 	// Control groups for mark errors
 	@UiField
-	ControlGroup loginCG, passwordCG, sexCG, descriptionCG;
+	DivElement loginCG, passwordCG, sexCG, descriptionCG;
 
 	private Presenter presenter;
 
 	@Inject
 	private AppConstants appConstants;
+	
 	private UsersConstants usersConstants = GWT.create(UsersConstants.class);
-
-	Column<User, SafeHtml> loginColumn;
 
 	/**
 	 * Constructor
@@ -141,20 +140,12 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// LOGIN COLUMN
-		loginColumn = new Column<User, SafeHtml>(new SafeHtmlCell()) {
+		TextColumn<User> loginColumn = new TextColumn<User>(){
 
 			@Override
-			public SafeHtml getValue(User object) {
-				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-
-				Anchor anchor = new Anchor(object.getLogin());
-				anchor.setHref("#users:edit/" + object.getId());
-
-				sb.appendHtmlConstant(anchor.toString());
-
-				return sb.toSafeHtml();
-			}
-		};
+			public String getValue(User object) {
+				return object.getLogin();
+			}};
 		cellTable.addColumn(loginColumn, usersConstants.columnLogin());
 
 		// Make the first name column sortable.
@@ -227,6 +218,11 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 
 				boolean visible = selectedSet.size() > 0 ? true : false;
 				deleteTableButton.setVisible(visible);
+				
+				if (cellTable.getSelected() != null) {
+					String id = cellTable.getSelected().getId().toString();
+					presenter.goTo(new UsersPlace("edit/" + id));
+				}
 			}
 		});
 
@@ -302,8 +298,9 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	}
 
 	@Override
-	public Button getFormDeleteButton() {
-		return formDeleteButton;
+	public void setFormDeleteButtonVisible(boolean visible) {
+		formDeleteButton.setVisible(visible);
+		
 	}
 
 	/**
@@ -325,22 +322,22 @@ public class UsersViewImpl extends Composite implements UsersView, Editor<User> 
 	public void setFieldError(String field, String error) {
 
 		if (field.equals("login"))
-			loginCG.setType(ControlGroupType.ERROR);
+			loginCG.setClassName("control-group error");
 
 		else if (field.equals("password"))
-			passwordCG.setType(ControlGroupType.ERROR);
+			passwordCG.setClassName("control-group error");
 
 		else if (field.equals("sex"))
-			sexCG.setType(ControlGroupType.ERROR);
+			sexCG.setClassName("control-group error");
 	}
 
 	/**
 	 * Clear errors from form
 	 */
 	public void clearErrors() {
-		loginCG.setType(ControlGroupType.NONE);
-		passwordCG.setType(ControlGroupType.NONE);
-		sexCG.setType(ControlGroupType.NONE);
+		loginCG.setClassName("control-group");
+		passwordCG.setClassName("control-group");
+		sexCG.setClassName("control-group");
 
 		validationButton.setVisible(false);
 		validationPanel.setVisible(false);

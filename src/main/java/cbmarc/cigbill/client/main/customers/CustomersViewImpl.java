@@ -7,21 +7,15 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.ui.AppCellTable;
-import cbmarc.cigbill.client.utils.IFilter;
+import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
+import cbmarc.cigbill.client.ui.AppCheckboxCellTable;
 import cbmarc.cigbill.shared.Customer;
 
-import com.github.gwtbootstrap.client.ui.AlertBlock;
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.WellForm;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,10 +29,14 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SubmitButton;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -56,7 +54,7 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	}
 
 	@UiField
-	AppCellTable<Customer> cellTable;
+	AppCheckboxCellTable<Customer> cellTable;
 
 	@Ignore
 	@UiField
@@ -64,46 +62,44 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 
 	@UiField
 	HTMLPanel cellTablePanel;
-	
+
 	@UiField
 	Button addTableButton, deleteTableButton, toolbarRefreshButton;
 
 	// Validatior error messages
 	@UiField
 	Button validationButton;
-	
+
 	@UiField
-	AlertBlock validationPanel;
+	HTMLPanel validationPanel;
 
 	// Form fields
 	@UiField
-	WellForm formPanel;
-	
+	FormPanel formPanel;
+
 	@UiField
 	TextBox name;
-	
+
 	@UiField
 	TextBox email;
-	
+
 	@UiField
 	SubmitButton submitButton;
-	
+
 	@UiField
 	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
-	ControlGroup nameCG, emailCG;
+	DivElement nameCG, emailCG;
 
 	private Presenter presenter;
 
 	@Inject
 	private AppConstants appConstants;
-	
+
 	private CustomersConstants customersConstants = GWT
 			.create(CustomersConstants.class);
-
-	Column<Customer, SafeHtml> nameColumn;
 
 	/**
 	 * Constructor
@@ -123,31 +119,21 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	 */
 	private void createCellTable() {
 		// NAME COLUMN
-		nameColumn = new Column<Customer, SafeHtml>(new SafeHtmlCell()) {
+		TextColumn<Customer> nameColumn = new TextColumn<Customer>(){
 
 			@Override
-			public SafeHtml getValue(Customer object) {
-				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-
-				Anchor anchor = new Anchor(object.getName());
-				anchor.setHref("#customers:edit/" + object.getId());
-
-				sb.appendHtmlConstant(anchor.toString());
-
-				return sb.toSafeHtml();
-			}
-		};
-		cellTable.addColumn(nameColumn,
-				customersConstants.columnName());
+			public String getValue(Customer object) {
+				return object.getName();
+			}};
+		cellTable.addColumn(nameColumn, customersConstants.columnName());
 
 		// Make the first name column sortable.
 		nameColumn.setSortable(true);
-		cellTable.setComparator(nameColumn,
-				new Comparator<Customer>() {
-					public int compare(Customer o1, Customer o2) {
-						return o1.getName().compareTo(o2.getName());
-					}
-				});
+		cellTable.setComparator(nameColumn, new Comparator<Customer>() {
+			public int compare(Customer o1, Customer o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 
 		// EMAIL COLUMN
 		TextColumn<Customer> emailColumn = new TextColumn<Customer>() {
@@ -157,17 +143,15 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 				return object.getEmail();
 			}
 		};
-		cellTable.addColumn(emailColumn,
-				customersConstants.columnEmail());
+		cellTable.addColumn(emailColumn, customersConstants.columnEmail());
 		emailColumn.setSortable(true);
-		cellTable.setComparator(emailColumn,
-				new Comparator<Customer>() {
+		cellTable.setComparator(emailColumn, new Comparator<Customer>() {
 
-					@Override
-					public int compare(Customer o1, Customer o2) {
-						return o1.getEmail().compareTo(o2.getEmail());
-					}
-				});
+			@Override
+			public int compare(Customer o1, Customer o2) {
+				return o1.getEmail().compareTo(o2.getEmail());
+			}
+		});
 
 		// CELLTABLE CLICK EVENT
 		cellTable.addClickHandler(new ClickHandler() {
@@ -175,9 +159,14 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 			@Override
 			public void onClick(ClickEvent event) {
 				Set<Customer> selectedSet = cellTable.getSelectedSet();
-				
+
 				boolean visible = selectedSet.size() > 0 ? true : false;
 				deleteTableButton.setVisible(visible);
+				
+				if (cellTable.getSelected() != null) {
+					String id = cellTable.getSelected().getId().toString();
+					presenter.goTo(new CustomersPlace("edit/" + id));
+				}
 			}
 		});
 
@@ -253,8 +242,9 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	}
 
 	@Override
-	public Button getFormDeleteButton() {
-		return formDeleteButton;
+	public void setFormDeleteButtonVisible(boolean visible) {
+		formDeleteButton.setVisible(visible);
+		
 	}
 
 	/**
@@ -275,18 +265,18 @@ public class CustomersViewImpl extends Composite implements CustomersView,
 	 */
 	public void setFieldError(String field, String error) {
 		if (field.equals("name"))
-			nameCG.setType(ControlGroupType.ERROR);
+			nameCG.setClassName("control-group error");
 
 		else if (field.equals("email"))
-			emailCG.setType(ControlGroupType.ERROR);
+			emailCG.setClassName("control-group error");
 	}
 
 	/**
 	 * Clear errors from form
 	 */
 	public void clearErrors() {
-		nameCG.setType(ControlGroupType.NONE);
-		emailCG.setType(ControlGroupType.NONE);
+		nameCG.setClassName("control-group");
+		emailCG.setClassName("control-group");
 
 		validationButton.setVisible(false);
 		validationPanel.setVisible(false);

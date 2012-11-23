@@ -17,5 +17,12 @@ public interface InvoicesConstants extends Constants {
 	
 	@DefaultStringValue("Notes")
 	String formNotes();
+	
+	// TABS
+	@DefaultStringValue("General")
+	String tabGeneral();
+	
+	@DefaultStringValue("Notes")
+	String tabNotes();
 
 }

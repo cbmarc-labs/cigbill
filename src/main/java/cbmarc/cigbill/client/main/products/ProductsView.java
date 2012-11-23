@@ -7,7 +7,6 @@ import cbmarc.cigbill.client.utils.EditorView;
 import cbmarc.cigbill.shared.Product;
 import cbmarc.cigbill.shared.Tax;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
@@ -28,7 +27,7 @@ public interface ProductsView extends IsWidget, EditorView<Product> {
 
 	void setFieldError(String field, String error);
 
-	Button getFormDeleteButton();
+	void setFormDeleteButtonVisible(boolean visible);
 
 	public interface Presenter {
 		void doAdd();

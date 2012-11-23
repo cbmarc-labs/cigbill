@@ -13,11 +13,20 @@ public class Customer implements Model {
 	@Size(min = 2, max = 25)
 	private String name;
 	
+	@Pattern(regexp="^[\\w-]+(\\.[\\w-]+)*@([a-z0-9-]+(\\.[a-z0-9-]+)*?\\.[a-z]{2,6}|(\\d{1,3}\\.){3}\\d{1,3})(:\\d{4})?$")
+	private String email;
+	
 	@Size(max = 50)
-	private String address;
+	private String address1;
+	
+	@Size(max = 50)
+	private String address2;
 	
 	@Size(max = 50)
 	private String city;
+	
+	@Size(max = 25)
+	private String zip;
 	
 	@Size(max = 50)
 	private String state;
@@ -25,55 +34,109 @@ public class Customer implements Model {
 	@Size(max = 50)
 	private String country;
 	
-	@Size(max = 50)
+	@Size(max = 25)
 	private String phone;
 	
-	@Pattern(regexp="^[\\w-]+(\\.[\\w-]+)*@([a-z0-9-]+(\\.[a-z0-9-]+)*?\\.[a-z]{2,6}|(\\d{1,3}\\.){3}\\d{1,3})(:\\d{4})?$")
-	private String email;
+	@Size(max = 25)
+	private String mobile;
 	
 	@Size(max = 250)
 	private String notes;
 
-	/**
-	 * @return the id
-	 */
 	public Long getId() {
 		return id;
 	}
 
-	/**
-	 * @param id the id to set
-	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * @param name the name to set
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	/**
-	 * @return the email
-	 */
 	public String getEmail() {
 		return email;
 	}
 
-	/**
-	 * @param email the email to set
-	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getAddress1() {
+		return address1;
+	}
+
+	public void setAddress1(String address1) {
+		this.address1 = address1;
+	}
+
+	public String getAddress2() {
+		return address2;
+	}
+
+	public void setAddress2(String address2) {
+		this.address2 = address2;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 	
 }

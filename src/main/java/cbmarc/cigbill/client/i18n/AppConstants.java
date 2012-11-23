@@ -7,7 +7,7 @@ public interface AppConstants extends Constants {
 	/**
 	 * Global
 	 */
-	@DefaultStringValue("Add new item")
+	@DefaultStringValue("New item")
 	String addNewItemButton();
 	
 	@DefaultStringValue("Delete selected item(s)")

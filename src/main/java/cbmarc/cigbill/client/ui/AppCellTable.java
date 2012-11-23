@@ -4,24 +4,27 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -54,27 +57,35 @@ public class AppCellTable<T> extends Composite implements HasClickHandlers,
 			.create(CellTableResource.class);
 
 	@UiField
-	NavLink fastBackward, backward, count, forward, fastForward;
+	Panel pagination;
+
+	@UiField
+	Anchor fastBackward, backward, count, forward, fastForward;
 
 	@UiField(provided = true)
 	CellTable<T> cellTable = new CellTable<T>(10, tableResources);
 
 	private ListDataProvider<T> listDataProvider = new ListDataProvider<T>();
+
 	private MultiSelectionModel<T> selectionModel = new MultiSelectionModel<T>();
+
 	private SimplePager simplePager = new SimplePager();
+
 	private ListHandler<T> listHandler = new ListHandler<T>(
 			listDataProvider.getList());
 
 	private HandlerManager handlerManager = new HandlerManager(this);
 
 	public AppCellTable() {
+		cellTable.setStyleName("table table-condensed");
+		cellTable.addColumnSortHandler(listHandler);
+		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
+		cellTable.setSelectionModel(selectionModel,
+				DefaultSelectionEventManager.createCustomManager(this));
+		
 		listDataProvider.addDataDisplay(cellTable);
 		simplePager.setDisplay(cellTable);
 		selectionModel.addSelectionChangeHandler(this);
-		cellTable.addColumnSortHandler(listHandler);
-
-		cellTable.setSelectionModel(selectionModel,
-				DefaultSelectionEventManager.createCustomManager(this));
 
 		initWidget(binder.createAndBindUi(this));
 	}
@@ -84,9 +95,9 @@ public class AppCellTable<T> extends Composite implements HasClickHandlers,
 	}
 
 	public T getSelected() {
-		if(selectionModel.getSelectedSet().isEmpty())
+		if (selectionModel.getSelectedSet().isEmpty())
 			return null;
-		
+
 		return selectionModel.getSelectedSet().iterator().next();
 	}
 
@@ -94,32 +105,60 @@ public class AppCellTable<T> extends Composite implements HasClickHandlers,
 		selectionModel.clear();
 	}
 
-	public void addColumn(Column<T, ?> col, String headerString) {
-		cellTable.addColumn(col, headerString);
+	@SuppressWarnings("serial")
+	public void addColumn(final Column<T, ?> col, final String headerString) {
+		// set header horizontal aligment
+		if (col.getHorizontalAlignment() != null) {
+			cellTable.addColumn(col, new SafeHtml() {
+
+				@Override
+				public String asString() {
+					return "<div style=\"text-align:"
+							+ col.getHorizontalAlignment().getTextAlignString()
+							+ ";\">" + headerString + "</div>";
+				}
+			});
+
+		} else {
+			cellTable.addColumn(col, headerString);
+
+		}
 	}
 
 	public void setColumnWidth(Column<T, ?> column, String width) {
 		cellTable.setColumnWidth(column, width);
 	}
-	
+
+	public void setColumnWidth(Column<T, ?> column, double width, Unit unit) {
+		cellTable.setColumnWidth(column, width, unit);
+	}
+
 	public void setComparator(Column<T, ?> column, Comparator<T> comparator) {
 		listHandler.setComparator(column, comparator);
+	}
+
+	public void setPagination(Boolean visible) {
+		pagination.setVisible(visible);
 	}
 
 	public void setList(List<T> list) {
 		listDataProvider.getList().clear();
 		listDataProvider.getList().addAll(list);
 		listDataProvider.flush();
-		
+
 		selectionModel.clear();
-		
+
 		cellTable.getColumnSortList().clear();
 		cellTable.getColumnSortList().push(cellTable.getColumn(0));
 		cellTable.redraw();
-		
+
 		simplePager.firstPage();
 
 		updatePagination();
+	}
+
+	public ListDataProvider<T> getListDataProvider() {
+		return listDataProvider;
 	}
 
 	@Override
@@ -159,8 +198,8 @@ public class AppCellTable<T> extends Composite implements HasClickHandlers,
 	}
 
 	protected void updatePagination() {
-		fastBackward.setDisabled(!simplePager.hasPreviousPage());
-		backward.setDisabled(!simplePager.hasPreviousPage());
+		fastBackward.setEnabled(!simplePager.hasPreviousPage());
+		backward.setEnabled(!simplePager.hasPreviousPage());
 
 		HasRows display = simplePager.getDisplay();
 		Range range = display.getVisibleRange();
@@ -172,8 +211,8 @@ public class AppCellTable<T> extends Composite implements HasClickHandlers,
 
 		count.setText(start + " - " + end + " : " + display.getRowCount());
 
-		forward.setDisabled(!simplePager.hasNextPage());
-		fastForward.setDisabled(!simplePager.hasNextPage());
+		forward.setEnabled(!simplePager.hasNextPage());
+		fastForward.setEnabled(!simplePager.hasNextPage());
 	}
 
 	@Override

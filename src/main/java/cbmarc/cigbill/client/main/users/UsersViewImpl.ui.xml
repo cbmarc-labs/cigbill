@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
-	xmlns:a="urn:import:cbmarc.cigbill.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	xmlns:a="urn:import:cbmarc.cigbill.client.ui">
 
 	<ui:with field="appCnts" type="cbmarc.cigbill.client.i18n.AppConstants" />
 	<ui:with field="usersCnts"
@@ -10,151 +10,162 @@
 	<g:HTMLPanel>
 
 		<g:HTMLPanel ui:field="cellTablePanel">
-
-			<b:Paragraph>
+			<p>
 				<span>
-					<b:Button ui:field="addTableButton" icon="PLUS"
-						text="{appCnts.addNewItemButton}"></b:Button>
-
-					<b:Button ui:field="deleteTableButton" icon="REMOVE"
-						text="{appCnts.deleteSelectedItemsButton}" type="DANGER"></b:Button>
+					<g:Button ui:field="addTableButton" styleName="btn">
+						<i class="icon-plus" />
+						<ui:text from="{appCnts.addNewItemButton}"></ui:text>
+					</g:Button>
+					<g:Button ui:field="deleteTableButton" styleName="btn btn-danger">
+						<i class="icon-remove icon-white" />
+						<ui:text from="{appCnts.deleteSelectedItemsButton}" />
+					</g:Button>
 				</span>
 				<span class="pull-right">
-					<b:Button ui:field="toolbarRefreshButton" icon="REFRESH"
-						text="{appCnts.toolbarRefreshButton}"></b:Button>
+					<g:Button ui:field="toolbarRefreshButton" styleName="btn">
+						<i class="icon-refresh" />
+						<ui:text from="{appCnts.toolbarRefreshButton}" />
+					</g:Button>
 				</span>
-			</b:Paragraph>
+			</p>
 
-			<b:Paragraph>
-				<a:AppCellTable ui:field="cellTable"></a:AppCellTable>
-			</b:Paragraph>
-
+			<p>
+				<a:AppCheckboxCellTable ui:field="cellTable" />
+			</p>
 		</g:HTMLPanel>
 
-		<b:WellForm ui:field="formPanel">
+		<g:FormPanel ui:field="formPanel" styleName="well">
 
-			<b:Fieldset>
-				<b:Legend>
-					<span class="pull-right">
-						<b:Button icon="WARNING_SIGN" ui:field="validationButton"
-							type="WARNING"></b:Button>
-					</span>
-					<g:Label ui:field="legend"></g:Label>
-				</b:Legend>
+			<g:HTMLPanel>
 
-				<b:AlertBlock ui:field="validationPanel" heading="Warning"
-					type="ERROR" close="false"></b:AlertBlock>
+				<fieldset>
+					<legend>
+						<span class="pull-right">
+							<g:Button ui:field="validationButton" styleName="btn btn-danger">
+								<i class="icon-warning-sign icon-white" />
+							</g:Button>
+						</span>
+						<g:Label ui:field="legend" />
+					</legend>
 
-				<b:Row>
-					<b:Column size="3">
-						<b:ControlGroup ui:field="loginCG">
-							<b:ControlLabel for="login">
-								<ui:text from="{usersCnts.formLogin}" />
-								*
-							</b:ControlLabel>
-							<b:Controls>
-								<b:TextBox ui:field="login" b:id="login" />
-							</b:Controls>
-						</b:ControlGroup>
-					</b:Column>
-					<b:Column size="3">
-						<b:ControlGroup ui:field="passwordCG">
-							<b:ControlLabel for="password">
-								<ui:text from="{usersCnts.formPassword}" />
-								*
-							</b:ControlLabel>
-							<b:Controls>
-								<b:PasswordTextBox ui:field="password" b:id="password" />
-							</b:Controls>
-						</b:ControlGroup>
-					</b:Column>
-				</b:Row>
+					<g:HTMLPanel ui:field="validationPanel" styleName="alert alert-error" />
 
-				<b:Row>
-					<b:Column size="3">
-						<b:ControlGroup ui:field="sexCG">
-							<b:ControlLabel for="sex">
-								<ui:text from="{usersCnts.formSex}" />
-								*
-							</b:ControlLabel>
-							<b:Controls>
-								<a:ListBoxEditor ui:field="sex">
-									<g:item value=""></g:item>
-									<g:item value="1">
-										<ui:text from="{usersCnts.formSex1}"></ui:text>
-									</g:item>
-									<g:item value="2">
-										<ui:text from="{usersCnts.formSex2}"></ui:text>
-									</g:item>
-									<g:item value="3">
-										<ui:text from="{usersCnts.formSex3}"></ui:text>
-									</g:item>
-								</a:ListBoxEditor>
-							</b:Controls>
-						</b:ControlGroup>
-					</b:Column>
+					<div class="row-fluid">
 
-					<b:Column size="3">
-						<b:ControlGroup ui:field="favoriteColorCG">
-							<b:ControlLabel for="favoriteColor">
-								<ui:text from="{usersCnts.formFavoriteColor}" />
-							</b:ControlLabel>
-							<b:Controls>
-								<a:ListBoxMultiEditor ui:field="favoriteColor"
-									visibleItemCount="3">
-									<g:item value="0">
-										<ui:text from="{usersCnts.formFavoriteColor0}"></ui:text>
-									</g:item>
-									<g:item value="1">
-										<ui:text from="{usersCnts.formFavoriteColor1}"></ui:text>
-									</g:item>
-									<g:item value="2">
-										<ui:text from="{usersCnts.formFavoriteColor2}"></ui:text>
-									</g:item>
-									<g:item value="3">
-										<ui:text from="{usersCnts.formFavoriteColor3}"></ui:text>
-									</g:item>
-								</a:ListBoxMultiEditor>
-							</b:Controls>
-						</b:ControlGroup>
-					</b:Column>
-				</b:Row>
+						<div class="span3">
+							<div class="control-group" ui:field="loginCG">
+								<label styleName="control-label">
+									<ui:text from="{usersCnts.formLogin} *" />
+								</label>
+								<div class="controls">
+									<g:TextBox ui:field="login" styleName="input-medium" />
+								</div>
+							</div>
+						</div>
 
-				<b:ControlGroup ui:field="descriptionCG">
-					<b:ControlLabel for="description">
-						<ui:text from="{usersCnts.formDescription}" />
-					</b:ControlLabel>
-					<b:Controls>
-						<g:TextArea ui:field="description" visibleLines="4"
-							styleName="span8" />
-					</b:Controls>
-				</b:ControlGroup>
+						<div class="span3">
+							<div class="control-group" ui:field="passwordCG">
+								<label styleName="control-label">
+									<ui:text from="{usersCnts.formPassword} *" />
+								</label>
+								<div class="controls">
+									<g:PasswordTextBox ui:field="password"
+										styleName="input-medium" />
+								</div>
+							</div>
+						</div>
 
-				<b:CheckBox ui:field="active" text="{usersCnts.formActive}" />
+					</div>
 
-				<b:Paragraph styleName="muted"
-					text="{appCnts.formRequiredFieldsText}" />
+					<div class="row-fluid">
 
-				<b:FormActions>
-					<g:HTMLPanel>
+						<div class="span3">
+							<div class="control-group" ui:field="sexCG">
+								<label styleName="control-label">
+									<ui:text from="{usersCnts.formSex}*" />
+								</label>
+								<div class="controls">
+									<a:ListBoxEditor ui:field="sex" styleName="input-medium">
+										<g:item value=""></g:item>
+										<g:item value="1">
+											<ui:text from="{usersCnts.formSex1}"></ui:text>
+										</g:item>
+										<g:item value="2">
+											<ui:text from="{usersCnts.formSex2}"></ui:text>
+										</g:item>
+										<g:item value="3">
+											<ui:text from="{usersCnts.formSex3}"></ui:text>
+										</g:item>
+									</a:ListBoxEditor>
+								</div>
+							</div>
+						</div>
+
+						<div class="span3">
+							<div class="control-group" ui:field="favoriteColorCG">
+								<g:Label styleName="control-label" text="{usersCnts.formFavoriteColor}" />
+								<div class="controls">
+									<a:ListBoxMultiEditor ui:field="favoriteColor"
+										visibleItemCount="3" styleName="input-medium">
+										<g:item value="0">
+											<ui:text from="{usersCnts.formFavoriteColor0}"></ui:text>
+										</g:item>
+										<g:item value="1">
+											<ui:text from="{usersCnts.formFavoriteColor1}"></ui:text>
+										</g:item>
+										<g:item value="2">
+											<ui:text from="{usersCnts.formFavoriteColor2}"></ui:text>
+										</g:item>
+										<g:item value="3">
+											<ui:text from="{usersCnts.formFavoriteColor3}"></ui:text>
+										</g:item>
+									</a:ListBoxMultiEditor>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div class="control-group" ui:field="descriptionCG">
+						<g:Label styleName="control-label" text="{usersCnts.formDescription}" />
+						<div class="controls">
+							<a:AppTextArea ui:field="description" styleName="expand100-300 input-block-level" />
+						</div>
+					</div>
+
+					<label class="checkbox inline">
+						<g:CheckBox ui:field="active" text="{usersCnts.formActive}" />
+					</label>
+
+					<p class="muted">
+						<ui:text from="{appCnts.formRequiredFieldsText}" />
+					</p>
+
+
+					<g:HTMLPanel styleName="form-actions">
 						<span>
 							<g:SubmitButton ui:field="submitButton" styleName="btn">
 								<i class="icon-ok"></i>
 								<ui:text from="{appCnts.formSubmit}"></ui:text>
 							</g:SubmitButton>
 
-							<b:Button ui:field="backButton" icon="CHEVRON_LEFT"
-								text="{appCnts.formBack}" />
+							<g:Button ui:field="backButton" styleName="btn">
+								<i class="icon-chevron-left" />
+								<ui:text from="{appCnts.formBack}" />
+							</g:Button>
 						</span>
 						<span class="pull-right">
-							<b:Button ui:field="formDeleteButton" icon="REMOVE"
-								text="{appCnts.formDelete}" type="DANGER" />
+							<g:Button ui:field="formDeleteButton" styleName="btn btn-danger">
+								<i class="icon-remove icon-white" />
+								<ui:text from="{appCnts.formDelete}" />
+							</g:Button>
 						</span>
 					</g:HTMLPanel>
-				</b:FormActions>
 
-			</b:Fieldset>
-		</b:WellForm>
+				</fieldset>
+
+			</g:HTMLPanel>
+
+		</g:FormPanel>
 
 	</g:HTMLPanel>
 

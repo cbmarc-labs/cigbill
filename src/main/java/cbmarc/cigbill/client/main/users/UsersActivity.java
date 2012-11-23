@@ -16,7 +16,7 @@ import javax.validation.groups.Default;
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
-import cbmarc.cigbill.client.ui.AppMessage;
+import cbmarc.cigbill.client.ui.AppNotify;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.User;
 
@@ -28,7 +28,6 @@ import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 /**
@@ -40,12 +39,15 @@ public class UsersActivity extends AbstractActivity implements
 		UsersView.Presenter {
 
 	private UsersConstants usersConstants = GWT.create(UsersConstants.class);
+	
 	private UsersServiceAsync service = GWT.create(UsersServiceImpl.class);
 
 	@Inject
 	private UsersView view;
+	
 	@Inject
 	private AppConstants appConstants;
+	
 	@Inject
 	protected PlaceController placeController;
 
@@ -111,7 +113,7 @@ public class UsersActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(usersConstants.addLegendLabel());
-		view.getFormDeleteButton().setVisible(false);
+		view.setFormDeleteButtonVisible(false);
 
 		driver.edit(new User());
 
@@ -123,7 +125,7 @@ public class UsersActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(Long id) throws Exception {
-		view.getFormDeleteButton().setVisible(true);
+		view.setFormDeleteButtonVisible(true);
 		service.getById(id, new AppAsyncCallback<User>() {
 
 			@Override
@@ -131,8 +133,7 @@ public class UsersActivity extends AbstractActivity implements
 				if (result == null) {
 					goTo(new UsersPlace());
 
-					new AppMessage(appConstants.itemNotFound(),
-							AppMessage.ERROR);
+					AppNotify.error(appConstants.itemNotFound());
 
 				} else {
 					view.showFormPanel(usersConstants.editLegendLabel());
@@ -163,7 +164,7 @@ public class UsersActivity extends AbstractActivity implements
 						driver.edit(user);
 					}
 
-					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
+					AppNotify.success(appConstants.itemSaved());
 
 				}
 			});
@@ -181,7 +182,7 @@ public class UsersActivity extends AbstractActivity implements
 
 			@Override
 			public void onSuccess(Void result) {
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 				doLoad();
 
 			}
@@ -198,7 +199,7 @@ public class UsersActivity extends AbstractActivity implements
 			public void onSuccess(Void result) {
 				goTo(new UsersPlace());
 
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 
 			}
 		});

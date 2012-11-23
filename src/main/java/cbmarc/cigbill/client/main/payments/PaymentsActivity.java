@@ -14,7 +14,7 @@ import javax.validation.groups.Default;
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
-import cbmarc.cigbill.client.ui.AppMessage;
+import cbmarc.cigbill.client.ui.AppNotify;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.Payment;
 
@@ -26,7 +26,6 @@ import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -118,7 +117,7 @@ public class PaymentsActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(paymentsConstants.addLegendLabel());
-		view.getFormDeleteButton().setVisible(false);
+		view.setFormDeleteButtonVisible(false);
 
 		driver.edit(new Payment());
 
@@ -130,7 +129,7 @@ public class PaymentsActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(Long id) {
-		view.getFormDeleteButton().setVisible(true);
+		view.setFormDeleteButtonVisible(true);
 		service.getById(id, new AppAsyncCallback<Payment>() {
 
 			@Override
@@ -138,8 +137,7 @@ public class PaymentsActivity extends AbstractActivity implements
 				if (result == null) {
 					goTo(new PaymentsPlace());
 
-					new AppMessage(appConstants.itemNotFound(),
-							AppMessage.ERROR);
+					AppNotify.error(appConstants.itemNotFound());
 
 				} else {
 					view.showFormPanel(paymentsConstants.editLegendLabel());
@@ -170,7 +168,7 @@ public class PaymentsActivity extends AbstractActivity implements
 						driver.edit(payment);
 					}
 
-					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
+					AppNotify.success(appConstants.itemSaved());
 
 				}
 			});
@@ -188,7 +186,7 @@ public class PaymentsActivity extends AbstractActivity implements
 
 			@Override
 			public void onSuccess(Void result) {
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 				doLoad();
 
 			}
@@ -205,7 +203,7 @@ public class PaymentsActivity extends AbstractActivity implements
 			public void onSuccess(Void result) {
 				goTo(new PaymentsPlace());
 
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 
 			}
 		});

@@ -14,7 +14,7 @@ import javax.validation.groups.Default;
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
-import cbmarc.cigbill.client.ui.AppMessage;
+import cbmarc.cigbill.client.ui.AppNotify;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.Tax;
 
@@ -26,7 +26,6 @@ import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -124,7 +123,7 @@ public class TaxesActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(taxesConstants.addLegendLabel());
-		view.getFormDeleteButton().setVisible(false);
+		view.setFormDeleteButtonVisible(false);
 
 		driver.edit(factory.tax().as());
 
@@ -136,7 +135,7 @@ public class TaxesActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(Long id) {
-		view.getFormDeleteButton().setVisible(true);
+		view.setFormDeleteButtonVisible(true);
 		service.getById(id, new AppAsyncCallback<Tax>() {
 
 			@Override
@@ -144,8 +143,7 @@ public class TaxesActivity extends AbstractActivity implements
 				if (result == null) {
 					goTo(new TaxesPlace());
 
-					new AppMessage(appConstants.itemNotFound(),
-							AppMessage.ERROR);
+					AppNotify.error(appConstants.itemNotFound());
 
 				} else {
 					view.showFormPanel(taxesConstants.editLegendLabel());
@@ -177,7 +175,7 @@ public class TaxesActivity extends AbstractActivity implements
 						driver.edit(tax);
 					}
 
-					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
+					AppNotify.success(appConstants.itemSaved());
 
 				}
 			});
@@ -195,7 +193,7 @@ public class TaxesActivity extends AbstractActivity implements
 
 			@Override
 			public void onSuccess(Void result) {
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 				doLoad();
 
 			}
@@ -212,7 +210,7 @@ public class TaxesActivity extends AbstractActivity implements
 			public void onSuccess(Void result) {
 				goTo(new TaxesPlace());
 
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 
 			}
 		});

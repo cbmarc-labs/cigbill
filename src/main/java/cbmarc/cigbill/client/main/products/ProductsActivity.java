@@ -16,7 +16,7 @@ import cbmarc.cigbill.client.main.MainPlace;
 import cbmarc.cigbill.client.main.taxes.TaxesServiceAsync;
 import cbmarc.cigbill.client.main.taxes.TaxesServiceImpl;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
-import cbmarc.cigbill.client.ui.AppMessage;
+import cbmarc.cigbill.client.ui.AppNotify;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.Product;
 import cbmarc.cigbill.shared.Tax;
@@ -135,7 +135,7 @@ public class ProductsActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(productsConstants.addLegendLabel());
-		view.getFormDeleteButton().setVisible(false);
+		view.setFormDeleteButtonVisible(false);
 
 		driver.edit(new Product());
 		
@@ -149,7 +149,7 @@ public class ProductsActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(Long id) {
-		view.getFormDeleteButton().setVisible(true);
+		view.setFormDeleteButtonVisible(true);
 		service.getById(id, new AppAsyncCallback<Product>() {
 
 			@Override
@@ -157,8 +157,7 @@ public class ProductsActivity extends AbstractActivity implements
 				if (result == null) {
 					goTo(new ProductsPlace());
 
-					new AppMessage(appConstants.itemNotFound(),
-							AppMessage.ERROR);
+					AppNotify.error(appConstants.itemNotFound());
 
 				} else {
 					view.showFormPanel(productsConstants.editLegendLabel());
@@ -191,7 +190,7 @@ public class ProductsActivity extends AbstractActivity implements
 						driver.edit(product);
 					}
 
-					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
+					AppNotify.success(appConstants.itemSaved());
 
 				}
 			});
@@ -209,7 +208,7 @@ public class ProductsActivity extends AbstractActivity implements
 
 			@Override
 			public void onSuccess(Void result) {
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 				doLoad();
 
 			}
@@ -226,7 +225,7 @@ public class ProductsActivity extends AbstractActivity implements
 			public void onSuccess(Void result) {
 				goTo(new ProductsPlace());
 
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 
 			}
 		});

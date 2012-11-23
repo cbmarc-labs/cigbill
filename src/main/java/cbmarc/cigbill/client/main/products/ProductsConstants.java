@@ -1,6 +1,7 @@
 package cbmarc.cigbill.client.main.products;
 
 import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.i18n.client.Constants.DefaultStringValue;
 
 public interface ProductsConstants extends Constants {
 	
@@ -35,5 +36,12 @@ public interface ProductsConstants extends Constants {
 	
 	@DefaultStringValue("Notes")
 	String formNotes();
+	
+	// TABS
+	@DefaultStringValue("General")
+	String tabGeneral();
+	
+	@DefaultStringValue("Notes")
+	String tabNotes();
 
 }

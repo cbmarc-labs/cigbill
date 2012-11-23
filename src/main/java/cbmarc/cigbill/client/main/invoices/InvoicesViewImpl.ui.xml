@@ -1,161 +1,259 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
-	xmlns:a="urn:import:cbmarc.cigbill.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	xmlns:a="urn:import:cbmarc.cigbill.client.ui">
 
 	<ui:with field="appCnts" type="cbmarc.cigbill.client.i18n.AppConstants" />
+	
 	<ui:with field="invoicesCnts"
 		type="cbmarc.cigbill.client.main.invoices.InvoicesConstants" />
+		
 	<ui:with field="customersCnts"
 		type="cbmarc.cigbill.client.main.customers.CustomersConstants" />
 
 	<g:HTMLPanel>
 
 		<g:HTMLPanel ui:field="cellTablePanel">
-
-			<b:Paragraph>
+			<p>
 				<span>
-					<b:Button ui:field="addTableButton" icon="PLUS"
-						text="{appCnts.addNewItemButton}">
-					</b:Button>
-					<b:Button ui:field="deleteTableButton" icon="REMOVE"
-						text="{appCnts.deleteSelectedItemsButton}" type="DANGER"></b:Button>
+					<g:Button ui:field="addTableButton" styleName="btn">
+						<i class="icon-plus" />
+						<ui:text from="{appCnts.addNewItemButton}"></ui:text>
+					</g:Button>
+					<g:Button ui:field="deleteTableButton" styleName="btn btn-danger">
+						<i class="icon-remove" />
+						<ui:text from="{appCnts.deleteSelectedItemsButton}" />
+					</g:Button>
 				</span>
 				<span class="pull-right">
-					<b:Button ui:field="toolbarRefreshButton" icon="REFRESH"
-						text="{appCnts.toolbarRefreshButton}"></b:Button>
+					<g:Button ui:field="toolbarRefreshButton" styleName="btn">
+						<i class="icon-refresh" />
+						<ui:text from="{appCnts.toolbarRefreshButton}" />
+					</g:Button>
 				</span>
-			</b:Paragraph>
+			</p>
 
-			<b:Paragraph>
-				<a:AppCellTable ui:field="cellTable"></a:AppCellTable>
-			</b:Paragraph>
+			<p>
+				<a:AppCheckboxCellTable ui:field="cellTable" />
+			</p>
 		</g:HTMLPanel>
 
-		<b:WellForm ui:field="formPanel">
+		<g:FormPanel ui:field="formPanel" styleName="well">
 
-			<b:Fieldset>
-				<b:Legend>
-					<span class="pull-right">
-						<b:Button icon="WARNING_SIGN" ui:field="validationButton"
-							type="WARNING"></b:Button>
-					</span>
-					<g:Label ui:field="legend"></g:Label>
-				</b:Legend>
+			<g:HTMLPanel>
 
-				<b:AlertBlock ui:field="validationPanel" heading="Warning"
-					type="ERROR" close="false"></b:AlertBlock>
+				<fieldset>
+					<legend>
+						<span class="pull-right">
+							<g:Button ui:field="validationButton" styleName="btn btn-danger">
+								<i class="icon-warning-sign" />
+							</g:Button>
+						</span>
+						<g:Label ui:field="legend" />
+					</legend>
 
-				<b:TabPanel>
-					<b:TabPane heading="General" active="true">
-					
-						<b:Row>
-							<b:Column size="4">
-								<b:ControlGroup ui:field="customerNameCG">
-									<b:ControlLabel for="customerName">
-										<ui:text from="{customersCnts.formName}"></ui:text>
-										*
-									</b:ControlLabel>
-									<b:Controls>
-										<b:AppendButton>
-											<!-- <b:TextBox ui:field="customerName" b:id="customerName"
-												size="3"></b:TextBox> -->
-											<g:SuggestBox ui:field="customerName" />
-											<b:Button ui:field="selectCustomerButton" icon="SEARCH"></b:Button>
-										</b:AppendButton>
-									</b:Controls>
-								</b:ControlGroup>
-							</b:Column>
+					<g:HTMLPanel ui:field="validationPanel" styleName="alert alert-error" />
 
-							<b:Column size="4">
-								<b:ControlGroup ui:field="customerEmailCG">
-									<b:ControlLabel for="customerEmail">
-										<ui:text from="{customersCnts.formEmail}"></ui:text>
-									</b:ControlLabel>
-									<b:Controls>
-										<b:TextBox ui:field="customerEmail" b:id="customerEmail" />
-									</b:Controls>
-								</b:ControlGroup>
-							</b:Column>
-						</b:Row>
-						
-					</b:TabPane>
-					<b:TabPane heading="Products">
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a:AppTab href="#general">General</a:AppTab>
+						</li>
+						<li>
+							<a:AppTab href="#items">Items</a:AppTab>
+						</li>
+						<li>
+							<a:AppTab href="#notes">Notes</a:AppTab>
+						</li>
+					</ul>
 
-						<!-- PRODUCTS INVOICES ITEMS -->
-						<g:HTMLPanel styleName="" ui:field="productsInvoicesPanel">
-							<div class="btn-toolbar">
-								<b:Button ui:field="addProductButton" icon="PLUS"
-									text="{appCnts.addNewItemButton}"></b:Button>
-								<b:Button ui:field="deleteProductButton" icon="REMOVE"
-									text="{appCnts.deleteSelectedItemsButton}" type="DANGER"></b:Button>
-							</div>
-							<div class="row-fluid" style="margin:5px 0;">
-								<div class="span">
-									<a:AppCellTable ui:field="productsInvoicesCellTable"></a:AppCellTable>
+
+					<div class="tab-content">
+						<div class="tab-pane active" id="general">
+
+							<div class="control-group" ui:field="customerNameCG">
+								<g:Label styleName="control-label" text="{customersCnts.formName}*" />
+								<div class="controls">
+									<div class="input-append">
+										<!-- <b:TextBox ui:field="customerName" b:id="customerName" size="3"></b:TextBox> -->
+										<g:SuggestBox ui:field="customerName" styleName="input-medium" />
+										<g:Button ui:field="selectCustomerButton" styleName="btn">
+											<i class="icon-search" />
+										</g:Button>
+									</div>
 								</div>
 							</div>
-						</g:HTMLPanel>
-						
-					</b:TabPane>
-					<b:TabPane heading="Notes">
-					
-						<b:ControlGroup ui:field="notesCG">
-							<b:ControlLabel for="notes">
-								<ui:text from="{invoicesCnts.formNotes}"></ui:text>
-							</b:ControlLabel>
-							<b:Controls>
-								<b:TextArea ui:field="notes" size="11" visibleLines="4"
-									b:id="notes" />
-							</b:Controls>
-						</b:ControlGroup>
-						
-					</b:TabPane>
-				</b:TabPanel>
 
-				<b:Paragraph styleName="muted"
-					text="{appCnts.formRequiredFieldsText}"></b:Paragraph>
+							<div class="row-fluid">
+								<div class="span3">
+									<div class="control-group" ui:field="dateCG">
+										<g:Label styleName="control-label" text="Date" />
+										<div class="controls">
+											<a:Datepicker ui:field="valueDate" format="dd/mm/yyyy"
+												styleName="datepicker input-small" alignment="RIGHT" />
+										</div>
+									</div>
+								</div>
+								<div class="span3">
+									<div class="control-group" ui:field="taxCG">
+										<g:Label styleName="control-label" text="Tax" />
+										<div class="controls">
+											<div class="input-append">
+												<g:DoubleBox ui:field="tax" maxLength="12"
+													alignment="RIGHT" styleName="input-small" />
+												<span class="add-on">%</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span3">
+									<div class="control-group" ui:field="discountCG">
+										<g:Label styleName="control-label" text="Discount" />
+										<div class="controls">
+											<div class="input-append">
+												<g:DoubleBox ui:field="discount" maxLength="12"
+													alignment="RIGHT" styleName="input-small" />
+												<span class="add-on">%</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="span3">
+									<div class="control-group" ui:field="shippingCG">
+										<g:Label styleName="control-label" text="Shipping" />
+										<div class="controls">
+											<g:DoubleBox ui:field="shipping" maxLength="12"
+												alignment="RIGHT" styleName="input-small" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
-				<b:FormActions>
-					<g:HTMLPanel>
-					
+						<div class="tab-pane" id="items">
+							<!-- PRODUCTS INVOICES ITEMS -->
+							<g:HTMLPanel styleName="" ui:field="productsInvoicesPanel">
+								<div class="btn-toolbar">
+									<g:Button ui:field="addNewLine" styleName="btn">
+										<i class="icon-plus" />
+										New Line
+									</g:Button>
+									<g:Button ui:field="addProductButton" styleName="btn">
+										<i class="icon-plus" />
+										<ui:text from="{appCnts.addNewItemButton}" />
+									</g:Button>
+									<g:Button ui:field="deleteProductButton" styleName="btn btn-danger">
+										<i class="icon-remove icon-white" />
+										<ui:text from="{appCnts.deleteSelectedItemsButton}" />
+									</g:Button>
+								</div>
+								<div class="row-fluid" style="margin:5px 0;">
+									<div class="span">
+										<a:AppFlexTable ui:field="productsInvoicesCellTable" />
+									</div>
+								</div>
+								<div class="row-fluid" style="text-align:right;margin:5px 0;">
+									<div>
+										<span style="margin-right:50px;">Subtotal</span>
+										<span>0.00</span>
+									</div>
+									<div>
+										<span style="margin-right:50px;">Tax (25%)</span>
+										<span>0.00</span>
+									</div>
+									<div>
+										<span style="margin-right:50px;">Discount (10%)</span>
+										<span>0.00</span>
+									</div>
+									<div>
+										<span style="margin-right:50px;">Shipping</span>
+										<span>0.00</span>
+									</div>
+									<div>
+										<span style="margin-right:50px;font-weight:bolder;">Total</span>
+										<span>0.00</span>
+									</div>
+								</div>
+							</g:HTMLPanel>
+
+						</div>
+
+						<div class="tab-pane" id="notes">
+							<div class="control-group" ui:field="notesCG">
+								<g:Label styleName="control-label" text="{invoicesCnts.formNotes}" />
+								<div class="controls">
+									<a:AppTextArea ui:field="notes" styleName="expand100-400 input-block-level" />
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<p class="muted">
+						<ui:text from="{appCnts.formRequiredFieldsText}" />
+					</p>
+
+
+					<g:HTMLPanel styleName="form-actions">
 						<span>
 							<g:SubmitButton ui:field="submitButton" styleName="btn">
 								<i class="icon-ok"></i>
 								<ui:text from="{appCnts.formSubmit}"></ui:text>
 							</g:SubmitButton>
 
-							<b:Button ui:field="backButton" icon="CHEVRON_LEFT"
-								text="{appCnts.formBack}"></b:Button>
+							<g:Button ui:field="backButton" styleName="btn">
+								<i class="icon-chevron-left" />
+								<ui:text from="{appCnts.formBack}" />
+							</g:Button>
 						</span>
 						<span class="pull-right">
-							<b:Button ui:field="formDeleteButton" icon="REMOVE"
-								text="{appCnts.formDelete}" type="DANGER"></b:Button>
+							<g:Button ui:field="formDeleteButton" styleName="btn btn-danger">
+								<i class="icon-remove" />
+								<ui:text from="{appCnts.formDelete}" />
+							</g:Button>
 						</span>
-
 					</g:HTMLPanel>
-				</b:FormActions>
 
-			</b:Fieldset>
+				</fieldset>
 
-		</b:WellForm>
+			</g:HTMLPanel>
+
+		</g:FormPanel>
 
 		<!-- CUSTOMER MODAL -->
-		<b:Modal ui:field="selectCustomerModal" title="Select Customer">
-			<a:AppCellTable ui:field="customersCellTable"></a:AppCellTable>
-			<b:ModalFooter>
-				<b:Button icon="CHEVRON_LEFT" ui:field="selectCustomerModalCancel">Cancel</b:Button>
-			</b:ModalFooter>
-		</b:Modal>
+		<div id="selectCustomerModal" class="modal hide">
+			<div class="modal-header">
+				<h3 id="myModalLabel">Select Customer</h3>
+			</div>
+			<div class="modal-body">
+				<a:AppCellTable ui:field="customersCellTable"></a:AppCellTable>
+			</div>
+			<div class="modal-footer">
+				<g:Button ui:field="selectCustomerModalCancel" styleName="btn">
+					<i class="icon-chevron-left" />
+					Cancel
+				</g:Button>
+			</div>
+		</div>
 
 		<!-- PRODUCTS MODAL -->
-		<b:Modal ui:field="selectProductsModal" title="Select Customer">
-			<a:AppCellTable ui:field="productsCellTable"></a:AppCellTable>
-			<b:ModalFooter>
-				<b:Button icon="OK" ui:field="selectProductsModalOk">Ok</b:Button>
-				<b:Button icon="CHEVRON_LEFT" ui:field="selectProductsModalCancel">Cancel</b:Button>
-			</b:ModalFooter>
-		</b:Modal>
+		<div id="selectProductsModal" class="modal hide">
+			<div class="modal-header">
+				<h3>Select Product</h3>
+			</div>
+			<div class="modal-body">
+				<a:AppCellTable ui:field="productsCellTable" />
+			</div>
+			<div class="modal-footer">
+				<g:Button ui:field="selectProductsModalOk" styleName="btn">
+					<i class="icon-ok" />
+					Ok
+				</g:Button>
+				<g:Button ui:field="selectProductsModalCancel" styleName="btn">
+					<i class="icon-chevron-left" />
+					Cancel
+				</g:Button>
+			</div>
+		</div>
 
 	</g:HTMLPanel>
 

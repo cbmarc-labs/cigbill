@@ -1,59 +1,66 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:with field="appCnts" type="cbmarc.cigbill.client.i18n.AppConstants" />
 	<ui:with field="authCnts" type="cbmarc.cigbill.client.auth.AuthConstants" />
 
 	<ui:style>
 		.form {
-			margin: 5em auto;
-			width: 310px;
+			margin-left: auto !important;
+			margin-right: auto !important;
+			float: none !important;
 		}
 	</ui:style>
 
-	<g:HTMLPanel styleName="{style.form}">
-		<b:WellForm ui:field="formPanel">
+	<g:FormPanel ui:field="formPanel" styleName="{style.form} span3 well">
 
-			<b:Fieldset>
-				<b:Legend>
+		<g:HTMLPanel>
+
+			<fieldset>
+
+				<legend>
 					<ui:text from="{authCnts.legendLabel}"></ui:text>
-				</b:Legend>
+				</legend>
 
-				<b:ControlGroup ui:field="loginCG">
-					<b:ControlLabel for="login">
-						<ui:text from="{authCnts.formLogin}"></ui:text>
-					</b:ControlLabel>
-					<b:Controls>
-						<b:TextBox ui:field="login" width="18em" b:id="login" value="admin"></b:TextBox>
-					</b:Controls>
-				</b:ControlGroup>
+				<div class="control-group" ui:field="loginCG">
+					<g:Label styleName="control-label" text="{authCnts.formLogin}" />
+					<div class="controls">
+						<g:TextBox ui:field="login" styleName="span3" value="admin" />
+					</div>
+				</div>
 
-				<b:ControlGroup ui:field="passwordCG">
-					<b:ControlLabel for="password">
-						<ui:text from="{authCnts.formPassword}"></ui:text>
-					</b:ControlLabel>
-					<b:Controls>
-						<b:PasswordTextBox ui:field="password" width="18em" 
-							b:id="password" value="admin"></b:PasswordTextBox>
-					</b:Controls>
-				</b:ControlGroup>
+				<div class="control-group" ui:field="passwordCG">
+					<g:Label styleName="control-label" text="{authCnts.formPassword}" />
+					<div class="controls">
+						<g:PasswordTextBox ui:field="password"
+							styleName="span3" value="admin" />
+					</div>
+				</div>
 
 				<!-- <div class="error"></div> -->
 
-				<g:HTMLPanel>
-					<span class="pull-right">
+				<div class="control-group pull-right">
+					<div class="controls">
 						<g:SubmitButton ui:field="submitButton" styleName="btn btn-primary">
 							<i class="icon-ok icon-white"></i>
 							<ui:text from="{appCnts.formSubmit}"></ui:text>
 						</g:SubmitButton>
-					</span>
-					<b:CheckBox ui:field="rememberMe" checked="true"
-						text="{authCnts.formRememberMe}"></b:CheckBox>
-				</g:HTMLPanel>
-			</b:Fieldset>
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						<label class="checkbox inline">
+							<g:CheckBox ui:field="rememberMe" checked="true"
+								text="{authCnts.formRememberMe}" />
+						</label>
+					</div>
+				</div>
 
-		</b:WellForm>
-	</g:HTMLPanel>
-	
+			</fieldset>
+
+		</g:HTMLPanel>
+
+	</g:FormPanel>
+
 </ui:UiBinder> 

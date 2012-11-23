@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
-	xmlns:a="urn:import:cbmarc.cigbill.client.ui" xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+	xmlns:a="urn:import:cbmarc.cigbill.client.ui">
 
 	<ui:with field="appCnts" type="cbmarc.cigbill.client.i18n.AppConstants" />
 	<ui:with field="customersCnts"
@@ -10,89 +10,100 @@
 	<g:HTMLPanel>
 
 		<g:HTMLPanel ui:field="cellTablePanel">
-
-			<b:Paragraph>
+			<p>
 				<span>
-					<b:Button ui:field="addTableButton" icon="PLUS"
-						text="{appCnts.addNewItemButton}"></b:Button>
-
-					<b:Button ui:field="deleteTableButton" icon="REMOVE"
-						text="{appCnts.deleteSelectedItemsButton}" type="DANGER"></b:Button>
+					<g:Button ui:field="addTableButton" styleName="btn">
+						<i class="icon-plus" />
+						<ui:text from="{appCnts.addNewItemButton}"></ui:text>
+					</g:Button>
+					<g:Button ui:field="deleteTableButton" styleName="btn btn-danger">
+						<i class="icon-remove" />
+						<ui:text from="{appCnts.deleteSelectedItemsButton}" />
+					</g:Button>
 				</span>
 				<span class="pull-right">
-					<b:Button ui:field="toolbarRefreshButton" icon="REFRESH"
-						text="{appCnts.toolbarRefreshButton}"></b:Button>
+					<g:Button ui:field="toolbarRefreshButton" styleName="btn">
+						<i class="icon-refresh" />
+						<ui:text from="{appCnts.toolbarRefreshButton}" />
+					</g:Button>
 				</span>
-			</b:Paragraph>
+			</p>
 
-			<b:Paragraph>
-				<a:AppCellTable ui:field="cellTable"></a:AppCellTable>
-			</b:Paragraph>
-
+			<p>
+				<a:AppCheckboxCellTable ui:field="cellTable" />
+			</p>
 		</g:HTMLPanel>
 
-		<b:WellForm ui:field="formPanel">
+		<g:FormPanel ui:field="formPanel" styleName="well">
 
-			<b:Fieldset>
-				<b:Legend>
-					<span class="pull-right">
-						<b:Button icon="WARNING_SIGN" ui:field="validationButton"
-							type="WARNING"></b:Button>
-					</span>
-					<g:Label ui:field="legend"></g:Label>
-				</b:Legend>
+			<g:HTMLPanel>
 
-				<b:AlertBlock ui:field="validationPanel" heading="Warning"
-					type="ERROR" close="false"></b:AlertBlock>
+				<fieldset>
+					<legend>
+						<span class="pull-right">
+							<g:Button ui:field="validationButton" styleName="btn btn-danger">
+								<i class="icon-warning-sign icon-white" />
+							</g:Button>
+						</span>
+						<g:Label ui:field="legend" />
+					</legend>
 
-				<b:Row>
-					<b:Column size="4">
-						<b:ControlGroup ui:field="nameCG">
-							<b:ControlLabel for="name">
-								<ui:text from="{customersCnts.formName}"></ui:text>
-							</b:ControlLabel>
-							<b:Controls>
-								<b:TextBox ui:field="name" b:id="name"></b:TextBox>
-							</b:Controls>
-						</b:ControlGroup>
-					</b:Column>
+					<g:HTMLPanel ui:field="validationPanel" styleName="alert alert-error" />
 
-					<b:Column size="4">
-						<b:ControlGroup ui:field="emailCG">
-							<b:ControlLabel for="email">
-								<ui:text from="{customersCnts.formEmail}"></ui:text>
-							</b:ControlLabel>
-							<b:Controls>
-								<b:TextBox ui:field="email" b:id="email"></b:TextBox>
-							</b:Controls>
-						</b:ControlGroup>
-					</b:Column>
-				</b:Row>
+					<div class="row-fluid">
+						<div class="span5">
+							<div class="control-group" ui:field="nameCG">
+								<label styleName="control-label">
+									<ui:text from="{customersCnts.formName}" />
+								</label>
+								<div class="controls">
+									<g:TextBox ui:field="name" styleName="input-large" />
+								</div>
+							</div>
+						</div>
 
-				<b:Paragraph styleName="muted"
-					text="{appCnts.formRequiredFieldsText}"></b:Paragraph>
+						<div class="span5">
+							<div class="control-group" ui:field="emailCG">
+								<label styleName="control-label">
+									<ui:text from="{customersCnts.formEmail}" />
+								</label>
+								<div class="controls">
+									<g:TextBox ui:field="email" styleName="input-large" />
+								</div>
+							</div>
+						</div>
+					</div>
 
-				<b:FormActions>
-					<g:HTMLPanel>
+					<p class="muted">
+						<ui:text from="{appCnts.formRequiredFieldsText}" />
+					</p>
+
+
+					<g:HTMLPanel styleName="form-actions">
 						<span>
 							<g:SubmitButton ui:field="submitButton" styleName="btn">
 								<i class="icon-ok"></i>
 								<ui:text from="{appCnts.formSubmit}"></ui:text>
 							</g:SubmitButton>
 
-							<b:Button ui:field="backButton" icon="CHEVRON_LEFT"
-								text="{appCnts.formBack}"></b:Button>
+							<g:Button ui:field="backButton" styleName="btn">
+								<i class="icon-chevron-left" />
+								<ui:text from="{appCnts.formBack}" />
+							</g:Button>
 						</span>
 						<span class="pull-right">
-							<b:Button ui:field="formDeleteButton" icon="REMOVE"
-								text="{appCnts.formDelete}" type="DANGER"></b:Button>
+							<g:Button ui:field="formDeleteButton" styleName="btn btn-danger">
+								<i class="icon-remove icon-white" />
+								<ui:text from="{appCnts.formDelete}" />
+							</g:Button>
 						</span>
 					</g:HTMLPanel>
-				</b:FormActions>
 
-			</b:Fieldset>
+				</fieldset>
 
-		</b:WellForm>
+			</g:HTMLPanel>
+
+		</g:FormPanel>
 
 	</g:HTMLPanel>
 

@@ -5,17 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
-import cbmarc.cigbill.client.ui.AppCellTable;
+import cbmarc.cigbill.client.ui.AppCheckboxCellTable;
 import cbmarc.cigbill.shared.Tax;
 
-import com.github.gwtbootstrap.client.ui.AlertBlock;
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.WellForm;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -24,21 +16,19 @@ import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SubmitButton;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -55,7 +45,7 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	}
 
 	@UiField
-	AppCellTable<Tax> cellTable;
+	AppCheckboxCellTable<Tax> cellTable;
 
 	@Editor.Ignore
 	@UiField
@@ -63,44 +53,43 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 
 	@UiField
 	HTMLPanel cellTablePanel;
-	
+
 	@UiField
 	Button addTableButton, deleteTableButton;
 
 	// Validatior error messages
 	@UiField
 	Button validationButton;
-	
+
 	@UiField
-	AlertBlock validationPanel;
+	HTMLPanel validationPanel;
 
 	// Form fields
 	@UiField
-	WellForm formPanel;
-	
+	FormPanel formPanel;
+
 	@UiField
 	TextBox name;
-	
+
 	@UiField
 	TextBox description;
-	
+
 	@UiField
 	SubmitButton submitButton;
-	
+
 	@UiField
 	Button backButton, formDeleteButton;
 
 	// Control groups for mark errors
 	@UiField
-	ControlGroup nameCG, descriptionCG;
+	DivElement nameCG, descriptionCG;
 
 	private Presenter presenter;
 
 	@Inject
 	private AppConstants appConstants;
-	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
 
-	Column<Tax, SafeHtml> nameColumn;
+	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
 
 	/**
 	 * Constructor
@@ -121,31 +110,22 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		nameColumn = new Column<Tax, SafeHtml>(new SafeHtmlCell()) {
+		TextColumn<Tax> nameColumn = new TextColumn<Tax>() {
 
 			@Override
-			public SafeHtml getValue(Tax object) {
-				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-
-				Anchor anchor = new Anchor(object.getName());
-				anchor.setHref("#taxes:edit/" + object.getId());
-
-				sb.appendHtmlConstant(anchor.toString());
-
-				return sb.toSafeHtml();
+			public String getValue(Tax object) {
+				return object.getName();
 			}
 		};
-		cellTable.addColumn(nameColumn,
-				taxesConstants.columnName());
+		cellTable.addColumn(nameColumn, taxesConstants.columnName());
 
 		// Make column sortable.
 		nameColumn.setSortable(true);
-		cellTable.setComparator(nameColumn,
-				new Comparator<Tax>() {
-					public int compare(Tax o1, Tax o2) {
-						return o1.getName().compareTo(o2.getName());
-					}
-				});
+		cellTable.setComparator(nameColumn, new Comparator<Tax>() {
+			public int compare(Tax o1, Tax o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 
 		// /////////////////////////////////////////////////////////////////////
 		// DESCRIPTION COLUMN
@@ -161,12 +141,11 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 
 		// Make column sortable.
 		descriptionColumn.setSortable(true);
-		cellTable.setComparator(descriptionColumn,
-				new Comparator<Tax>() {
-					public int compare(Tax o1, Tax o2) {
-						return o1.getName().compareTo(o2.getName());
-					}
-				});
+		cellTable.setComparator(descriptionColumn, new Comparator<Tax>() {
+			public int compare(Tax o1, Tax o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 		// /////////////////////////////////////////////////////////////////////
 		// CELLTABLE CLICKHANDLER
 		cellTable.addClickHandler(new ClickHandler() {
@@ -177,6 +156,11 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 
 				boolean visible = selectedSet.size() > 0 ? true : false;
 				deleteTableButton.setVisible(visible);
+				
+				if (cellTable.getSelected() != null) {
+					String id = cellTable.getSelected().getId().toString();
+					presenter.goTo(new TaxesPlace("edit/" + id));
+				}
 			}
 		});
 
@@ -252,8 +236,9 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	}
 
 	@Override
-	public Button getFormDeleteButton() {
-		return formDeleteButton;
+	public void setFormDeleteButtonVisible(boolean visible) {
+		formDeleteButton.setVisible(visible);
+
 	}
 
 	/**
@@ -274,18 +259,18 @@ public class TaxesViewImpl extends Composite implements TaxesView, Editor<Tax> {
 	 */
 	public void setFieldError(String field, String error) {
 		if (field.equals("name"))
-			nameCG.setType(ControlGroupType.ERROR);
+			nameCG.setClassName("control-group error");
 
 		else if (field.equals("description"))
-			descriptionCG.setType(ControlGroupType.ERROR);
+			descriptionCG.setClassName("control-group error");
 	}
 
 	/**
 	 * Clear errors from form
 	 */
 	public void clearErrors() {
-		nameCG.setType(ControlGroupType.NONE);
-		descriptionCG.setType(ControlGroupType.NONE);
+		nameCG.setClassName("control-group");
+		descriptionCG.setClassName("control-group");
 
 		validationButton.setVisible(false);
 		validationPanel.setVisible(false);

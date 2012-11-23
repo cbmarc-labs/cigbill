@@ -8,7 +8,6 @@ import cbmarc.cigbill.shared.Customer;
 import cbmarc.cigbill.shared.Invoice;
 import cbmarc.cigbill.shared.Product;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
@@ -30,7 +29,7 @@ public interface InvoicesView extends IsWidget, EditorView<Invoice> {
 
 	void setFieldError(String field, String error);
 
-	Button getFormDeleteButton();
+	void setFormDeleteButtonVisible(boolean visible);
 
 	public interface Presenter {
 		void doAdd();

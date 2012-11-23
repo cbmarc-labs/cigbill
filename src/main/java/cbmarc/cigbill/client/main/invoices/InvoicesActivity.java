@@ -18,7 +18,7 @@ import cbmarc.cigbill.client.main.customers.CustomersServiceImpl;
 import cbmarc.cigbill.client.main.products.ProductsServiceAsync;
 import cbmarc.cigbill.client.main.products.ProductsServiceImpl;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
-import cbmarc.cigbill.client.ui.AppMessage;
+import cbmarc.cigbill.client.ui.AppNotify;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.Customer;
 import cbmarc.cigbill.shared.Invoice;
@@ -49,15 +49,19 @@ public class InvoicesActivity extends AbstractActivity implements
 
 	private InvoicesServiceAsync service = GWT
 			.create(InvoicesServiceImpl.class);
+	
 	private ProductsServiceAsync productsService = GWT
 			.create(ProductsServiceImpl.class);
+	
 	private CustomersServiceAsync customersService = GWT
 			.create(CustomersServiceImpl.class);
 
 	@Inject
 	private InvoicesView view;
+	
 	@Inject
 	private AppConstants appConstants;
+	
 	@Inject
 	private PlaceController placeController;
 
@@ -115,7 +119,7 @@ public class InvoicesActivity extends AbstractActivity implements
 		service.getAll(new AppAsyncCallback<List<Invoice>>() {
 
 			@Override
-			public void onSuccess(List<Invoice> result) {
+			public void onSuccess(List<Invoice> result) {				
 				view.setList(result);
 
 			}
@@ -152,7 +156,7 @@ public class InvoicesActivity extends AbstractActivity implements
 	@Override
 	public void doAdd() {
 		view.showFormPanel(invoicesConstants.addLegendLabel());
-		view.getFormDeleteButton().setVisible(false);
+		view.setFormDeleteButtonVisible(false);
 
 		driver.edit(new Invoice());
 
@@ -167,16 +171,15 @@ public class InvoicesActivity extends AbstractActivity implements
 	 * @param token
 	 */
 	public void doEdit(Long id) {
-		view.getFormDeleteButton().setVisible(true);
+		view.setFormDeleteButtonVisible(true);
 		service.getById(id, new AppAsyncCallback<Invoice>() {
 
 			@Override
 			public void onSuccess(Invoice result) {
 				if (result == null) {
 					goTo(new InvoicesPlace());
-
-					new AppMessage(appConstants.itemNotFound(),
-							AppMessage.ERROR);
+					
+					AppNotify.error(appConstants.itemNotFound());
 
 				} else {
 					view.showFormPanel(invoicesConstants.editLegendLabel());
@@ -209,7 +212,7 @@ public class InvoicesActivity extends AbstractActivity implements
 						driver.edit(invoice);
 					}
 
-					new AppMessage(appConstants.itemSaved(), AppMessage.SUCCESS);
+					AppNotify.success(appConstants.itemSaved());
 
 				}
 			});
@@ -227,7 +230,7 @@ public class InvoicesActivity extends AbstractActivity implements
 
 			@Override
 			public void onSuccess(Void result) {
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 				doLoad();
 
 			}
@@ -244,7 +247,7 @@ public class InvoicesActivity extends AbstractActivity implements
 			public void onSuccess(Void result) {
 				goTo(new InvoicesPlace());
 
-				new AppMessage(appConstants.itemsDeleted(), AppMessage.SUCCESS);
+				AppNotify.success(appConstants.itemsDeleted());
 
 			}
 		});

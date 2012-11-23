@@ -1,11 +1,7 @@
 package cbmarc.cigbill.client.mvp;
 
-import cbmarc.cigbill.client.auth.AuthActivity;
-import cbmarc.cigbill.client.auth.AuthPlace;
 import cbmarc.cigbill.client.main.customers.CustomersActivity;
 import cbmarc.cigbill.client.main.customers.CustomersPlace;
-import cbmarc.cigbill.client.main.home.HomeActivity;
-import cbmarc.cigbill.client.main.home.HomePlace;
 import cbmarc.cigbill.client.main.invoices.InvoicesActivity;
 import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
 import cbmarc.cigbill.client.main.payments.PaymentsActivity;
@@ -24,34 +20,29 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 public class ContentActivityMapper implements ActivityMapper {
-
-	@Inject
-	private Provider<ActivityAsyncProxy<AuthActivity>> authActivity;
-	@Inject
-	private Provider<ActivityAsyncProxy<HomeActivity>> homeActivity;
+		
 	@Inject
 	private Provider<ActivityAsyncProxy<UsersActivity>> usersActivity;
+	
 	@Inject
 	private Provider<ActivityAsyncProxy<InvoicesActivity>> invoicesActivity;
+	
 	@Inject
 	private Provider<ActivityAsyncProxy<PaymentsActivity>> paymentsActivity;
+	
 	@Inject
 	private Provider<ActivityAsyncProxy<ProductsActivity>> productsActivity;
+	
 	@Inject
 	private Provider<ActivityAsyncProxy<TaxesActivity>> taxesActivity;
+	
 	@Inject
 	private Provider<ActivityAsyncProxy<CustomersActivity>> customersActivity;
 
 	@Override
 	public Activity getActivity(Place place) {
 
-		if (place instanceof AuthPlace) {
-			return authActivity.get();
-
-		} else if (place instanceof HomePlace) {
-			return homeActivity.get();
-
-		} else if (place instanceof UsersPlace) {
+		if (place instanceof UsersPlace) {
 			return usersActivity.get();
 
 		} else if (place instanceof CustomersPlace) {

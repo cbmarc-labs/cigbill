@@ -6,7 +6,6 @@ import java.util.Set;
 import cbmarc.cigbill.client.utils.EditorView;
 import cbmarc.cigbill.shared.User;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
@@ -24,7 +23,7 @@ public interface UsersView extends IsWidget, EditorView<User> {
 
 	void setFieldError(String field, String error);
 	
-	Button getFormDeleteButton();
+	void setFormDeleteButtonVisible(boolean visible);
 
 	void setPresenter(Presenter presenter);
 

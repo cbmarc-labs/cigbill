@@ -5,28 +5,19 @@ import java.util.List;
 import java.util.Set;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
+import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
 import cbmarc.cigbill.client.main.taxes.TaxesConstants;
-import cbmarc.cigbill.client.ui.AppCellTable;
+import cbmarc.cigbill.client.ui.AppCheckboxCellTable;
 import cbmarc.cigbill.shared.Product;
 import cbmarc.cigbill.shared.Tax;
 
-import com.github.gwtbootstrap.client.ui.AlertBlock;
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.Form.SubmitEvent;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.TabPanel;
-import com.github.gwtbootstrap.client.ui.TextArea;
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.WellForm;
-import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.editor.client.Editor;
-import com.google.gwt.editor.client.LeafValueEditor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,14 +33,17 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DoubleBox;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SubmitButton;
-import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -68,7 +62,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	}
 
 	@UiField
-	AppCellTable<Product> cellTable;
+	AppCheckboxCellTable<Product> cellTable;
 
 	@Editor.Ignore
 	@UiField
@@ -85,46 +79,17 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	Button validationButton;
 
 	@UiField
-	AlertBlock validationPanel;
+	HTMLPanel validationPanel;
 
 	// Form fields
 	@UiField
-	WellForm formPanel;
-	
-	@UiField
-	TabPanel productsTabPanel;
+	FormPanel formPanel;
 
 	@UiField
 	TextBox name, description;
 
 	@UiField
 	DoubleBox price;
-
-	MultiWordSuggestOracle taxSuggestions = new MultiWordSuggestOracle();
-
-	@Editor.Ignore
-	@UiField(provided = true)
-	SuggestBox taxName = new SuggestBox(taxSuggestions);
-	Tax selectedTax = null;
-	LeafValueEditor<Tax> tax = new LeafValueEditor<Tax>() {
-
-		@Override
-		public void setValue(Tax value) {
-			taxName.setValue("");
-
-			if (value != null)
-				taxName.setValue(value.getName());
-
-		}
-
-		@Override
-		public Tax getValue() {
-			return selectedTax;
-		}
-	};
-
-	@UiField
-	Button selectTaxButton;
 
 	@UiField
 	TextArea notes;
@@ -137,26 +102,17 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 	// Control groups for mark errors
 	@UiField
-	ControlGroup nameCG, descriptionCG, priceCG;
-
-	@UiField
-	Modal taxModal;
-
-	@UiField
-	AppCellTable<Tax> taxCellTable;
-
-	@UiField
-	Button taxModalCancelButton;
+	DivElement nameCG, descriptionCG, priceCG;
 
 	private Presenter presenter;
 
 	@Inject
 	private AppConstants appConstants;
+
 	private ProductsConstants productsConstants = GWT
 			.create(ProductsConstants.class);
-	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
 
-	Column<Product, SafeHtml> nameColumn;
+	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
 
 	/**
 	 * Constructor
@@ -169,7 +125,6 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 		formPanel.setVisible(false);
 
 		createCellTable();
-		createTaxCellTable();
 	}
 
 	/**
@@ -178,20 +133,12 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	private void createCellTable() {
 		// /////////////////////////////////////////////////////////////////////
 		// NAME COLUMN
-		nameColumn = new Column<Product, SafeHtml>(new SafeHtmlCell()) {
+		TextColumn<Product> nameColumn = new TextColumn<Product>(){
 
 			@Override
-			public SafeHtml getValue(Product object) {
-				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-
-				Anchor anchor = new Anchor(object.getName());
-				anchor.setHref("#products:edit/" + object.getId());
-
-				sb.appendHtmlConstant(anchor.toString());
-
-				return sb.toSafeHtml();
-			}
-		};
+			public String getValue(Product object) {
+				return object.getName();
+			}};
 		cellTable.addColumn(nameColumn, productsConstants.columnName());
 		cellTable.setColumnWidth(nameColumn, "16em");
 
@@ -249,50 +196,14 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 				boolean visible = selectedSet.size() > 0 ? true : false;
 				deleteTableButton.setVisible(visible);
-			}
-		});
-
-	}
-
-	/**
-	 * Create celltable columns
-	 */
-	private void createTaxCellTable() {
-		// /////////////////////////////////////////////////////////////////////
-		// NAME COLUMN
-		TextColumn<Tax> nameColumn = new TextColumn<Tax>() {
-
-			@Override
-			public String getValue(Tax object) {
-				return object.getName();
-			}
-		};
-		taxCellTable.addColumn(nameColumn, taxesConstants.columnName());
-
-		// /////////////////////////////////////////////////////////////////////
-		// DESCRIPTION COLUMN
-		TextColumn<Tax> descriptionColumn = new TextColumn<Tax>() {
-
-			@Override
-			public String getValue(Tax object) {
-				return object.getDescription();
-			}
-		};
-		taxCellTable.addColumn(descriptionColumn,
-				taxesConstants.columnDescription());
-
-		taxCellTable.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (taxCellTable.getSelected() != null) {
-					taxModal.hide();
-					taxName.setValue(taxCellTable.getSelected().getName());
-					selectedTax = taxCellTable.getSelected();
+				
+				if (cellTable.getSelected() != null) {
+					String id = cellTable.getSelected().getId().toString();
+					presenter.goTo(new ProductsPlace("edit/" + id));
 				}
-
 			}
 		});
+
 	}
 
 	/**
@@ -302,16 +213,6 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	 */
 	public void setList(List<Product> list) {
 		cellTable.setList(list);
-	}
-
-	@Override
-	public void setTaxList(List<Tax> data) {
-		taxCellTable.setList(data);
-
-		for (Tax tax : data) {
-			taxSuggestions.add(tax.getName());
-		}
-
 	}
 
 	// only digits as input in text field
@@ -378,20 +279,10 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 			presenter.doDelete();
 	}
 
-	@UiHandler("selectTaxButton")
-	protected void onCLickSelectTaxButton(ClickEvent event) {
-		taxCellTable.clearSelected();
-		taxModal.show();
-	}
-
-	@UiHandler("taxModalCancelButton")
-	protected void onCLickTaxModalCancelButton(ClickEvent event) {
-		taxModal.hide();
-	}
-
 	@Override
-	public Button getFormDeleteButton() {
-		return formDeleteButton;
+	public void setFormDeleteButtonVisible(boolean visible) {
+		formDeleteButton.setVisible(visible);
+		
 	}
 
 	/**
@@ -401,7 +292,7 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	 */
 	public void setFormErrors(String error) {
 		validationButton.setVisible(true);
-		validationPanel.setHTML(error);
+		validationPanel.getElement().setInnerHTML(error);
 	}
 
 	/**
@@ -412,22 +303,22 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	 */
 	public void setFieldError(String field, String error) {
 		if (field.equals("name"))
-			nameCG.setType(ControlGroupType.ERROR);
+			nameCG.setClassName("control-group error");
 
 		else if (field.equals("description"))
-			descriptionCG.setType(ControlGroupType.ERROR);
+			descriptionCG.setClassName("control-group error");
 
 		else if (field.equals("price"))
-			priceCG.setType(ControlGroupType.ERROR);
+			priceCG.setClassName("control-group error");
 	}
 
 	/**
 	 * Clear errors from form
 	 */
 	public void clearErrors() {
-		nameCG.setType(ControlGroupType.NONE);
-		descriptionCG.setType(ControlGroupType.NONE);
-		priceCG.setType(ControlGroupType.NONE);
+		nameCG.setClassName("control-group");
+		descriptionCG.setClassName("control-group");
+		priceCG.setClassName("control-group");
 
 		validationButton.setVisible(false);
 		validationPanel.setVisible(false);
@@ -455,8 +346,6 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 
 		cellTablePanel.setVisible(false);
 		formPanel.setVisible(true);
-
-		selectFirstTab(productsTabPanel.getId());
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -490,6 +379,12 @@ public class ProductsViewImpl extends Composite implements ProductsView,
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 
+	}
+
+	@Override
+	public void setTaxList(List<Tax> data) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
