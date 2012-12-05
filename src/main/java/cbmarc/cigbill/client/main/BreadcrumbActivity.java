@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.customers.CustomersPlace;
 import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
+import cbmarc.cigbill.client.main.items.ItemsPlace;
 import cbmarc.cigbill.client.main.payments.PaymentsPlace;
 import cbmarc.cigbill.client.main.products.ProductsPlace;
 import cbmarc.cigbill.client.main.taxes.TaxesPlace;
@@ -15,7 +16,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
@@ -35,7 +35,7 @@ public class BreadcrumbActivity extends AbstractActivity implements
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
 		view.setPresenter(this);
-		Window.alert("kkk");
+		
 		panel.setWidget(view);
 
 		updateAppBreadcrumbs();
@@ -77,6 +77,10 @@ public class BreadcrumbActivity extends AbstractActivity implements
 		} else if (where instanceof ProductsPlace) {
 			text = appConstants.navProducts();
 			place = new ProductsPlace();
+
+		} else if (where instanceof ItemsPlace) {
+			text = appConstants.navItems();
+			place = new ItemsPlace();
 
 		} else if (where instanceof TaxesPlace) {
 			text = appConstants.navTaxes();

@@ -15,6 +15,18 @@ public interface InvoicesConstants extends Constants {
 	@DefaultStringValue("Edit Invoice")
 	String editLegendLabel();
 	
+	@DefaultStringValue("Date")
+	String formDate();
+	
+	@DefaultStringValue("Tax")
+	String formTax();
+	
+	@DefaultStringValue("Discount")
+	String formDiscount();
+	
+	@DefaultStringValue("Shipping")
+	String formShipping();
+	
 	@DefaultStringValue("Notes")
 	String formNotes();
 	
@@ -22,7 +34,36 @@ public interface InvoicesConstants extends Constants {
 	@DefaultStringValue("General")
 	String tabGeneral();
 	
+	@DefaultStringValue("Items")
+	String tabItems();
+	
 	@DefaultStringValue("Notes")
 	String tabNotes();
-
+	
+	// MODAL
+	@DefaultStringValue("Select Customer")
+	String modalSelectCustomer();
+	
+	@DefaultStringValue("Select Item")
+	String modalSelectItem();
+	
+	// OTHERS
+	@DefaultStringValue("New Line")
+	String newLine();
+	
+	// ITEMS SECTION
+	@DefaultStringValue("Subtotal")
+	String invoiceSubtotal();
+	
+	@DefaultStringValue("Tax")
+	String invoiceTax();
+	
+	@DefaultStringValue("Discount")
+	String invoiceDiscount();
+	
+	@DefaultStringValue("Shipping")
+	String invoiceShipping();
+	
+	@DefaultStringValue("Total")
+	String invoiceTotal();
 }

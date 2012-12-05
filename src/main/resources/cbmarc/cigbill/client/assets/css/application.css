@@ -54,7 +54,8 @@ tbody {
 
 /* bootstrap modifications */
 body {
-	padding-top: 10px;
+	padding-top: 60px;
+	padding-bottom: 40px;
 }
 
 .pagination {
@@ -100,6 +101,10 @@ a.menu:after,.dropdown-toggle:after {
 
 /* Portrait tablet to landscape and desktop */
 @media ( min-width : 768px) and (max-width: 979px) {
+	body {
+		padding-top: 0;
+	}
+	
 	.modal {
 		top: 1%;
 		right: 1%;
@@ -114,6 +119,10 @@ a.menu:after,.dropdown-toggle:after {
 
 /* Landscape phone to portrait tablet */
 @media ( max-width : 767px) {
+	body {
+		padding-top: 0;
+	}
+	
 	.modal {
 		top: 1%;
 		right: 1%;

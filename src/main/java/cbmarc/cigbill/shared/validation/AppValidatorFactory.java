@@ -6,6 +6,7 @@ import javax.validation.groups.Default;
 import cbmarc.cigbill.shared.ClientGroup;
 import cbmarc.cigbill.shared.Customer;
 import cbmarc.cigbill.shared.Invoice;
+import cbmarc.cigbill.shared.Item;
 import cbmarc.cigbill.shared.Payment;
 import cbmarc.cigbill.shared.Product;
 import cbmarc.cigbill.shared.Tax;
@@ -22,7 +23,7 @@ public final class AppValidatorFactory extends AbstractGwtValidatorFactory {
 	 * Validator marker for the Validation Sample project. Only the classes
 	 * listed in the {@link GwtValidation} annotation can be validated.
 	 */
-	@GwtValidation(value = { User.class, Customer.class, Product.class,
+	@GwtValidation(value = { Item.class, User.class, Customer.class, Product.class,
 			Tax.class, Payment.class, Invoice.class }, groups = { Default.class,
 			ClientGroup.class })
 	public interface GwtValidator extends Validator {

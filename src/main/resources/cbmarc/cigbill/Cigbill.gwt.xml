@@ -19,8 +19,6 @@
 	<add-linker name="xsiframe" />
 	<set-configuration-property name="devModeRedirectEnabled"
 		value="true" />
-		
-	<inherits name='com.google.gwt.visualization.Visualization'/>
 	
 	<inherits name='com.google.gwt.inject.Inject' />
 	
@@ -40,11 +38,6 @@
 	<!-- Places and activities -->
 	<inherits name="com.google.gwt.activity.Activity" />
 	<inherits name="com.google.gwt.place.Place" />
-
-	<!-- Use ClientFactoryImpl by default -->
-	<replace-with class="cbmarc.cigbill.client.ClientFactoryImpl">
-		<when-type-is class="cbmarc.cigbill.client.ClientFactory" />
-	</replace-with>
 
 	<inherits name='org.hibernate.validator.HibernateValidator' />
 	<!-- Specify the Validator for the Validation bootstrap to use. -->

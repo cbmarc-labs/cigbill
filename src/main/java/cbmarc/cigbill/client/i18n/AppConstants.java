@@ -7,6 +7,12 @@ public interface AppConstants extends Constants {
 	/**
 	 * Global
 	 */
+	@DefaultStringValue("Ok")
+	String ok();
+	
+	@DefaultStringValue("Cancel")
+	String cancel();
+	
 	@DefaultStringValue("New item")
 	String addNewItemButton();
 	
@@ -60,6 +66,9 @@ public interface AppConstants extends Constants {
 
 	@DefaultStringValue("Products")
 	String navProducts();
+
+	@DefaultStringValue("Items")
+	String navItems();
 
 	@DefaultStringValue("Taxes")
 	String navTaxes();

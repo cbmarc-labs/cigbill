@@ -4,6 +4,8 @@ import cbmarc.cigbill.client.main.customers.CustomersActivity;
 import cbmarc.cigbill.client.main.customers.CustomersPlace;
 import cbmarc.cigbill.client.main.invoices.InvoicesActivity;
 import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
+import cbmarc.cigbill.client.main.items.ItemsActivity;
+import cbmarc.cigbill.client.main.items.ItemsPlace;
 import cbmarc.cigbill.client.main.payments.PaymentsActivity;
 import cbmarc.cigbill.client.main.payments.PaymentsPlace;
 import cbmarc.cigbill.client.main.products.ProductsActivity;
@@ -34,6 +36,9 @@ public class ContentActivityMapper implements ActivityMapper {
 	private Provider<ActivityAsyncProxy<ProductsActivity>> productsActivity;
 	
 	@Inject
+	private Provider<ActivityAsyncProxy<ItemsActivity>> itemsActivity;
+	
+	@Inject
 	private Provider<ActivityAsyncProxy<TaxesActivity>> taxesActivity;
 	
 	@Inject
@@ -56,6 +61,9 @@ public class ContentActivityMapper implements ActivityMapper {
 
 		} else if (place instanceof ProductsPlace) {
 			return productsActivity.get();
+
+		} else if (place instanceof ItemsPlace) {
+			return itemsActivity.get();
 
 		} else if (place instanceof TaxesPlace) {
 			return taxesActivity.get();

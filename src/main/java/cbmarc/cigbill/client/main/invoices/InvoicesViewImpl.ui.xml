@@ -4,16 +4,16 @@
 	xmlns:a="urn:import:cbmarc.cigbill.client.ui">
 
 	<ui:with field="appCnts" type="cbmarc.cigbill.client.i18n.AppConstants" />
-	
+
 	<ui:with field="invoicesCnts"
 		type="cbmarc.cigbill.client.main.invoices.InvoicesConstants" />
-		
+
 	<ui:with field="customersCnts"
 		type="cbmarc.cigbill.client.main.customers.CustomersConstants" />
 
 	<g:HTMLPanel>
 
-		<g:HTMLPanel ui:field="cellTablePanel">
+		<g:HTMLPanel ui:field="tablePanel">
 			<p>
 				<span>
 					<g:Button ui:field="addTableButton" styleName="btn">
@@ -34,7 +34,7 @@
 			</p>
 
 			<p>
-				<a:AppCheckboxCellTable ui:field="cellTable" />
+				<a:AppCheckboxCellTable ui:field="invoicesTable" />
 			</p>
 		</g:HTMLPanel>
 
@@ -46,7 +46,7 @@
 					<legend>
 						<span class="pull-right">
 							<g:Button ui:field="validationButton" styleName="btn btn-danger">
-								<i class="icon-warning-sign" />
+								<i class="icon-warning-sign icon-white" />
 							</g:Button>
 						</span>
 						<g:Label ui:field="legend" />
@@ -56,13 +56,14 @@
 
 					<ul class="nav nav-tabs">
 						<li class="active">
-							<a:AppTab href="#general">General</a:AppTab>
+							<a:AppTab href="#general">
+								<ui:text from="{invoicesCnts.tabGeneral}" />
+							</a:AppTab>
 						</li>
 						<li>
-							<a:AppTab href="#items">Items</a:AppTab>
-						</li>
-						<li>
-							<a:AppTab href="#notes">Notes</a:AppTab>
+							<a:AppTab href="#notes">
+								<ui:text from="{invoicesCnts.tabNotes}" />
+							</a:AppTab>
 						</li>
 					</ul>
 
@@ -71,10 +72,11 @@
 						<div class="tab-pane active" id="general">
 
 							<div class="control-group" ui:field="customerNameCG">
-								<g:Label styleName="control-label" text="{customersCnts.formName}*" />
+								<label styleName="control-label">
+									<ui:text from="{customersCnts.formName}*" />
+								</label>
 								<div class="controls">
 									<div class="input-append">
-										<!-- <b:TextBox ui:field="customerName" b:id="customerName" size="3"></b:TextBox> -->
 										<g:SuggestBox ui:field="customerName" styleName="input-medium" />
 										<g:Button ui:field="selectCustomerButton" styleName="btn">
 											<i class="icon-search" />
@@ -86,20 +88,22 @@
 							<div class="row-fluid">
 								<div class="span3">
 									<div class="control-group" ui:field="dateCG">
-										<g:Label styleName="control-label" text="Date" />
+										<label styleName="control-label">
+											<ui:text from="{invoicesCnts.formDate}" />
+										</label>
 										<div class="controls">
-											<a:Datepicker ui:field="valueDate" format="dd/mm/yyyy"
-												styleName="datepicker input-small" alignment="RIGHT" />
+											<a:AppDatePicker ui:field="date" />
 										</div>
 									</div>
 								</div>
 								<div class="span3">
 									<div class="control-group" ui:field="taxCG">
-										<g:Label styleName="control-label" text="Tax" />
+										<label styleName="control-label">
+											<ui:text from="{invoicesCnts.formTax}" />
+										</label>
 										<div class="controls">
 											<div class="input-append">
-												<g:DoubleBox ui:field="tax" maxLength="12"
-													alignment="RIGHT" styleName="input-small" />
+												<a:AppDoubleBox ui:field="tax" />
 												<span class="add-on">%</span>
 											</div>
 										</div>
@@ -107,11 +111,12 @@
 								</div>
 								<div class="span3">
 									<div class="control-group" ui:field="discountCG">
-										<g:Label styleName="control-label" text="Discount" />
+										<label styleName="control-label">
+											<ui:text from="{invoicesCnts.formDiscount}" />
+										</label>
 										<div class="controls">
 											<div class="input-append">
-												<g:DoubleBox ui:field="discount" maxLength="12"
-													alignment="RIGHT" styleName="input-small" />
+												<a:AppDoubleBox ui:field="discount" />
 												<span class="add-on">%</span>
 											</div>
 										</div>
@@ -119,23 +124,22 @@
 								</div>
 								<div class="span3">
 									<div class="control-group" ui:field="shippingCG">
-										<g:Label styleName="control-label" text="Shipping" />
+										<label styleName="control-label">
+											<ui:text from="{invoicesCnts.formShipping}" />
+										</label>
 										<div class="controls">
-											<g:DoubleBox ui:field="shipping" maxLength="12"
-												alignment="RIGHT" styleName="input-small" />
+											<a:AppDoubleBox ui:field="shipping" />
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
 
-						<div class="tab-pane" id="items">
-							<!-- PRODUCTS INVOICES ITEMS -->
-							<g:HTMLPanel styleName="" ui:field="productsInvoicesPanel">
+							<!-- ITEMS INVOICES ITEMS -->
+							<g:HTMLPanel styleName="">
 								<div class="btn-toolbar">
 									<g:Button ui:field="addNewLine" styleName="btn">
 										<i class="icon-plus" />
-										New Line
+										<ui:text from="{invoicesCnts.newLine}" />
 									</g:Button>
 									<g:Button ui:field="addProductButton" styleName="btn">
 										<i class="icon-plus" />
@@ -148,30 +152,44 @@
 								</div>
 								<div class="row-fluid" style="margin:5px 0;">
 									<div class="span">
-										<a:AppFlexTable ui:field="productsInvoicesCellTable" />
+										<a:AppFlexTable ui:field="itemsInvoicesTable" />
 									</div>
 								</div>
 								<div class="row-fluid" style="text-align:right;margin:5px 0;">
-									<div>
-										<span style="margin-right:50px;">Subtotal</span>
-										<span>0.00</span>
-									</div>
-									<div>
-										<span style="margin-right:50px;">Tax (25%)</span>
-										<span>0.00</span>
-									</div>
-									<div>
-										<span style="margin-right:50px;">Discount (10%)</span>
-										<span>0.00</span>
-									</div>
-									<div>
-										<span style="margin-right:50px;">Shipping</span>
-										<span>0.00</span>
-									</div>
-									<div>
-										<span style="margin-right:50px;font-weight:bolder;">Total</span>
-										<span>0.00</span>
-									</div>
+
+									<table align="right">
+										<colgroups>
+											<col></col>
+											<col style="width:100px;"></col>
+										</colgroups>
+										<tr ui:field="invoiceSubtotalGroup">
+											<td>
+												<ui:text from="{invoicesCnts.invoiceSubtotal}" />
+											</td>
+											<td ui:field="invoiceSubtotalValue"></td>
+										</tr>
+										<tr ui:field="invoiceTaxGroup">
+											<td ui:field="invoiceTaxLabel"></td>
+											<td ui:field="invoiceTaxValue"></td>
+										</tr>
+										<tr ui:field="invoiceDiscountGroup">
+											<td ui:field="invoiceDiscountLabel"></td>
+											<td ui:field="invoiceDiscountValue"></td>
+										</tr>
+										<tr ui:field="invoiceShippingGroup">
+											<td>
+												<ui:text from="{invoicesCnts.invoiceShipping}" />
+											</td>
+											<td ui:field="invoiceShippingValue"></td>
+										</tr>
+										<tr style="font-weight:bolder;">
+											<td>
+												<ui:text from="{invoicesCnts.invoiceTotal}" />
+											</td>
+											<td ui:field="invoiceTotalValue"></td>
+										</tr>
+									</table>
+									
 								</div>
 							</g:HTMLPanel>
 
@@ -179,9 +197,12 @@
 
 						<div class="tab-pane" id="notes">
 							<div class="control-group" ui:field="notesCG">
-								<g:Label styleName="control-label" text="{invoicesCnts.formNotes}" />
+								<label styleName="control-label">
+									<ui:text from="{invoicesCnts.formNotes}" />
+								</label>
 								<div class="controls">
-									<a:AppTextArea ui:field="notes" styleName="expand100-400 input-block-level" />
+									<a:AppTextArea ui:field="notes"
+										styleName="expand100-400 input-block-level" />
 								</div>
 							</div>
 						</div>
@@ -197,7 +218,7 @@
 						<span>
 							<g:SubmitButton ui:field="submitButton" styleName="btn">
 								<i class="icon-ok"></i>
-								<ui:text from="{appCnts.formSubmit}"></ui:text>
+								<ui:text from="{appCnts.formSubmit}" />
 							</g:SubmitButton>
 
 							<g:Button ui:field="backButton" styleName="btn">
@@ -207,7 +228,7 @@
 						</span>
 						<span class="pull-right">
 							<g:Button ui:field="formDeleteButton" styleName="btn btn-danger">
-								<i class="icon-remove" />
+								<i class="icon-remove icon-white" />
 								<ui:text from="{appCnts.formDelete}" />
 							</g:Button>
 						</span>
@@ -222,15 +243,17 @@
 		<!-- CUSTOMER MODAL -->
 		<div id="selectCustomerModal" class="modal hide">
 			<div class="modal-header">
-				<h3 id="myModalLabel">Select Customer</h3>
+				<h3 id="myModalLabel">
+					<ui:text from="{invoicesCnts.modalSelectCustomer}" />
+				</h3>
 			</div>
 			<div class="modal-body">
-				<a:AppCellTable ui:field="customersCellTable"></a:AppCellTable>
+				<a:AppCellTable ui:field="customersTable"></a:AppCellTable>
 			</div>
 			<div class="modal-footer">
 				<g:Button ui:field="selectCustomerModalCancel" styleName="btn">
 					<i class="icon-chevron-left" />
-					Cancel
+					<ui:text from="{appCnts.cancel}" />
 				</g:Button>
 			</div>
 		</div>
@@ -238,19 +261,21 @@
 		<!-- PRODUCTS MODAL -->
 		<div id="selectProductsModal" class="modal hide">
 			<div class="modal-header">
-				<h3>Select Product</h3>
+				<h3>
+					<ui:text from="{invoicesCnts.modalSelectItem}" />
+				</h3>
 			</div>
 			<div class="modal-body">
-				<a:AppCellTable ui:field="productsCellTable" />
+				<a:AppCellTable ui:field="productsTable" />
 			</div>
 			<div class="modal-footer">
 				<g:Button ui:field="selectProductsModalOk" styleName="btn">
 					<i class="icon-ok" />
-					Ok
+					<ui:text from="{appCnts.ok}" />
 				</g:Button>
 				<g:Button ui:field="selectProductsModalCancel" styleName="btn">
 					<i class="icon-chevron-left" />
-					Cancel
+					<ui:text from="{appCnts.cancel}" />
 				</g:Button>
 			</div>
 		</div>

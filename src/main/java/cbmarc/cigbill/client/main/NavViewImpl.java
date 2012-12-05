@@ -3,6 +3,7 @@ package cbmarc.cigbill.client.main;
 import cbmarc.cigbill.client.auth.AuthPlace;
 import cbmarc.cigbill.client.main.customers.CustomersPlace;
 import cbmarc.cigbill.client.main.invoices.InvoicesPlace;
+import cbmarc.cigbill.client.main.items.ItemsPlace;
 import cbmarc.cigbill.client.main.payments.PaymentsPlace;
 import cbmarc.cigbill.client.main.products.ProductsPlace;
 import cbmarc.cigbill.client.main.taxes.TaxesPlace;
@@ -28,8 +29,8 @@ public class NavViewImpl extends Composite implements NavView {
 	}
 
 	@UiField
-	LIElement invoicesGroup, paymentsGroup, productsGroup, taxesGroup,
-			customersGroup, usersGroup;
+	LIElement invoicesGroup, paymentsGroup, productsGroup, itemsGroup,
+			taxesGroup, customersGroup, usersGroup;
 
 	LIElement oldGroup = null;
 
@@ -52,6 +53,11 @@ public class NavViewImpl extends Composite implements NavView {
 	@UiHandler("products")
 	void onClickProducts(ClickEvent event) {
 		presenter.goTo(new ProductsPlace());
+	}
+
+	@UiHandler("items")
+	void onClickItems(ClickEvent event) {
+		presenter.goTo(new ItemsPlace());
 	}
 
 	@UiHandler("taxes")
@@ -92,6 +98,9 @@ public class NavViewImpl extends Composite implements NavView {
 
 		} else if (place instanceof ProductsPlace) {
 			liElement = productsGroup;
+
+		} else if (place instanceof ItemsPlace) {
+			liElement = itemsGroup;
 
 		} else if (place instanceof TaxesPlace) {
 			liElement = taxesGroup;

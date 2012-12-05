@@ -40,6 +40,12 @@
 					<ui:text from="{cnt.navProducts}"></ui:text>
 				</g:Anchor>
 			</li>
+			<li ui:field="itemsGroup">
+				<g:Anchor href="javascript:;" ui:field="items">
+					<i class="icon-shopping-cart"></i>
+					<ui:text from="{cnt.navItems}"></ui:text>
+				</g:Anchor>
+			</li>
 			<li ui:field="taxesGroup">
 				<g:Anchor href="javascript:;" ui:field="taxes">
 					<i class="icon-barcode"></i>

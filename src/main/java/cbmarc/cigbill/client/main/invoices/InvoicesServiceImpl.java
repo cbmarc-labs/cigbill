@@ -7,6 +7,7 @@ import java.util.Set;
 
 import cbmarc.cigbill.shared.Invoice;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class InvoicesServiceImpl implements InvoicesServiceAsync {
@@ -26,13 +27,14 @@ public class InvoicesServiceImpl implements InvoicesServiceAsync {
 	}
 
 	@Override
-	public void save(Invoice product, final AsyncCallback<Void> callback) {
-		if (product.getId() == null) {
-			Long id = Long.valueOf(((Object) product.hashCode()).toString());
+	public void save(Invoice invoice, final AsyncCallback<Void> callback) {
+		if (invoice.getId() == null) {
+			Long id = Long.valueOf(((Object) invoice.hashCode()).toString());
 
-			product.setId(id);
+			invoice.setId(id);
 
-			list.add(product);
+			list.add(invoice);
+			
 		}
 
 		callback.onSuccess(null);
@@ -61,6 +63,7 @@ public class InvoicesServiceImpl implements InvoicesServiceAsync {
 		for (Invoice product : list) {
 			if (product.getId().equals(id)) {
 				found = product;
+
 				break;
 			}
 		}

@@ -3,14 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:a="urn:import:cbmarc.cigbill.client.ui">
 
 	<ui:style>
-		body {
-			padding-top: 60px;
-			padding-bottom: 40px;
-		}
-		
-		.header {
-			padding: 40px 0;
-		}
 	</ui:style>
 
 	<g:HTMLPanel>

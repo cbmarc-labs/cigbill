@@ -1,31 +1,31 @@
-package cbmarc.cigbill.client.main.products;
+package cbmarc.cigbill.client.main.items;
 
 import java.util.List;
 
-import cbmarc.cigbill.shared.Product;
+import cbmarc.cigbill.shared.Item;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.view.client.ListDataProvider;
 
-public class ProductsDatabase {
+public class ItemsDatabase {
 
-	private static ProductsDatabase instance;
-	private ListDataProvider<Product> dataProvider = new ListDataProvider<Product>();
+	private static ItemsDatabase instance;
+	private ListDataProvider<Item> dataProvider = new ListDataProvider<Item>();
 
-	public ProductsDatabase() {
+	public ItemsDatabase() {
 		generateItems(15);
 	}
 
-	public static ProductsDatabase getInstance() {
+	public static ItemsDatabase getInstance() {
 		if (instance == null) {
-			instance = new ProductsDatabase();
+			instance = new ItemsDatabase();
 		}
 
 		return instance;
 	}
 
-	public List<Product> getList() {
+	public List<Item> getList() {
 		return dataProvider.getList();
 	}
 
@@ -33,7 +33,7 @@ public class ProductsDatabase {
 	 * 
 	 */
 	public void generateItems(int count) {
-		List<Product> items = dataProvider.getList();
+		List<Item> items = dataProvider.getList();
 
 		for (int i = 0; i < count; i++) {
 			items.add(createItem());
@@ -44,16 +44,16 @@ public class ProductsDatabase {
 	 * @param login
 	 * @return
 	 */
-	private Product createItem() {
-		Product item = new Product();
+	private Item createItem() {
+		Item item = new Item();
 
 		Long id = Long.parseLong(((Object) item.hashCode()).toString());
 
 		item.setId(id);
-		item.setName("Product " + id);
 		item.setDescription("Description of item " + id);
+		item.setQuantity(Random.nextDouble() * 5);
 		item.setPrice(Double.valueOf(NumberFormat.getFormat("#.00").format(
-				Random.nextDouble() * 10000)));
+				Random.nextDouble() * 2000)));
 		item.setNotes("Notes of item " + id);
 
 		return item;

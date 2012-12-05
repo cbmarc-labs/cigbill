@@ -1,7 +1,7 @@
 /**
  * 
  */
-package cbmarc.cigbill.client.main.invoices;
+package cbmarc.cigbill.client.main.items;
 
 import java.util.List;
 import java.util.Set;
@@ -13,16 +13,10 @@ import javax.validation.groups.Default;
 
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.MainPlace;
-import cbmarc.cigbill.client.main.customers.CustomersServiceAsync;
-import cbmarc.cigbill.client.main.customers.CustomersServiceImpl;
-import cbmarc.cigbill.client.main.products.ProductsServiceAsync;
-import cbmarc.cigbill.client.main.products.ProductsServiceImpl;
 import cbmarc.cigbill.client.rpc.AppAsyncCallback;
 import cbmarc.cigbill.client.ui.AppNotify;
 import cbmarc.cigbill.shared.ClientGroup;
-import cbmarc.cigbill.shared.Customer;
-import cbmarc.cigbill.shared.Invoice;
-import cbmarc.cigbill.shared.Product;
+import cbmarc.cigbill.shared.Item;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
@@ -42,23 +36,15 @@ import com.google.inject.Singleton;
  * 
  */
 @Singleton
-public class InvoicesActivity extends AbstractActivity implements
-		InvoicesView.Presenter {
+public class ItemsActivity extends AbstractActivity implements
+		ItemsView.Presenter {
 
-	private InvoicesConstants invoicesConstants = GWT
-			.create(InvoicesConstants.class);
+	private ItemsConstants itemsConstants = GWT.create(ItemsConstants.class);
 
-	private InvoicesServiceAsync service = GWT
-			.create(InvoicesServiceImpl.class);
-	
-	private ProductsServiceAsync productsService = GWT
-			.create(ProductsServiceImpl.class);
-	
-	private CustomersServiceAsync customersService = GWT
-			.create(CustomersServiceImpl.class);
+	private ItemsServiceAsync service = GWT.create(ItemsServiceImpl.class);
 
 	@Inject
-	private InvoicesView view;
+	private ItemsView view;
 	
 	@Inject
 	private AppConstants appConstants;
@@ -66,7 +52,7 @@ public class InvoicesActivity extends AbstractActivity implements
 	@Inject
 	private PlaceController placeController;
 
-	private SimpleBeanEditorDriver<Invoice, ?> driver;
+	private SimpleBeanEditorDriver<Item, ?> driver;
 
 	/**
 	 * start method
@@ -91,15 +77,14 @@ public class InvoicesActivity extends AbstractActivity implements
 
 		} else if (token[0].equals("edit")) {
 			if (token[1] == null) {
-				goTo(new InvoicesPlace());
+				goTo(new ItemsPlace());
 
 			} else {
-				// TODO check exception out of doEdit function
 				try {
 					doEdit(Long.parseLong(token[1]));
 				} catch (Exception e) {
 
-					goTo(new InvoicesPlace());
+					goTo(new ItemsPlace());
 				}
 			}
 
@@ -107,7 +92,7 @@ public class InvoicesActivity extends AbstractActivity implements
 			doLoad();
 
 		} else {
-			goTo(new InvoicesPlace());
+			goTo(new ItemsPlace());
 		}
 
 	}
@@ -118,38 +103,14 @@ public class InvoicesActivity extends AbstractActivity implements
 	@Override
 	public void doLoad() {
 		view.showCellTablePanel();
-		service.getAll(new AppAsyncCallback<List<Invoice>>() {
+		service.getAll(new AppAsyncCallback<List<Item>>() {
 
 			@Override
-			public void onSuccess(List<Invoice> result) {				
+			public void onSuccess(List<Item> result) {
 				view.setList(result);
 
 			}
 		});
-	}
-
-	public void doLoadProducts() {
-		productsService.getAll(new AppAsyncCallback<List<Product>>() {
-
-			@Override
-			public void onSuccess(List<Product> result) {
-				view.setListProduct(result);
-
-			}
-		});
-
-	}
-
-	public void doLoadCustomers() {
-		customersService.getAll(new AppAsyncCallback<List<Customer>>() {
-
-			@Override
-			public void onSuccess(List<Customer> result) {
-				view.setListCustomer(result);
-
-			}
-		});
-
 	}
 
 	/**
@@ -157,13 +118,10 @@ public class InvoicesActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doAdd() {
-		view.showFormPanel(invoicesConstants.addLegendLabel());
+		view.showFormPanel(itemsConstants.addLegendLabel());
 		view.setFormDeleteButtonVisible(false);
 
-		driver.edit(new Invoice());
-
-		doLoadCustomers();
-		doLoadProducts();
+		driver.edit(new Item());
 
 	}
 
@@ -174,21 +132,18 @@ public class InvoicesActivity extends AbstractActivity implements
 	 */
 	public void doEdit(Long id) {
 		view.setFormDeleteButtonVisible(true);
-		service.getById(id, new AppAsyncCallback<Invoice>() {
+		service.getById(id, new AppAsyncCallback<Item>() {
 
 			@Override
-			public void onSuccess(Invoice result) {
+			public void onSuccess(Item result) {
 				if (result == null) {
-					goTo(new InvoicesPlace());
-					
+					goTo(new ItemsPlace());
+
 					AppNotify.error(appConstants.itemNotFound());
 
 				} else {
-					doLoadCustomers();
-					doLoadProducts();
-					
+					view.showFormPanel(itemsConstants.editLegendLabel());
 					driver.edit(result);
-					view.showFormPanel(invoicesConstants.editLegendLabel());
 				}
 
 			}
@@ -200,11 +155,11 @@ public class InvoicesActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void doSave() {
-		final Invoice invoice = driver.flush();
-		final Long id = invoice.getId();
-		
-		if (validateForm(invoice)) {
-			service.save(invoice, new AppAsyncCallback<Void>() {
+		final Item item = driver.flush();
+		final Long id = item.getId();
+
+		if (validateForm(item)) {
+			service.save(item, new AppAsyncCallback<Void>() {
 
 				@Override
 				public void onSuccess(Void result) {
@@ -212,7 +167,7 @@ public class InvoicesActivity extends AbstractActivity implements
 						doAdd();
 
 					} else {
-						driver.edit(invoice);
+						driver.edit(item);
 					}
 
 					AppNotify.success(appConstants.itemSaved());
@@ -228,7 +183,7 @@ public class InvoicesActivity extends AbstractActivity implements
 	 * @param list
 	 */
 	@Override
-	public void doDelete(Set<Invoice> list) {
+	public void doDelete(Set<Item> list) {
 		service.delete(list, new AppAsyncCallback<Void>() {
 
 			@Override
@@ -243,12 +198,12 @@ public class InvoicesActivity extends AbstractActivity implements
 
 	@Override
 	public void doDelete() {
-		final Invoice invoice = driver.flush();
-		service.delete(invoice, new AppAsyncCallback<Void>() {
+		final Item item = driver.flush();
+		service.delete(item, new AppAsyncCallback<Void>() {
 
 			@Override
 			public void onSuccess(Void result) {
-				goTo(new InvoicesPlace());
+				goTo(new ItemsPlace());
 
 				AppNotify.success(appConstants.itemsDeleted());
 
@@ -262,16 +217,16 @@ public class InvoicesActivity extends AbstractActivity implements
 	 * 
 	 * @return
 	 */
-	private boolean validateForm(Invoice invoice) {
+	private boolean validateForm(Item item) {
 		Validator validator = Validation.buildDefaultValidatorFactory()
 				.getValidator();
-		Set<ConstraintViolation<Invoice>> violations = validator.validate(
-				invoice, Default.class, ClientGroup.class);
+		Set<ConstraintViolation<Item>> violations = validator.validate(item,
+				Default.class, ClientGroup.class);
 		Boolean result = true;
 
 		StringBuffer validationErrors = new StringBuffer();
 		if (!violations.isEmpty()) {
-			for (ConstraintViolation<Invoice> constraintViolation : violations) {
+			for (ConstraintViolation<Item> constraintViolation : violations) {
 
 				String field = constraintViolation.getPropertyPath().toString();
 				String message = constraintViolation.getMessage();
