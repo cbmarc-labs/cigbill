@@ -10,12 +10,20 @@ public class AppTab extends Anchor {
 		super.onLoad();
 		initialize(getElement());
 	}
+	
+	public void show() {
+		show(getElement());
+	}
 
 	public static native void initialize(Element e) /*-{
 		$wnd.jQuery(e).click(function(e) {
 			e.preventDefault();
 			$wnd.jQuery(this).tab('show');
 		});​
+	}-*/;
+
+	public static native void show(Element e) /*-{
+		$wnd.jQuery(e).tab('show');​
 	}-*/;
 
 }

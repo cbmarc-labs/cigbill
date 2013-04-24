@@ -141,7 +141,7 @@
 										<i class="icon-plus" />
 										<ui:text from="{invoicesCnts.newLine}" />
 									</g:Button>
-									<g:Button ui:field="addProductButton" styleName="btn">
+									<g:Button ui:field="addItemButton" styleName="btn">
 										<i class="icon-plus" />
 										<ui:text from="{appCnts.addNewItemButton}" />
 									</g:Button>
@@ -258,22 +258,22 @@
 			</div>
 		</div>
 
-		<!-- PRODUCTS MODAL -->
-		<div id="selectProductsModal" class="modal hide">
+		<!-- ITEMS MODAL -->
+		<div id="selectItemsModal" class="modal hide">
 			<div class="modal-header">
 				<h3>
 					<ui:text from="{invoicesCnts.modalSelectItem}" />
 				</h3>
 			</div>
 			<div class="modal-body">
-				<a:AppCellTable ui:field="productsTable" />
+				<a:AppCellTable ui:field="itemsTable" />
 			</div>
 			<div class="modal-footer">
-				<g:Button ui:field="selectProductsModalOk" styleName="btn">
+				<g:Button ui:field="selectItemsModalOk" styleName="btn">
 					<i class="icon-ok" />
 					<ui:text from="{appCnts.ok}" />
 				</g:Button>
-				<g:Button ui:field="selectProductsModalCancel" styleName="btn">
+				<g:Button ui:field="selectItemsModalCancel" styleName="btn">
 					<i class="icon-chevron-left" />
 					<ui:text from="{appCnts.cancel}" />
 				</g:Button>

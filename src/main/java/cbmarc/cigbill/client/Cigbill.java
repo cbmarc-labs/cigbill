@@ -11,7 +11,7 @@ public class Cigbill implements EntryPoint {
 	public void onModuleLoad() {
 		ResourcesInjector.configure();
 		
-		RootPanel.get().add(appGinjector.getAppView());
+		RootPanel.get("app").add(appGinjector.getAppView());
 
 		appGinjector.getHistoryHandler().handleCurrentHistory();
 	}

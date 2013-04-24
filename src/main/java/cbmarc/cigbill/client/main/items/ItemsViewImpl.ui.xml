@@ -52,7 +52,7 @@
 
 					<ul class="nav nav-tabs">
 						<li class="active">
-							<a:AppTab href="#general">
+							<a:AppTab href="#general" ui:field="generalTab">
 								<ui:text from="{itemsCnts.tabGeneral}" />
 							</a:AppTab>
 						</li>
@@ -100,13 +100,13 @@
 						</div>
 
 						<div class="tab-pane" id="notes">
-							<div class="tab-pane" id="notes">
-								<div class="control-group">
-									<g:Label styleName="control-label" text="{itemsCnts.formNotes}" />
-									<div class="controls">
-										<a:AppTextArea ui:field="notes"
-											styleName="expand100-400 input-block-level" />
-									</div>
+							<div class="control-group" ui:field="notesCG">
+								<label styleName="control-label">
+									<ui:text from="{itemsCnts.formNotes}" />
+								</label>
+								<div class="controls">
+									<a:AppTextArea ui:field="notes"
+										styleName="expand100-400 input-block-level" />
 								</div>
 							</div>
 						</div>

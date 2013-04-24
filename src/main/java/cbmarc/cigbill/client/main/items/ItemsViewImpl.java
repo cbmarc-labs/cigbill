@@ -7,6 +7,8 @@ import java.util.Set;
 import cbmarc.cigbill.client.i18n.AppConstants;
 import cbmarc.cigbill.client.main.taxes.TaxesConstants;
 import cbmarc.cigbill.client.ui.AppCheckboxCellTable;
+import cbmarc.cigbill.client.ui.AppTab;
+import cbmarc.cigbill.client.utils.JavaScriptUtils;
 import cbmarc.cigbill.shared.Item;
 
 import com.google.gwt.cell.client.NumberCell;
@@ -76,6 +78,9 @@ public class ItemsViewImpl extends Composite implements ItemsView, Editor<Item> 
 	// Form fields
 	@UiField
 	FormPanel formPanel;
+	
+	@UiField
+	AppTab generalTab;
 
 	@UiField
 	TextBox description;
@@ -94,7 +99,7 @@ public class ItemsViewImpl extends Composite implements ItemsView, Editor<Item> 
 
 	// Control groups for mark errors
 	@UiField
-	DivElement descriptionCG, priceCG;
+	DivElement descriptionCG, priceCG, notesCG;
 
 	private Presenter presenter;
 
@@ -102,8 +107,6 @@ public class ItemsViewImpl extends Composite implements ItemsView, Editor<Item> 
 	private AppConstants appConstants;
 
 	private ItemsConstants itemsConstants = GWT.create(ItemsConstants.class);
-
-	private TaxesConstants taxesConstants = GWT.create(TaxesConstants.class);
 
 	/**
 	 * Constructor
@@ -293,6 +296,9 @@ public class ItemsViewImpl extends Composite implements ItemsView, Editor<Item> 
 
 		else if (field.equals("price"))
 			priceCG.setClassName("control-group error");
+		
+		else if (field.equals("notes"))
+			notesCG.setClassName("control-group error");
 	}
 
 	/**
@@ -301,6 +307,7 @@ public class ItemsViewImpl extends Composite implements ItemsView, Editor<Item> 
 	public void clearErrors() {
 		descriptionCG.setClassName("control-group");
 		priceCG.setClassName("control-group");
+		notesCG.setClassName("control-group");
 
 		validationButton.setVisible(false);
 		validationPanel.setVisible(false);
@@ -328,6 +335,8 @@ public class ItemsViewImpl extends Composite implements ItemsView, Editor<Item> 
 
 		tablePanel.setVisible(false);
 		formPanel.setVisible(true);
+		
+		generalTab.show();
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -339,11 +348,6 @@ public class ItemsViewImpl extends Composite implements ItemsView, Editor<Item> 
 		});
 
 	}
-
-	// TabPane.setActive dont work
-	public static native void selectFirstTab(String tab) /*-{
-		$wnd.jQuery('#' + tab + ' a:first').tab('show');
-	}-*/;
 
 	/**
 	 * Show CellTable panel

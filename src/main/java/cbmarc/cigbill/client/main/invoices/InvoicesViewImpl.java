@@ -146,8 +146,8 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	@UiField
 	Button addTableButton, deleteTableButton, toolbarRefreshButton,
 			selectCustomerModalCancel, validationButton, selectCustomerButton,
-			addProductButton, deleteProductButton, selectProductsModalOk,
-			selectProductsModalCancel, backButton, formDeleteButton,
+			addItemButton, deleteProductButton, selectItemsModalOk,
+			selectItemsModalCancel, backButton, formDeleteButton,
 			addNewLine;
 
 	@UiField
@@ -162,7 +162,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 	private CheckBox checkboxProductsInvoicesHeader;
 
 	@UiField
-	AppCellTable<Product> productsTable;
+	AppCellTable<Product> itemsTable;
 
 	@UiField
 	TableRowElement invoiceSubtotalGroup, invoiceTaxGroup,
@@ -449,7 +449,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return object.getName();
 			}
 		};
-		productsTable.addColumn(productsNameColumn,
+		itemsTable.addColumn(productsNameColumn,
 				productsConstants.columnName());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -461,7 +461,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 				return object.getDescription();
 			}
 		};
-		productsTable.addColumn(descriptionColumn,
+		itemsTable.addColumn(descriptionColumn,
 				productsConstants.columnDescription());
 
 		// /////////////////////////////////////////////////////////////////////
@@ -474,11 +474,11 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			}
 		};
 		priceColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		productsTable.addColumn(priceColumn, productsConstants.columnPrice());
-		productsTable.setColumnWidth(priceColumn, "6em");
+		itemsTable.addColumn(priceColumn, productsConstants.columnPrice());
+		itemsTable.setColumnWidth(priceColumn, "6em");
 		// Make the first name column sortable.
 		priceColumn.setSortable(true);
-		productsTable.setComparator(priceColumn, new Comparator<Product>() {
+		itemsTable.setComparator(priceColumn, new Comparator<Product>() {
 			public int compare(Product o1, Product o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
@@ -497,7 +497,7 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 
 	@Override
 	public void setListProduct(List<Product> data) {
-		productsTable.setList(data);
+		itemsTable.setList(data);
 
 	}
 
@@ -601,24 +601,24 @@ public class InvoicesViewImpl extends Composite implements InvoicesView,
 			presenter.doDelete();
 	}
 
-	@UiHandler("addProductButton")
+	@UiHandler("addItemButton")
 	protected void onClickAddProductButton(ClickEvent event) {
-		productsTable.clearSelected();
-		JavaScriptUtils.modal("selectProductsModal", "show");
+		itemsTable.clearSelected();
+		JavaScriptUtils.modal("selectItemsModal", "show");
 	}
 
-	@UiHandler("selectProductsModalCancel")
-	protected void onClickSelectProductsModalCancel(ClickEvent event) {
-		JavaScriptUtils.modal("selectProductsModal", "hide");
+	@UiHandler("selectItemsModalCancel")
+	protected void onClickSelectItemsModalCancel(ClickEvent event) {
+		JavaScriptUtils.modal("selectItemsModal", "hide");
 
 	}
 
-	@UiHandler("selectProductsModalOk")
-	protected void onClickSelectProductsModalOk(ClickEvent event) {
-		JavaScriptUtils.modal("selectProductsModal", "hide");
+	@UiHandler("selectItemsModalOk")
+	protected void onClickSelectItemsModalOk(ClickEvent event) {
+		JavaScriptUtils.modal("selectItemsModal", "hide");
 
-		Set<Product> selected = productsTable.getSelectedSet();
-		productsTable.clearSelected();
+		Set<Product> selected = itemsTable.getSelectedSet();
+		itemsTable.clearSelected();
 
 		if (selected.size() > 0) {
 			for (Product p : selected) {
